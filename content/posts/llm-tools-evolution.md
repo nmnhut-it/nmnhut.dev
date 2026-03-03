@@ -1,5 +1,5 @@
 +++
-date = '2026-03-04'
+date = '2026-03-03'
 draft = false
 title = 'From Raw Text to Agent Teams: How LLM Tooling Evolved'
 description = 'The full evolution of LLM tool use — from hardcoded functions to MCP, skills, agent teams, and communication protocols.'
