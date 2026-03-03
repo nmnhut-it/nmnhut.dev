@@ -2,7 +2,8 @@ baseURL = "https://nmnhut.dev/"
 languageCode = "en-us"
 title = "nmnhut"
 theme = "PaperMod"
-paginate = 10
+[pagination]
+  pagerSize = 10
 
 [params]
   env = "production"
