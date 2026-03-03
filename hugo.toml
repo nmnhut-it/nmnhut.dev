@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://nmnhut.dev/"
 languageCode = "en-us"
 title = "nmnhut"
 theme = "PaperMod"
@@ -43,7 +43,7 @@ theme = "PaperMod"
     weight = 30
 
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML", "RSS"]
 
 [markup]
   [markup.highlight]
