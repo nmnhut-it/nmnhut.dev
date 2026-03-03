@@ -250,7 +250,47 @@ Tasks support **dependencies** — Task B can be blocked by Task A, and automati
 **Pros:** Structured and flexible. Tasks track lifecycle. Agents work independently without a shared context. The lead doesn't bottleneck communication — agents can message each other directly.
 **Cons:** Requires discipline. Agents must remember to update task status. An agent that forgets to mark a task done can block the whole team.
 
-### Approach 5: An Open Protocol — Google's A2A
+### Approach 5: Queue-Based Actor Model with Mention Parsing
+
+**Used by:** TinyClaw
+
+What if agents could coordinate using **natural language mentions** — just like humans do on Slack or Discord?
+
+TinyClaw takes this approach. There is no central orchestrator. Instead, agents communicate by writing **mention tags** directly in their responses:
+
+```
+I fixed the bug in auth.ts.
+[@reviewer: Please review the changes in auth.ts for security issues.]
+[@tester: Run the test suite after the review is done.]
+```
+
+A parser extracts these tags, and the system enqueues internal messages to the target agents via a **shared SQLite queue**. Each agent has its own isolated workspace and processes messages sequentially through a promise chain — but different agents run in parallel.
+
+The coordination relies on a **pending counter**. When an agent mentions a teammate, the counter increments. When a teammate finishes (with no further mentions), it decrements. When it hits zero, the conversation is complete and all responses are aggregated.
+
+```
+User: "@dev fix the auth bug"
+  → Coder (team leader) receives message          pending: 1
+  → Coder responds, mentions @reviewer            pending: 1
+  → Reviewer responds, mentions @tester            pending: 1
+  → Tester responds (no mentions)                  pending: 0 → COMPLETE
+  → Aggregated response sent back to user
+```
+
+Text written *outside* mention tags becomes **shared context** — delivered to all mentioned agents. This lets an agent broadcast background information while sending targeted instructions:
+
+```
+Sprint ends Friday. 3 open bugs remain.
+[@coder: Focus on the auth bug first.]
+[@reviewer: Prioritize any open PRs.]
+```
+
+Both agents receive the shared context plus their specific message.
+
+**Pros:** No orchestrator needed. Natural language mentions feel intuitive. SQLite queue is durable (survives crashes, supports retries). Supports fan-out, backflow, and cross-talk — all through the same queue-and-counter mechanism.
+**Cons:** Agents must follow the mention format correctly. No structured task lifecycle — you can't query whether a piece of work is "pending" or "in progress" like you can with a task list.
+
+### Approach 6: An Open Protocol — Google's A2A
 
 **Announced:** April 2025 | **Governed by:** Linux Foundation (since June 2025)
 
