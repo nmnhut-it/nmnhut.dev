@@ -1,0 +1,52 @@
+baseURL = "https://nmnhut.dev/"
+languageCode = "en-us"
+title = "nmnhut"
+theme = "PaperMod"
+paginate = 10
+
+[params]
+  env = "production"
+  description = "Personal blog by Nhut Nguyen"
+  author = "Nhut Nguyen"
+  defaultTheme = "auto"  # light/dark/auto
+  showReadingTime = true
+  showShareButtons = true
+  showPostNavLinks = true
+  showBreadCrumbs = true
+  showCodeCopyButtons = true
+  showToc = true
+
+  [params.homeInfoParams]
+    Title = "Hi, I'm Nhut"
+    Content = "Welcome to my blog. I write about software, AI, and life."
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/nmnhut"
+
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "Posts"
+    url = "/posts/"
+    weight = 10
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 20
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 30
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup]
+  [markup.highlight]
+    style = "monokai"
+    lineNos = false
+  [markup.goldmark.renderer]
+    unsafe = true
