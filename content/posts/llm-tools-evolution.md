@@ -288,6 +288,7 @@ Sprint ends Friday. 3 open bugs remain.
 Both agents receive the shared context plus their specific message.
 
 **Pros:** No orchestrator needed. Natural language mentions feel intuitive. SQLite queue is durable (survives crashes, supports retries). Supports fan-out, backflow, and cross-talk — all through the same queue-and-counter mechanism.
+
 **Cons:** Agents must follow the mention format correctly. No structured task lifecycle — you can't query whether a piece of work is "pending" or "in progress" like you can with a task list.
 
 ### Approach 6: An Open Protocol — Google's A2A

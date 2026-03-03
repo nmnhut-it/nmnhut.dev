@@ -8,8 +8,8 @@ theme = "PaperMod"
 
 [params]
   env = "production"
-  description = "Personal blog by Nhut Nguyen"
-  author = "Nhut Nguyen"
+  description = "Personal blog by Minh-Nhut Nguyen"
+  author = "Minh-Nhut Nguyen"
   defaultTheme = "auto"  # light/dark/auto
   showReadingTime = true
   showShareButtons = true
