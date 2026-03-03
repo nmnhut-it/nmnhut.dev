@@ -23,7 +23,7 @@ theme = "PaperMod"
 
   [[params.socialIcons]]
     name = "github"
-    url = "https://github.com/nmnhut"
+    url = "https://github.com/nmnhut-it"
 
 [menu]
   [[menu.main]]
