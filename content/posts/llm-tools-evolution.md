@@ -202,6 +202,7 @@ Agent C: "I'll write a test for the fix."
 ```
 
 **Pros:** Simple. Full visibility. Easy to debug.
+
 **Cons:** Context grows fast. With 5 agents and 100 messages, every agent carries the full conversation — even the parts that don't concern it. Expensive and wasteful at scale.
 
 ### Approach 2: LLM-Driven Delegation
@@ -217,6 +218,7 @@ Agent A calls: delegate_work(task="fix the bug", coworker="Coder", context="bug 
 The framework routes this to the Coder agent, which works on it and returns a result.
 
 **Pros:** Natural. Agents decide when and what to delegate.
+
 **Cons:** Unpredictable. The LLM decides when to delegate, so you can't guarantee it will. No structured lifecycle — you can't track whether a delegated task is pending, in-progress, or done.
 
 ### Approach 3: State Graph
@@ -230,6 +232,7 @@ Researcher → Planner → Coder → Tester → (back to Planner if tests fail)
 ```
 
 **Pros:** Deterministic. Auditable. You know exactly what happens and in what order.
+
 **Cons:** Rigid. You must design the graph upfront. Agents can't self-organize or adapt the workflow at runtime.
 
 ### Approach 4: Task List + Direct Messages
@@ -248,6 +251,7 @@ Lead reads message, checks task list, assigns next work.
 Tasks support **dependencies** — Task B can be blocked by Task A, and automatically unblocks when A completes.
 
 **Pros:** Structured and flexible. Tasks track lifecycle. Agents work independently without a shared context. The lead doesn't bottleneck communication — agents can message each other directly.
+
 **Cons:** Requires discipline. Agents must remember to update task status. An agent that forgets to mark a task done can block the whole team.
 
 ### Approach 5: Queue-Based Actor Model with Mention Parsing
