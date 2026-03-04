@@ -94,8 +94,10 @@ Think of it like USB for AI. Before USB, every device had its own cable. MCP doe
 An MCP server exposes:
 
 - **Tools** — functions the model can call
-- **Resources** — data the model can read (files, database rows, API responses)
-- **Prompts** — reusable prompt templates
+- **Resources** — data the model can read (files, database rows, API responses, documentation)
+- **Prompts** — reusable prompt templates that can embed domain knowledge, task workflows, and usage guidelines
+
+This means an MCP server is not just a function registry. It can carry rich context: a database MCP server can include a schema overview and query best practices; a codebase MCP server can expose architecture docs alongside the file-reading tools. The model receives both the capability and the knowledge needed to use it correctly.
 
 Any AI app that speaks MCP can connect to any MCP server. A developer builds a Slack MCP server once, and every MCP-compatible AI app can use it. No custom integration needed.
 
@@ -109,7 +111,7 @@ But then came a new problem.
 
 MCP made it easy to add tools. *Too* easy.
 
-Each MCP server comes with instructions: "Here is what I can do. Here is how to call me. Here are the rules." When you connect five MCP servers, the model's context window fills up with tool descriptions, usage instructions, and server metadata — even when most of them are irrelevant to the current task.
+Each MCP server comes with instructions: "Here is what I can do. Here is how to call me. Here are the rules." And since MCP servers can also carry resources and domain knowledge, the payload per server can be substantial. When you connect five MCP servers, the model's context window fills up with tool descriptions, domain docs, usage guidelines, and server metadata — even when most of them are irrelevant to the current task.
 
 Imagine a developer asking the AI to fix a bug in a Python file. The model's context already contains instructions for:
 
@@ -125,19 +127,38 @@ This is the **scaling curse of MCP**: the more capable your agent becomes, the l
 
 ---
 
-## Stage 5: Skills — Tools on Demand
+## Stage 5: Skills — Tools on Demand, Knowledge on Demand
 
 The solution? **Don't load everything upfront. Load what you need, when you need it.**
 
-This is the idea behind **skills**. A skill is a bundle of instructions, tools, and context that gets injected into the model's context **only when triggered**. Think of it as a lazy-loaded capability.
+This is the idea behind **skills**. A skill is a bundle of tools, instructions, and domain knowledge that gets injected into the model's context **only when triggered**. Think of it as a lazy-loaded capability — and more than that, a lazy-loaded *expert*.
 
-Instead of permanently stuffing the context with "here is how to use Jira," you register a skill:
+The key insight: a skill is not just a tool schema. It is a **workflow guide**.
+
+A Jira skill, for example, doesn't just say "here is how to call the Jira API." It says:
+
+- When creating a bug ticket, always include steps to reproduce and the affected version.
+- Search for an existing ticket before creating a new one.
+- Link the new ticket to its parent epic.
+- Use the `fix-version` field only after confirming with the project lead.
+
+This is embedded *know-how* — the kind of knowledge a senior engineer carries in their head. The skill packages both the tool access and the procedural knowledge for using it correctly.
+
+A full skill payload typically contains:
+
+- **Tool schemas** — the API calls or functions the model can make
+- **Domain knowledge** — facts about the system, constraints, naming conventions
+- **Task workflows** — step-by-step guidance for common operations (e.g., "how to do a code review", "how to open a PR")
+- **Examples** — sample inputs and outputs that show correct behavior
+- **Error handling** — what to do when things go wrong
+
+Instead of permanently stuffing the context with all of this, you register a skill:
 
 - **Name:** `jira`
 - **Trigger:** When the user mentions Jira, tickets, or sprint planning
-- **Payload:** The full set of instructions, tool schemas, and examples needed to work with Jira
+- **Payload:** Tool schemas + domain knowledge + task workflows + examples
 
-When the model encounters a Jira-related request, the skill activates and its payload enters the context. When the task is done, the payload leaves. The context stays clean.
+When the model encounters a Jira-related request, the skill activates and its full payload enters the context. When the task is done, the payload leaves. The context stays clean.
 
 Skills solve the scaling problem:
 
@@ -146,7 +167,7 @@ Skills solve the scaling problem:
 | Raw MCP | All tools always loaded | Heavy | Unworkable |
 | Skills | Only active tools loaded | Light | Still light |
 
-Now an agent can have access to hundreds of capabilities without choking its context window. The shift is from "know everything" to "know how to find what you need."
+Now an agent can have access to hundreds of capabilities without choking its context window. The shift is from "know everything" to "know how to find what you need — and know how to use it once you find it."
 
 ---
 
@@ -158,11 +179,11 @@ With skills in place, we can define what a modern AI agent actually is:
 
 - **Model**: The LLM brain that reasons and generates text
 - **Memory**: Persistent knowledge that survives across conversations — user preferences, project context, past decisions
-- **Skills**: On-demand capabilities that activate when needed
+- **Skills**: On-demand capabilities that activate when needed — each carrying its own tools, domain knowledge, and task workflows
 
 Memory is what makes an agent *yours*. Without memory, every conversation starts from zero. With memory, the agent remembers that you prefer TypeScript over JavaScript, that your database is Postgres, that your team uses conventional commits.
 
-Skills are what makes an agent *capable*. Without skills, the agent can only chat. With skills, it can commit code, manage PRs, query databases, browse the web — whatever skills are available.
+Skills are what makes an agent *capable and knowledgeable*. Without skills, the agent can only chat. With skills, it can commit code, manage PRs, query databases, browse the web — and it knows *how to do each of those things correctly*, not just that the tools exist. A commit skill doesn't just provide `git` access; it carries the team's commit message conventions, branching strategy, and review checklist.
 
 This is a clean, scalable architecture. One agent, focused context, relevant tools loaded on demand, persistent knowledge.
 
