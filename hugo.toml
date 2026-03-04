@@ -38,6 +38,11 @@ theme = "PaperMod"
     url = "/tags/"
     weight = 20
   [[menu.main]]
+    identifier = "story"
+    name = "Story"
+    url = "/story/"
+    weight = 20
+  [[menu.main]]
     identifier = "about"
     name = "About"
     url = "/about/"
