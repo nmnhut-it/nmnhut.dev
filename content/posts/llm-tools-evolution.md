@@ -334,6 +334,21 @@ A2A is designed to complement MCP, not replace it:
 
 As of early 2026, A2A has strong enterprise backing (AWS, Microsoft, Salesforce, SAP) but MCP has won more grassroots developer adoption. The two may converge over time — tools and agents are just different points on the same spectrum.
 
+### A Note on Hybrid Systems
+
+Real-world systems rarely follow a single pattern. They mix and match — deterministic routing for known workflows, LLM-driven delegation for open-ended tasks, and shared infrastructure for discovery and auth. [OpenClaw](https://github.com/openclaw/openclaw) is one example: it uses a gateway for agent routing (LangGraph-like deterministic control), LLM-driven session spawning for dynamic collaboration (CrewAI-like flexibility), and a shared gateway layer for authentication and discovery. As agent architectures mature, expect more hybrids like this rather than pure implementations of any single approach.
+
+### Comparing the Approaches
+
+| Approach | Orchestration | Context | Task Tracking | Flexibility | Best For |
+|---|---|---|---|---|---|
+| Shared Thread (AutoGen) | Selector (round-robin / LLM) | Shared across all agents | None built-in | Moderate — selector can adapt | Brainstorming, group discussions |
+| LLM Delegation (CrewAI) | LLM decides when to delegate | Isolated per agent | None built-in | High — agents self-organize | Open-ended exploration |
+| State Graph (LangGraph) | Developer-defined graph | Shared typed state | Implicit in graph transitions | Low — graph is fixed | Deterministic pipelines |
+| Task List + DMs (Claude Code) | Lead assigns via task list | Isolated per agent | Structured lifecycle (pending → done) | High — tasks adapt at runtime | Complex multi-step projects |
+| Queue + Mentions (TinyClaw) | No orchestrator — mention-based | Shared context + targeted messages | Pending counter only | High — agents self-coordinate | Decentralized async workflows |
+| A2A Protocol (Google) | Client agent initiates tasks | Isolated across organizations | Structured lifecycle (submitted → done) | Moderate — protocol-defined | Cross-org agent interop |
+
 ---
 
 ## The Full Picture
@@ -393,3 +408,4 @@ Each layer solved the previous layer's problem. Each layer created a new one. An
 - [LangGraph](https://github.com/langchain-ai/langgraph) — LangChain agent state graph framework
 - [Announcing the Agent2Agent Protocol (A2A)](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) — Google, April 2025
 - [Linux Foundation launches A2A Protocol project](https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents) — Linux Foundation, June 2025
+- [OpenClaw](https://github.com/openclaw/openclaw) — Gateway-based AI agent with multi-agent routing
