@@ -12,7 +12,18 @@ Here is a fact that surprises most people: LLMs cannot run code. They cannot cal
 
 So how do they "use tools"?
 
-The trick is simple. During training, models learn to output text in a **special format** when they want to use a tool. For example, instead of guessing an answer, a model might output something like:
+### The trick: structured wishes
+
+During training, models are [fine-tuned on augmented datasets](https://simplicityissota.substack.com/p/how-llms-are-trained-for-function) that include tool call examples. The training pipeline works roughly like this:
+
+1. Take existing text corpora
+2. Use prompts to generate synthetic tool calls within that text — e.g., `[Calculator(400 / 1400)] -> 0.29`
+3. **Filter**: only keep examples where the tool call *improved* prediction of subsequent tokens
+4. Fine-tune the model on this augmented dataset
+
+This is the approach behind [Toolformer](https://arxiv.org/abs/2302.04761) — the model learns "when I'm about to produce a factual number, inserting a calculator call here makes my next tokens more accurate." Over many such examples, it develops the instinct: **when in doubt, call a tool rather than guess.**
+
+The result? Instead of guessing an answer, a trained model outputs something like:
 
 ```
 <tool_call>
@@ -20,15 +31,21 @@ The trick is simple. During training, models learn to output text in a **special
 </tool_call>
 ```
 
-The model does not run this. It just writes it. A **parser** — a piece of ordinary software sitting between the model and the outside world — watches the output stream. When it spots this special format, it:
+The model does not run this. It just writes it.
 
-1. Stops the model
-2. Extracts the tool name and arguments
-3. Runs the actual function
-4. Feeds the result back to the model as a new message
-5. Lets the model continue
+### The loop: five steps, not one
 
-The model then reads the result and keeps generating text. To the end user, it looks like the AI "called a function." In reality, the AI wrote a structured wish, and the system granted it.
+A **host application** — ordinary software sitting between the model and the outside world — [orchestrates the full cycle](https://platform.openai.com/docs/guides/function-calling):
+
+1. **App sends tool definitions + user message.** The tool schemas (name, description, JSON Schema for parameters) are injected into the system prompt as tokens — they consume context window space just like any other text.
+2. **Model analyzes** whether calling a tool would help fulfill the request.
+3. **Model outputs** a structured `tool_calls` array — potentially **multiple calls in parallel**, not just one at a time.
+4. **App executes** each function locally, captures the results.
+5. **App sends results back** to the model as new messages, referencing each call by ID. The model reads them and generates a final response.
+
+To the end user, it looks like the AI "called a function." In reality, the AI wrote a structured wish, and the system granted it.
+
+One subtlety worth noting: since tool definitions are injected as tokens, **every tool you register costs context window space** — even if the model never calls it. This becomes important later.
 
 This is the foundation. Everything that follows is about making this loop better.
 
@@ -48,7 +65,7 @@ This worked. But it had problems:
 - **The system prompt grew with every tool.** Ten tools meant a wall of text describing each one's name, parameters, and usage rules — all eating into the model's context window.
 - **No sharing.** Your weather function was yours alone. Another developer building a similar app had to write their own from scratch.
 
-Still, this was the moment LLMs went from "chat assistants" to "agents that can act." OpenAI formalized this as **Function Calling** in June 2023, giving it a structured JSON schema instead of freeform text in the system prompt. But the architecture remained the same: functions lived on your server, described in your prompt.
+Still, this was the moment LLMs went from "chat assistants" to "agents that can act." OpenAI formalized this as **[Function Calling](https://openai.com/index/function-calling-and-other-api-updates/)** in June 2023, giving it a structured JSON schema instead of freeform text in the system prompt. But the architecture remained the same: functions lived on your server, described in your prompt.
 
 ---
 
@@ -70,7 +87,7 @@ But there was no standard. Every tool server had its own API format, its own aut
 
 ## Stage 3: MCP — A Universal Plug for Tools
 
-In late 2024, Anthropic released the **Model Context Protocol (MCP)**. The idea: a single, open standard for connecting AI models to tools, data sources, and external systems.
+In late 2024, Anthropic released the **[Model Context Protocol (MCP)](https://www.anthropic.com/news/model-context-protocol)**. The idea: a single, open standard for connecting AI models to tools, data sources, and external systems.
 
 Think of it like USB for AI. Before USB, every device had its own cable. MCP does the same thing for tools — one protocol, any tool, any model.
 
@@ -191,7 +208,7 @@ Different systems answer these questions differently. Here are the main approach
 
 ### Approach 1: Shared Conversation Thread
 
-**Used by:** Microsoft AutoGen
+**Used by:** [Microsoft AutoGen](https://github.com/microsoft/autogen)
 
 The simplest model. All agents share one message thread. Every agent can see what every other agent has said. A selector (either round-robin or model-based) picks who speaks next.
 
@@ -207,7 +224,7 @@ Agent C: "I'll write a test for the fix."
 
 ### Approach 2: LLM-Driven Delegation
 
-**Used by:** CrewAI
+**Used by:** [CrewAI](https://github.com/crewAIInc/crewAI)
 
 Agents don't share a thread. Instead, when Agent A needs help, it uses a delegation tool — essentially asking the LLM to compose a message to a specific teammate.
 
@@ -223,7 +240,7 @@ The framework routes this to the Coder agent, which works on it and returns a re
 
 ### Approach 3: State Graph
 
-**Used by:** LangGraph
+**Used by:** [LangGraph](https://github.com/langchain-ai/langgraph)
 
 The developer defines a **graph** where each node is an agent and each edge is an allowed transition. State flows through the graph as typed data. Agents hand off control explicitly using `Command` objects that specify both a state update and the next agent to run.
 
@@ -237,7 +254,7 @@ Researcher → Planner → Coder → Tester → (back to Planner if tests fail)
 
 ### Approach 4: Task List + Direct Messages
 
-**Used by:** Claude Code Agent Teams
+**Used by:** [Claude Code Agent Teams](https://docs.anthropic.com/en/docs/claude-code/team)
 
 Each team has a **shared task list** stored on disk. Agents claim tasks, work on them, and mark them done. For direct communication, agents use a **message tool** to send messages to specific teammates.
 
@@ -297,11 +314,11 @@ Both agents receive the shared context plus their specific message.
 
 ### Approach 6: An Open Protocol — Google's A2A
 
-**Announced:** April 2025 | **Governed by:** Linux Foundation (since June 2025)
+**Announced:** April 2025 | **Governed by:** [Linux Foundation](https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents) (since June 2025)
 
 All the approaches above work within a single framework. But what if your agents are built by different companies, running on different servers, using different models?
 
-Google's **Agent-to-Agent (A2A)** protocol tackles this. It is an open standard for agents to discover each other, authenticate, and exchange work — across organizational boundaries.
+Google's **[Agent-to-Agent (A2A)](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)** protocol tackles this. It is an open standard for agents to discover each other, authenticate, and exchange work — across organizational boundaries.
 
 The key concepts:
 
@@ -360,3 +377,19 @@ Each layer solved the previous layer's problem. Each layer created a new one. An
 ---
 
 *The LLM is still just predicting the next token. Everything else — tools, skills, memory, teams, protocols — is scaffolding we built around that one simple trick.*
+
+---
+
+## Sources
+
+- [Function calling and other API updates](https://openai.com/index/function-calling-and-other-api-updates/) — OpenAI, June 2023
+- [Function calling guide](https://platform.openai.com/docs/guides/function-calling) — OpenAI API docs, explains the parse-execute-return loop
+- [How LLMs are trained for function calling](https://simplicityissota.substack.com/p/how-llms-are-trained-for-function) — deep dive on how models learn to produce tool call tokens
+- [Toolformer: Language Models Can Teach Themselves to Use Tools](https://arxiv.org/abs/2302.04761) — Schick et al., 2023
+- [Introducing the Model Context Protocol](https://www.anthropic.com/news/model-context-protocol) — Anthropic, November 2024
+- [MCP Specification](https://modelcontextprotocol.io) — Model Context Protocol official docs
+- [AutoGen](https://github.com/microsoft/autogen) — Microsoft multi-agent framework
+- [CrewAI](https://github.com/crewAIInc/crewAI) — Multi-agent orchestration framework
+- [LangGraph](https://github.com/langchain-ai/langgraph) — LangChain agent state graph framework
+- [Announcing the Agent2Agent Protocol (A2A)](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) — Google, April 2025
+- [Linux Foundation launches A2A Protocol project](https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents) — Linux Foundation, June 2025
