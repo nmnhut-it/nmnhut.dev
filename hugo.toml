@@ -19,8 +19,8 @@ theme = "PaperMod"
   showToc = true
 
   [params.homeInfoParams]
-    Title = "Hi, I'm Nhut"
-    Content = "Welcome to my blog. I write about software, AI, and life."
+    Title = "A little burrow on the internet"
+    Content = "Just a squirrel collecting shiny things — bits of code, AI tricks, and ideas worth keeping. Nothing fancy, just stuff I found interesting enough to stash here."
 
   [[params.socialIcons]]
     name = "github"

@@ -4,8 +4,10 @@ draft = false
 layout = 'single'
 +++
 
-Hi, I'm Minh-Nhut. I'm a software engineer who enjoys building things and learning about AI.
+Hi, I'm Minh-Nhut. Software Engineer by day, hobbyist tinkerer by night.
 
-This blog is where I write about software, technology, and life.
+This blog is my little burrow — a place to stash interesting things I find while digging around the internet. Code patterns, AI tricks, random ideas. Nothing too serious, just a hobby.
 
-Feel free to reach out on [GitHub](https://github.com/nmnhut-it).
+Think of it as a squirrel's collection of shiny things. Some might be useful to you. Most are just here so I remember them later.
+
+Find me on [GitHub](https://github.com/nmnhut-it).

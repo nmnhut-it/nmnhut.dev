@@ -2,12 +2,12 @@
 date = '2026-03-03'
 draft = false
 title = 'Hello World'
-description = 'My first blog post — why I started this blog and what to expect.'
+description = 'First post — what this little corner of the internet is about.'
 tags = ['personal']
 +++
 
-This is my first post. More to come soon.
+So I made a blog. Nothing grand — just a small burrow where I stash things I pick up along the way.
 
-I started this blog to share what I learn about software engineering, AI, and whatever else I find interesting. Writing helps me think more clearly, and if it helps someone else along the way, even better.
+I spend most of my time building software and poking at AI. Every now and then I stumble on something shiny — a neat trick, a useful pattern, an idea that clicks. This is where those things end up, mostly so I don't forget them.
 
-Stay tuned!
+If you happen to wander in and find something useful, great. If not, that's fine too. The squirrel hoards for itself first.
