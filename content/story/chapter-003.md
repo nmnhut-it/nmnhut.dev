@@ -14,7 +14,7 @@ He sat up. Slowly.
 
 The early air was cold and clean. Through the small window, the fields outside still lay buried in white mist, the rice stalks casting dim shadows like figures standing asleep. A cricket sang somewhere, so clearly that he knew the exact corner of the paddy bank where it crouched.
 
-*Khai linh.*
+*Kindling.*
 
 The thought settled into him without fanfare. Only a quiet acknowledgment — the way you register that today's sky has clouds or does not.
 

@@ -16,7 +16,7 @@ William sat up.
 
 He sat on the edge of his wooden bed with his eyes still half-closed, looking at the window. A band of early light slipped through the gap in the shutters and lay across the dirt floor in a long, pale stripe. He stared at it for a moment.
 
-William years old.
+Thirteen years old.
 
 Well. Starting now.
 
@@ -182,7 +182,7 @@ He took the bowls out to the water barrel to rinse them. The moon was a thread t
 
 He lingered for a moment, looking out at all of it.
 
-William years old. The day had passed without ceremony. No cake, no gathering, no one to say congratulations except the Steward's two clipped syllables that morning. He didn't feel cheated — he had never had cause to expect otherwise. But tonight, something nagged at him. A formless itch behind the eyes. A sense that something was leaning toward the edge of something else, tilting, about to fall.
+Thirteen years old. The day had passed without ceremony. No cake, no gathering, no one to say congratulations except the Steward's two clipped syllables that morning. He didn't feel cheated — he had never had cause to expect otherwise. But tonight, something nagged at him. A formless itch behind the eyes. A sense that something was leaning toward the edge of something else, tilting, about to fall.
 
 He went in. Lay down on his wooden bed. Let his eyes close.
 

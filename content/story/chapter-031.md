@@ -12,7 +12,7 @@ William was in the western field, practicing the grounding stance — feet wide,
 
 *South road. Twelve this time. Three of them feel different.*
 
-Different. He understood what she meant before she elaborated — among the dozen approaching figures, three carried a vitality that registered in his awareness the way Amberrex's had the first time he sensed the tiger. Khai linh. Awakened. Not powerful the way the ancient beasts were powerful, but enough to mean the delegation had come prepared for resistance.
+Different. He understood what she meant before she elaborated — among the dozen approaching figures, three carried a vitality that registered in his awareness the way Amberrex's had the first time he sensed the tiger. Kindling. Awakened. Not powerful the way the ancient beasts were powerful, but enough to mean the delegation had come prepared for resistance.
 
 Wren appeared at the barn door. She had heard nothing, sensed nothing — but she read faces the way William read currents, and his face had changed.
 

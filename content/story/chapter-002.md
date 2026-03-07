@@ -70,7 +70,7 @@ The Steward stood in the corner of the henhouse and said nothing more.
 
 Only when William turned to him, face full of questions he couldn't sequence into speech, did the old man approach. He stooped to study the Lumara closely, and in his eyes was the look of a man greeting something long overdue.
 
-"Khai linh," he said.
+"Kindling," he said.
 
 "What?"
 
@@ -128,7 +128,7 @@ William set his cup down. He looked directly at the Steward's face — something
 
 "Then I'll also..." He didn't have the word.
 
-"Perhaps." The Steward drank. "Khai linh doesn't happen to everyone. But you have been eating that since before you could remember. William years."
+"Perhaps." The Steward drank. "Kindling doesn't happen to everyone. But you have been eating that since before you could remember. Thirteen years."
 
 "Why?"
 
@@ -148,7 +148,7 @@ Wind moved through the walls. Insects somewhere in the dark fields. And from the
 
 He thought about the hen with the knowing eyes.
 
-He thought about the brown ceramic jar. William years. Every morning, every evening, the Steward setting it out like a ritual too old to question. *I've been feeding you this since before you could remember.* Not habit. Not because it tasted fine. Something deliberate. Something planned.
+He thought about the brown ceramic jar. Thirteen years. Every morning, every evening, the Steward setting it out like a ritual too old to question. *I've been feeding you this since before you could remember.* Not habit. Not because it tasted fine. Something deliberate. Something planned.
 
 He thought about his parents.
 

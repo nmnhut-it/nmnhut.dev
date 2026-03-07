@@ -22,7 +22,7 @@ The pendant flared.
 
 Not the soft amber glow of the cavity — a sudden, bright pulse that pressed against the inside of his shirt like a second heartbeat. Lumara's attention snapped forward through the bond, and William felt her awareness narrow to a point in the trees ahead.
 
-*Someone*, she said. *Khai linh. Strong. Controlled. In pain.*
+*Someone*, she said. *Kindling. Strong. Controlled. In pain.*
 
 ---
 
