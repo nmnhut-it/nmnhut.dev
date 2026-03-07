@@ -1,6 +1,6 @@
 ---
 title: "Chapter 003: The Contract"
-weight: 03
+weight: 3
 draft: false
 ---
 

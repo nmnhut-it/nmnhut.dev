@@ -1,6 +1,6 @@
 ---
 title: "Chapter 001: Morning on the Farm"
-weight: 01
+weight: 1
 draft: false
 ---
 

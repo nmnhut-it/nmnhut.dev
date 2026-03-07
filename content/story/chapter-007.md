@@ -1,6 +1,6 @@
 ---
 title: "Chapter 007: The Merchant's News"
-weight: 07
+weight: 7
 draft: false
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Chapter 006: The Storm"
-weight: 06
+weight: 6
 draft: false
 ---
 

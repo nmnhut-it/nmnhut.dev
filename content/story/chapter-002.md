@@ -1,6 +1,6 @@
 ---
 title: "Chapter 002: Awakening"
-weight: 02
+weight: 2
 draft: false
 ---
 

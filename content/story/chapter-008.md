@@ -1,6 +1,6 @@
 ---
 title: "Chapter 008: The Hunt"
-weight: 08
+weight: 8
 draft: false
 ---
 

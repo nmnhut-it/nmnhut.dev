@@ -1,6 +1,6 @@
 ---
 title: "Chapter 009: The Return"
-weight: 09
+weight: 9
 draft: false
 ---
 
