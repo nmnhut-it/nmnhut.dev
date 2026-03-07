@@ -274,9 +274,9 @@ A forest appeared. Instant, dense, entire — not growing from the ground but ar
 
 At the edge of the plateau where cloud met void.
 
-Another figure. This one did not stand so much as merge — the boundary between body and the swirling air behind them was uncertain, the edges of the cloak dissolving at the hem into something that looked like wind given density. They lifted a conch shell to their lips. A shell the color of old bone, its spiral worn smooth by ten thousand uses.
+Another figure. This one did not stand so much as merge — the boundary between body and the swirling air behind him was uncertain, the edges of the cloak dissolving at the hem into something that looked like wind given density. He lifted a conch shell to his lips. A shell the color of old bone, its spiral worn smooth by ten thousand uses.
 
-They blew.
+He blew.
 
 One long note. It stretched across a distance William couldn't measure, reaching the far edge of the void and coming back changed. The air shivered with it.
 

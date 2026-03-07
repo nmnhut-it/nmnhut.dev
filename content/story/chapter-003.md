@@ -38,33 +38,63 @@ He withdrew his hand.
 
 The Steward came out shortly after, carrying a bowl of hot rice porridge.
 
-The old man sat across from him at the small wooden table by the steps, poured tea, and said nothing. Mornings here had always been quiet. Many years, and they had always been the same.
+The old man sat across from him at the small wooden table by the steps, poured tea, and did not speak for a while. Mornings here had always been quiet. Many years, and they had always been the same.
 
 William ate his porridge. Rice, a few thin slices of ginger, faintly sweet.
 
-"Today," the Steward said, both hands wrapped around his teacup, "why don't you go out and take a look at the paddies."
+The Steward set down his teacup. He did not pick it up again.
 
-William did not look up. "The rice fields?"
+"There is something I need to tell you," he said. "And I need you to listen to all of it before you answer."
 
-"Yes."
+William looked up. The old man's face was serious — not stern, but weighted, the way a person looks when they have been carrying something a long time and have finally decided to set it down.
 
-He kept eating. Said nothing.
+"The east field," the Steward said. "The oldest paddy, the one with the dark soil. The rice there has awakened."
 
-The Steward did not press. He sipped his tea.
+William said nothing. He had felt it this morning — a pull from that direction, faint but present, like warmth from a fire in another room.
 
-The silence stretched. Birds called in the bushes at the edge of the yard, and Lumara's clucking wove between them in its own unhurried rhythm.
+"It is called Rootwhisper. Spirit Rice. It has been growing on this land longer than I have been alive, and it has been waiting." The Steward paused. "Waiting for someone whose Kindling it could answer to."
 
-Then William set down his bowl. "You're always like this. It has to be this way, it has to be that way."
+"Mine."
 
-"I only said you might go look."
+"Yours."
 
-"*Might go look*," William repeated, his voice flat — not angry, just naming what he saw. "But what you mean is that you want me to go." He paused. "I don't want to."
+The old man lifted his tea, held it without drinking.
 
-The Steward looked at him for a moment. Then he set his teacup down, rose to his feet, and said, "Fine. If you want to stay home, stay."
+"If you go to the east field and touch the Rootwhisper, a contract will form between you and the rice. A bond. It will tie you to this land — not as a fence ties an animal, but as roots tie a tree. You will feel a hunger that no ordinary food can fill. Only being near awakened creatures will ease it. You will be pulled back here, always. You may leave, but not far, and not for long."
 
-He turned and went inside.
+He drank. Set the cup down.
 
-William watched the old man's silhouette disappear through the doorway. Something restless moved in his chest — a formless unease he could not name. He did not understand why he felt, suddenly and clearly, as though he had just missed something.
+"This is your choice, William. I will not make it for you."
+
+The yard was quiet. Lumara scratched at the dirt near the steps, unhurried. Somewhere in the bamboo a warbler called twice, then stopped.
+
+William turned the spoon in his empty bowl. "Why me?"
+
+"Because you ate the Kindling substance. Because you awakened. Because the rice answered." The Steward's voice was plain, without embellishment. "There is no prophecy in it. Only compatibility."
+
+"What if I say no?"
+
+The old man looked at him steadily. "Then you say no. The Kindling substance you have been eating will fade from your body over time. A few weeks, perhaps a month. The awakening you felt last night will recede. You will not lose Lumara — she is already awakened, and that cannot be undone — but the connection between you will dim. You will hear less. Feel less. In time, you will live an ordinary life on an ordinary farm."
+
+He said this without judgment. As though both paths were real and neither was wrong.
+
+William stared at the table. The wood grain was sharp and clear to him this morning in a way it had never been — every ring, every knot, every place where the years had worn the surface smooth. He thought about how it would feel when that clarity faded. When the cricket's song became just noise again. When Lumara's eyes became just the eyes of a hen.
+
+He thought about the dream.
+
+Eighteen figures on a plateau wrapped in cloud. The bronze drums shaking the air. One who raised his hand and a mountain answered. One who blew a conch shell and an ocean rose. And the darkness — vast, patient, pressing in from all sides. The voice that had reached him through sleep and followed him into waking:
+
+*You must hurry.*
+
+He was thirteen. He did not understand what it meant to be bound to a place. He had never been anywhere else. He had never left this valley, never walked a road that did not lead back to the farm. The word *tied* meant nothing to a boy who had never been free.
+
+But the alternative — the fading, the dimming, the slow return to being no one who heard nothing — that he understood. That was the life he had lived for thirteen years, and he knew its weight exactly.
+
+"Yes," he said.
+
+The Steward looked at him for a long moment. Something moved behind the old man's eyes — not quite relief, not quite sorrow. The expression of someone who has watched a child make a decision that only an adult can fully weigh.
+
+"All right," he said. He rose, and gathered the bowls.
 
 ---
 
@@ -72,21 +102,17 @@ Lumara began to pace the moment the sun climbed above the line of bamboo.
 
 At first she only walked back and forth across the front steps, her head bobbing. Then she moved into the yard, and stood there looking toward the paddies. She stood a long time — strange, for a creature that never held still more than a moment.
 
-William sat on the steps and worked on his bamboo strips, glancing at her.
+William watched her from the steps. His hands were still. He had not picked up the bamboo strips. He had not started any chore.
 
 Lumara called out once. Took a few more steps toward the fields.
 
-He kept splitting the bamboo.
+He stood up.
 
-She called again. This time she turned her head and looked directly at him — and that gaze was not animal instinct. It was deliberate and directed. It said, as plainly as a gesture: *Come with me.*
+She turned her head and looked directly at him — and that gaze was not animal instinct. It was deliberate and directed. It said, as plainly as a gesture: *Come with me.*
 
 Then she walked out into the paddies and did not look back.
 
-William set down the bamboo.
-
-He had not wanted to follow the Steward's suggestion. But this was not the Steward. This was Lumara — and since the night of her awakening she had never done anything without a reason. Not once.
-
-He stood up, and followed.
+William followed.
 
 ---
 
@@ -116,15 +142,13 @@ Not cold. Not warm. Something more like a breath. This clump of rice was *breath
 
 *Rice that has awakened.*
 
-He did not know where that knowledge came from. The sense that had woken inside him last night, perhaps. Or something deeper than that.
-
 He stood before the clump. The wind moved through, and the panicles swayed — and they swayed toward him. As though reaching.
 
----
+He knew what would happen if he touched it. The Steward had told him. A bond. A hunger. A binding to this land that would not let him go.
 
-No one had taught him what to do. No manual, no ritual, no incantation.
+His hand trembled.
 
-William simply held out his hand.
+He reached out anyway.
 
 His fingers touched the nearest panicle.
 
@@ -150,6 +174,10 @@ The hunger arrived like a fist.
 
 Not the ordinary hunger of a boy who had eaten lightly and worked since dawn. This was something else entirely — as if his stomach had opened into a void, as if it had never known fullness. William stood in the paddy and doubled over, the cramping sudden and severe.
 
+The Steward had warned him. He had said the words — *a hunger that no ordinary food can fill*. William had heard them and understood them and said yes.
+
+But words and experience are different countries. You can describe a fire to a child, and the child will nod, and the child will still flinch when the heat finds his skin.
+
 He waded fast to the bank and ran.
 
 *Food. He needed food.*
@@ -166,9 +194,13 @@ William set down his chopsticks. His face had gone pale.
 
 "You understand now," the Steward said, sitting across from him. His voice was unhurried.
 
-"Understand what?" William pressed one hand against his belly.
+"You told me," William said. His voice was quiet, and there was no accusation in it. "You told me, and I didn't understand."
 
-"Rice won't fill you anymore." The old man did not look away. "Not grain, not greens. What you need from now on is not the food of ordinary people."
+"No," the Steward agreed. "You didn't."
+
+He did not say *I'm sorry.* He did not say *I tried to warn you.* He only sat there, present, the way a person sits with someone who is learning something that cannot be taught.
+
+"Rice won't fill you anymore. Not grain, not greens. What you need from now on is not the food of ordinary people."
 
 "Then what?"
 
@@ -201,6 +233,16 @@ He sat in the paddies, on the exact ground where the contracted rice grew, and p
 The sun descended. Sky went from gold to amber to a deep rust-red, the last clouds catching fire on the horizon before sinking into grey. The evening wind came cool off the land, carrying the smell of soil and green stalks.
 
 William looked at the fading sky and did not think about going in for supper.
+
+He thought about the morning. The Steward sitting across from him, both hands around the teacup, his voice steady and unhurried as he laid out the cost. Every word true. Every consequence named. *This is your choice. I will not make it for you.*
+
+And William had said yes.
+
+He had meant it. He still meant it. But the distance between meaning something and knowing it had opened inside him this afternoon, quiet and permanent, and he did not think it would close. The Steward had told him the truth. But truth told to a thirteen-year-old boy is not the same as truth understood. An old man who has lived long enough to know what *bound to this land* means, and a boy who hasn't — they can sit at the same table and hear the same words, and they are not in the same conversation.
+
+The Steward was not cruel. He was not careless. He had given the choice honestly and waited for the answer without pressure. William believed that.
+
+But he also knew, now, sitting in the mud with the hunger coiled beneath his ribs, that honesty and understanding are not the same thing. That a warning is not the same as knowledge. That he had been given every chance to refuse and had not refused, and that this did not mean he had known what he was agreeing to.
 
 He thought about the dream.
 
