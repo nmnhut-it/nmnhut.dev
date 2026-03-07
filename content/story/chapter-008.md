@@ -8,13 +8,13 @@ draft: false
 
 Three days after the merchant left, the forest came to them.
 
-Thirteen heard it before he saw it.
+William heard it before he saw it.
 
 He was on the north bank, turning compost into the soil where he planned to extend the paddy next season, when the birds stopped. Not gradually — one moment the usual undercurrent of calls and rustling, and then nothing. A silence that wasn't silence. The kind that has weight in it.
 
 Lumara went rigid beside him.
 
-Thirteen straightened. He set the spade down slowly, with the instinct of a person who does not want to make sudden movements while they are thinking. His new sense, the one that had come with khai linh and grown clearer in the months since, reached outward into the treeline.
+William straightened. He set the spade down slowly, with the instinct of a person who does not want to make sudden movements while they are thinking. His new sense, the one that had come with Kindling and grown clearer in the months since, reached outward into the treeline.
 
 He found it almost immediately.
 
@@ -34,7 +34,7 @@ The trees at the forest's edge moved. Not the moving of wind in branches, but th
 
 The tiger was the size of a cart horse.
 
-That was Thirteen's first thought, and he held onto it because it was concrete. Cart horse. Something with a reference, a scale he knew. After that his mind had trouble finding comparisons.
+That was William's first thought, and he held onto it because it was concrete. Cart horse. Something with a reference, a scale he knew. After that his mind had trouble finding comparisons.
 
 The animal's coat was deep orange burned almost to red, black stripes running wide and certain along its sides and haunches. The head was enormous — broad across the brow, low-slung, the jaw carrying a weight that had nothing to do with bone structure. It moved with the settled ease of something that had decided where it was going many minutes ago and was simply completing the journey.
 
@@ -42,7 +42,7 @@ And where the front left leg should have been, there was nothing.
 
 The tiger moved on three limbs. The absent fourth had left no wound, no compensating gait — it had simply adapted so completely that the three-legged stride had become its natural movement. Each step placed with unhurried precision. The kind of precision born not from caution but from authority.
 
-It stopped at the fence line. It regarded Thirteen.
+It stopped at the fence line. It regarded William.
 
 The eyes were amber, and still, and saw him completely.
 
@@ -50,9 +50,9 @@ The eyes were amber, and still, and saw him completely.
 
 Lumara had not moved.
 
-She stood between Thirteen and the tiger, her small body perfectly upright, and her own vitality burned bright in his awareness — brighter than it had ever been before. As though the proximity of something so much larger and stronger had not diminished her but called up everything she possessed in answer.
+She stood between William and the tiger, her small body perfectly upright, and her own vitality burned bright in his awareness — brighter than it had ever been before. As though the proximity of something so much larger and stronger had not diminished her but called up everything she possessed in answer.
 
-Thirteen calculated the distance. Six strides to the fence. Beyond it, twelve more to the tiger. The fence itself was bamboo, woven and lashed — solid against foxes, against ordinary animals. Against nothing that stood before him now.
+William calculated the distance. Six strides to the fence. Beyond it, twelve more to the tiger. The fence itself was bamboo, woven and lashed — solid against foxes, against ordinary animals. Against nothing that stood before him now.
 
 He did not run.
 
@@ -64,7 +64,7 @@ Then the Steward spoke from behind him.
 
 "Don't engage it."
 
-The old man's voice was unhurried. He had come from the direction of the house so quietly that Thirteen hadn't heard him. The Steward stood at the corner of the paddy, both hands at his sides, watching the tiger with the same expression he brought to all things: measured, already decided.
+The old man's voice was unhurried. He had come from the direction of the house so quietly that William hadn't heard him. The Steward stood at the corner of the paddy, both hands at his sides, watching the tiger with the same expression he brought to all things: measured, already decided.
 
 "Don't engage it," he repeated. "Observe."
 
@@ -72,7 +72,7 @@ The old man's voice was unhurried. He had come from the direction of the house s
 
 The tiger pressed against the fence with one massive shoulder.
 
-The bamboo bent. Lashing sang under tension. Thirteen stepped back without thinking and found his footing on the paddy bank, the ground solid under him. He measured it: the fence would not hold another deliberate push like that.
+The bamboo bent. Lashing sang under tension. William stepped back without thinking and found his footing on the paddy bank, the ground solid under him. He measured it: the fence would not hold another deliberate push like that.
 
 "Observe what?" he said.
 
@@ -86,7 +86,7 @@ The tiger withdrew from the fence. Paced along it, east. Three steps, unhurried,
 
 Of him.
 
-Thirteen's heart hammered. He was aware of it the way he was aware of the spade he'd set down, the half-turned compost, the smell of wet earth: background facts that didn't change the problem in front of him.
+William's heart hammered. He was aware of it the way he was aware of the spade he'd set down, the half-turned compost, the smell of wet earth: background facts that didn't change the problem in front of him.
 
 "Has it been here before?" he asked.
 
@@ -108,19 +108,19 @@ The tiger stepped through the gap with the economy of something that has never n
 
 Lumara screamed.
 
-Not the sound she'd made before — this was the piercing battle cry that Thirteen now knew meant *now*, and her body blurred into motion, feathers flaring to twice their natural size, the light she carried erupting outward in a sharp ring of gold. She drove straight at the tiger, not at its face but low, at its left foreleg, and when she struck the impact rang through the ground.
+Not the sound she'd made before — this was the piercing battle cry that William now knew meant *now*, and her body blurred into motion, feathers flaring to twice their natural size, the light she carried erupting outward in a sharp ring of gold. She drove straight at the tiger, not at its face but low, at its left foreleg, and when she struck the impact rang through the ground.
 
 The tiger's head snapped down. Fast. Faster than its size should have allowed.
 
 Lumara was already gone — circling wide, reading the terrain.
 
-Thirteen grabbed the spade.
+William grabbed the spade.
 
 He did not think about whether this was wise. The calculus was simple: Lumara could not hold this thing alone, the Steward was not moving, and the only other body on the field was his. He crossed the distance at a run, angling to drive the tiger's attention away from her, and swung the flat of the blade at the animal's hindquarters.
 
 It hit.
 
-The vibration traveled up through his hands and shoulders and teeth, the solid thud of metal against muscle that didn't yield. The tiger turned, and Thirteen threw himself sideways, rolled across the muddy bank, came up with earth on his palms and his lungs heaving.
+The vibration traveled up through his hands and shoulders and teeth, the solid thud of metal against muscle that didn't yield. The tiger turned, and William threw himself sideways, rolled across the muddy bank, came up with earth on his palms and his lungs heaving.
 
 The amber eyes found him again.
 
@@ -140,7 +140,7 @@ Something struck him through the awareness — not words, but a pulse of image a
 
 He went still.
 
-Thirteen turned.
+William turned.
 
 The contracted field was three steps behind him — the easternmost plot, oldest and darkest, the Rootwhisper alive and breathing in its rows. He could feel it from here, the slow pulse of it, familiar as his own heartbeat.
 
@@ -166,7 +166,7 @@ He stood up.
 
 The tiger watched him.
 
-Thirteen watched back.
+William watched back.
 
 Something moved in the amber eyes. Not retreat. Not aggression. The tiger took three steps forward, stopped, and did something he had not seen it do before: it lowered its great head. Held it there. A long moment. The black stripes across its brow nearly touched the water's surface.
 
@@ -176,7 +176,7 @@ Gone.
 
 ---
 
-Thirteen sat down on the paddy bank.
+William sat down on the paddy bank.
 
 His hands were still in the water, still pressed against the roots. He pulled them out slowly and looked at them — muddy, scraped along the right palm where he'd rolled across the bank, otherwise unmarked. He turned them over.
 
@@ -190,7 +190,7 @@ She made a small sound. Not a word.
 
 "Good," he said. "You were good."
 
-The Steward appeared at the edge of the paddy. He had a cloth in his hands and offered it without comment. Thirteen took it, wiped his face. He could feel the old man watching him but he did not look up.
+The Steward appeared at the edge of the paddy. He had a cloth in his hands and offered it without comment. William took it, wiped his face. He could feel the old man watching him but he did not look up.
 
 "It will come back," the Steward said.
 
@@ -198,11 +198,11 @@ The Steward appeared at the edge of the paddy. He had a cloth in his hands and o
 
 "Likely within the week. Tigers of that caste don't survey without returning."
 
-"That caste." Thirteen finally looked up. "You know what it is."
+"That caste." William finally looked up. "You know what it is."
 
 "A Three-Legged Tiger. Third evolution stage. Hóa linh." The Steward's voice carried no alarm. "Rare, even in the deepest forest. They don't descend to farmland without reason."
 
-Thirteen was quiet. The late afternoon light lay long across the paddies, turning the water to copper. A frog had resumed calling somewhere down the bank, oblivious.
+William was quiet. The late afternoon light lay long across the paddies, turning the water to copper. A frog had resumed calling somewhere down the bank, oblivious.
 
 "You said it's here because I'm here." He held the Steward's gaze. "Not because of the farm. Because of me."
 
@@ -210,11 +210,11 @@ The old man said nothing.
 
 "Why would something like that care about me?"
 
-"Because," the Steward said, and then paused. A pause Thirteen recognized — not the pause of a man selecting what to say, but of a man selecting how much. "You contracted with Rootwhisper. You carry its nature now. Things that have lived long enough can sense that." He turned toward the house. "Fix the fence before dark. Use the good lashing from the left barn — the hemp, not the dried grass. It won't hold the tiger, but it will slow it."
+"Because," the Steward said, and then paused. A pause William recognized — not the pause of a man selecting what to say, but of a man selecting how much. "You contracted with Rootwhisper. You carry its nature now. Things that have lived long enough can sense that." He turned toward the house. "Fix the fence before dark. Use the good lashing from the left barn — the hemp, not the dried grass. It won't hold the tiger, but it will slow it."
 
 He walked away.
 
-Thirteen sat a moment longer.
+William sat a moment longer.
 
 *It won't hold the tiger,* the Steward had said, with the matter-of-fact tone he used for statements about weather and soil conditions and the annual flooding of the lower rice terrace.
 

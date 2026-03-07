@@ -6,11 +6,11 @@ draft: false
 
 # Chapter 015: Blind Ground
 
-Three days after the western ridge, Thirteen went back.
+Three days after the western ridge, William went back.
 
 The first sighting had changed something. Not what he knew — he had known, since the southern paddy collapsed, that something lived beneath the farm. What had changed was what he felt. The two seconds of dark hide breaking the surface of the rock, the arc of stone-colored plate wider than half his body, the weight of it pressing up through the stone and then gone — those two seconds had replaced abstraction with fact. The Tremor was not a tremor or a displacement or a wrongness in the contract thread. It was a body. Massive, ancient, and directly below.
 
-"You said the ground is a relationship," Thirteen had told the Steward the next morning. "How do I learn what the other side wants?"
+"You said the ground is a relationship," William had told the Steward the next morning. "How do I learn what the other side wants?"
 
 The old man had looked at him with the expression that was calculation wearing the face of patience. "You go back. You sit on the ground it showed itself through. And you wait for it to show you what comes next."
 
@@ -18,7 +18,7 @@ The old man had looked at him with the expression that was calculation wearing t
 
 "It will come. It surfaced for two seconds and left a crack in stone that has been whole for centuries." The Steward had paused. "That was not idle. The creature does nothing without weight behind it."
 
-So Thirteen went. Each morning before the sun cleared the eastern treeline he walked the narrow path past the compost terraces, through the stand of wild persimmon where the soil turned pale, out to the field of gravel and fractured stone where the new crack still ran through the rock shelf like a scar. He sat on the flat stone at the clearing's center and waited.
+So William went. Each morning before the sun cleared the eastern treeline he walked the narrow path past the compost terraces, through the stand of wild persimmon where the soil turned pale, out to the field of gravel and fractured stone where the new crack still ran through the rock shelf like a scar. He sat on the flat stone at the clearing's center and waited.
 
 The first morning, Lumara perched on a granite outcrop behind him and watched the ground with the alertness she reserved for things she could not predict. The second morning, she moved to a higher stone where she could see the full sweep of the scree field. The third morning, she said nothing at all, only settled beside him and waited with the patience she had carried for three years before she had words to carry it in.
 
@@ -46,7 +46,7 @@ Not the composed alerting call she had used for the tiger. Not the careful posit
 
 *Are you hurt?*
 
-The voice came through Tha Tam Tuc with a quality he had not heard from her before. Not the dry observation she favored. Not the careful patience she had shown through three years of wordless communication and the weeks since words had opened between them. This was urgent. This was afraid.
+The voice came through Hearthspeak with a quality he had not heard from her before. Not the dry observation she favored. Not the careful patience she had shown through three years of wordless communication and the weeks since words had opened between them. This was urgent. This was afraid.
 
 He looked up. She was circling above the pit, her wings catching the morning light, her small bright eyes fixed on him. He could feel her through the contract thread — not just the warmth of her presence but the shape of her alarm, the particular color of it: not fear for herself but fear for him. A distinction he had never needed to make before because she had never been afraid before.
 
@@ -54,7 +54,7 @@ He looked up. She was circling above the pit, her wings catching the morning lig
 
 *You disappeared.* The words carried weight beyond their meaning. *The ground took you and I could not see where.*
 
-He understood, in that moment, something about Lumara that three years of proximity and weeks of conversation had not fully shown him. She could fight beside him in open air. She could watch him enter the river and wait on the bank with the controlled patience of a creature that knew her limits. But she could not follow him underground. The earth was a wall between them that Tha Tam Tuc could cross but her body could not, and the crossing was not enough. She needed to see him.
+He understood, in that moment, something about Lumara that three years of proximity and weeks of conversation had not fully shown him. She could fight beside him in open air. She could watch him enter the river and wait on the bank with the controlled patience of a creature that knew her limits. But she could not follow him underground. The earth was a wall between them that Hearthspeak could cross but her body could not, and the crossing was not enough. She needed to see him.
 
 "I'm here," he said. "I can climb out."
 
@@ -154,7 +154,7 @@ The softening stopped. The earth firmed again, slowly, the clay compacting back 
 
 Then it descended. Down and away, the pressure fading, the earth settling into silence behind it.
 
-Thirteen stood in the pit, breathing.
+William stood in the pit, breathing.
 
 His feet were planted in ground that had been liquid a moment ago and was now solid. His hands were torn and his ankle ached and he was covered in dust and there was no way out of this hole that the creature would not take from him.
 
@@ -178,13 +178,13 @@ She was here anyway.
 
 The Steward came at evening.
 
-Thirteen heard the footsteps on the gravel above — the specific unhurried gait of a man who had known the terrain of this farm for longer than Thirteen had been alive. The old man's face appeared at the rim of the pit, looking down.
+William heard the footsteps on the gravel above — the specific unhurried gait of a man who had known the terrain of this farm for longer than William had been alive. The old man's face appeared at the rim of the pit, looking down.
 
 "How deep?"
 
 "Waist height. It took my climbing holds."
 
-The Steward considered this. Then he lowered a rope — one of the hemp lines from the barn, already knotted at intervals. Thirteen climbed out with Lumara on his shoulder, his torn hands stinging on the rope, his ankle protesting each brace against the wall.
+The Steward considered this. Then he lowered a rope — one of the hemp lines from the barn, already knotted at intervals. William climbed out with Lumara on his shoulder, his torn hands stinging on the rope, his ankle protesting each brace against the wall.
 
 He stood on the surface and looked at the pit. A hole in the ground, roughly circular, its walls already beginning to crumble at the edges. In a week the rain would soften it further. In a month it might be indistinguishable from the surrounding ground.
 
@@ -204,13 +204,13 @@ The Steward said nothing.
 
 "No."
 
-Thirteen looked at the old man. The light was going, the western sky turning the color of old brass. The Steward's face was in half-shadow, his expression composed in the way it was always composed — the stillness of deep water over whatever moved beneath.
+William looked at the old man. The light was going, the western sky turning the color of old brass. The Steward's face was in half-shadow, his expression composed in the way it was always composed — the stillness of deep water over whatever moved beneath.
 
 "Why not?"
 
 "That," the Steward said, "is a question worth sitting with."
 
-He turned and walked back toward the farmhouse, and Thirteen stood alone at the edge of the pit with Lumara on his shoulder and the Rootwhisper's distant pulse running through his chest and the question the old man had given him instead of an answer.
+He turned and walked back toward the farmhouse, and William stood alone at the edge of the pit with Lumara on his shoulder and the Rootwhisper's distant pulse running through his chest and the question the old man had given him instead of an answer.
 
 The creature was still down there. He could feel it — not its position, not its shape, but the fact of its presence somewhere in the deep earth, patient as stone, waiting for whatever came next.
 
@@ -222,7 +222,7 @@ Then he followed the Steward home.
 
 That night he lay in the dark and listened.
 
-Not to the farm's usual sounds — the bamboo, the wind, the Kì Cùng running distant in its channel. He listened downward. Through the floor of the room, through the packed earth beneath the house's foundation, into the ground that was no longer simply ground to him. It was a medium now. A world with its own inhabitants, its own currents, its own logic.
+Not to the farm's usual sounds — the bamboo, the wind, the Rimbrook running distant in its channel. He listened downward. Through the floor of the room, through the packed earth beneath the house's foundation, into the ground that was no longer simply ground to him. It was a medium now. A world with its own inhabitants, its own currents, its own logic.
 
 *Lumara.*
 

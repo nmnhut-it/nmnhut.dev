@@ -8,7 +8,7 @@ draft: false
 
 Three days after his final session in the shallows — the day he had come up gasping and felt the Tidecaller retreat to the deep without a final pass — he did not wait for the Steward to tell him to go.
 
-He ate what he could stomach — rice, a cup of water, nothing more — and walked to the river before the sun had cleared the eastern treeline. The Kì Cùng moved dark and slow in the early light, its surface unbroken, flat as hammered bronze. Lumara walked beside him, her feet finding the dry ground between stones without looking down.
+He ate what he could stomach — rice, a cup of water, nothing more — and walked to the river before the sun had cleared the eastern treeline. The Rimbrook moved dark and slow in the early light, its surface unbroken, flat as hammered bronze. Lumara walked beside him, her feet finding the dry ground between stones without looking down.
 
 She stopped at the bank.
 
@@ -16,7 +16,7 @@ So did he.
 
 The river gave nothing back. No movement beneath, no disturbance at the surface. Only the cold smell of deep water and the distant sound of current running fast around the bend where the channel narrowed.
 
-Thirteen crouched at the edge and looked in.
+William crouched at the edge and looked in.
 
 ---
 
@@ -34,7 +34,7 @@ The Steward, when he described it that evening, had said: *It's interested.*
 
 "In what you carry." The old man had poured tea without looking up. "The contract. The nature of it. Things that live in deep water have long memory — they recognize old things when they encounter them."
 
-Thirteen had waited for more. It did not come.
+William had waited for more. It did not come.
 
 ---
 
@@ -210,7 +210,7 @@ He had no answer. He filed it alongside the other things that had no answers yet
 
 ---
 
-The Steward was at the fire when he returned, warming water for the morning tea. He looked at Thirteen without surprise.
+The Steward was at the fire when he returned, warming water for the morning tea. He looked at William without surprise.
 
 "An hour," the old man said.
 
@@ -218,7 +218,7 @@ The Steward was at the fire when he returned, warming water for the morning tea.
 
 "Good." He poured the water into the clay pot. Steam rose in a clean column. "Did it surface with you at any point?"
 
-Thirteen thought back. "No."
+William thought back. "No."
 
 "Did you understand why it was pushing you back on some dives and not others?"
 
@@ -226,7 +226,7 @@ Thirteen thought back. "No."
 
 The Steward said nothing for a moment. Then: "And the last dive?"
 
-Thirteen met the old man's eyes across the fire.
+William met the old man's eyes across the fire.
 
 "I stopped following it."
 
@@ -234,15 +234,15 @@ The Steward was quiet.
 
 "I just listened."
 
-The old man's expression did not change. This was unusual enough that Thirteen noticed it — not the absence of change itself but the presence of something beneath the stillness. An attention, small and sharp, quickly settled back under the surface.
+The old man's expression did not change. This was unusual enough that William noticed it — not the absence of change itself but the presence of something beneath the stillness. An attention, small and sharp, quickly settled back under the surface.
 
 "Come back tomorrow," the Steward said. "Earlier."
 
-He poured the tea and offered Thirteen a cup without further comment.
+He poured the tea and offered William a cup without further comment.
 
-Thirteen took it and wrapped his hands around the warmth and said nothing more.
+William took it and wrapped his hands around the warmth and said nothing more.
 
-Outside, the Kì Cùng ran on, moving water over stones, carrying whatever the depths had turned over in the dark, patient as it had always been, as it would be long after him.
+Outside, the Rimbrook ran on, moving water over stones, carrying whatever the depths had turned over in the dark, patient as it had always been, as it would be long after him.
 
 *You must hurry. You must hurry.*
 

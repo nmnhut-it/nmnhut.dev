@@ -6,9 +6,9 @@ draft: false
 
 # Chapter 013: The Bond
 
-Three weeks after the river, Thirteen could not sleep.
+Three weeks after the river, William could not sleep.
 
-He lay on his wooden bed in the dark and listened to the farm breathe. The Rootwhisper in the eastern paddy, slow and steady as it always was — a pulse he had come to distinguish from his own heartbeat the way he could distinguish the sound of the Kì Cùng from the sound of wind. Lumara on her perch at the foot of the bed, the warm ember of her presence close and familiar.
+He lay on his wooden bed in the dark and listened to the farm breathe. The Rootwhisper in the eastern paddy, slow and steady as it always was — a pulse he had come to distinguish from his own heartbeat the way he could distinguish the sound of the Rimbrook from the sound of wind. Lumara on her perch at the foot of the bed, the warm ember of her presence close and familiar.
 
 Outside, the autumn had deepened. The nights came earlier and colder, the first frosts leaving white rims on the fence posts by morning. He could hear the bamboo settling.
 
@@ -30,15 +30,15 @@ He was not sure when he fell asleep, only that at some point the ceiling became 
 
 Not the dark behind his eyelids. Something else.
 
-The eighteen figures stood in the grey between light and dark, arranged as they always were — scattered across a landscape that had no fixed geography, mountain and ocean and plain existing simultaneously without contradiction. Thirteen had stopped trying to locate himself in that space. It had no location to find.
+The eighteen figures stood in the grey between light and dark, arranged as they always were — scattered across a landscape that had no fixed geography, mountain and ocean and plain existing simultaneously without contradiction. William had stopped trying to locate himself in that space. It had no location to find.
 
 He watched them the way he had learned to watch the tiger pace the fence: without attachment to outcome.
 
 Tonight was different.
 
-They were still. The great figures, so often engaged in their endless battle — the bóng đen always rising, always needing to be met, always caching at angles when it could not prevail directly — tonight they were not fighting. They stood in a loose circle and looked at something in the center.
+They were still. The great figures, so often engaged in their endless battle — the shadow always rising, always needing to be met, always caching at angles when it could not prevail directly — tonight they were not fighting. They stood in a loose circle and looked at something in the center.
 
-Thirteen followed their gaze.
+William followed their gaze.
 
 The center was empty. No — not empty. There was something there that had no form to give it, only a quality: a warmth, an attention, a recognition. He had felt something like it before. When he had pressed his palms into the Rootwhisper roots and asked. When the rice had answered.
 
@@ -98,7 +98,7 @@ Long enough that the sky began to change in the east — the first grey hint, th
 
 The rice breathed.
 
-He had felt it before — the slow, even rhythm that had always been there, the pulse that ran below everything on this farm the way the Kì Cùng ran below the sound of the wind. He had felt it as background, as context, as the floor underneath his feet.
+He had felt it before — the slow, even rhythm that had always been there, the pulse that ran below everything on this farm the way the Rimbrook ran below the sound of the wind. He had felt it as background, as context, as the floor underneath his feet.
 
 Now he felt it differently.
 
@@ -120,7 +120,7 @@ Beside him, pressed warm against his shoulder — he felt Lumara.
 
 Not the comfortable blaze of her presence that hunger's easing had taught him to recognize. Not the bright flare of her in battle, the instinctive push of image-and-direction she sent him in a fight. He felt her the way he now felt the rice: aware. Complete. Present.
 
-*Thirteen.*
+*William.*
 
 He heard it.
 
@@ -148,31 +148,31 @@ He was still sitting in the paddy when the Steward appeared.
 
 He heard the old man before he saw him — the quiet, deliberate footsteps that he had learned to distinguish years ago, the footfall of someone who moved through the farm with absolute familiarity. The Steward stopped at the paddy's edge.
 
-He looked at Thirteen sitting in the cold water.
+He looked at William sitting in the cold water.
 
-He looked at Lumara pressed against Thirteen's shoulder.
+He looked at Lumara pressed against William's shoulder.
 
 He said nothing for a moment.
 
 "Second stage," he said at last. His voice was composed. It was the voice he used for statements about weather and soil conditions — factual, unsurprised. But there was something else in it. Something quieter. "Linh ngự."
 
-Thirteen looked up at him. His hands were still in the mud. The contract thread still hummed at its new frequency. "She spoke to me."
+William looked up at him. His hands were still in the mud. The contract thread still hummed at its new frequency. "She spoke to me."
 
-"Yes." The Steward clasped his hands behind his back. "Tha Tâm Tức. The breath between hearts." A pause. "You've had the shape of it for some time. The river gave you the last piece."
+"Yes." The Steward clasped his hands behind his back. "Hearthspeak. The breath between hearts." A pause. "You've had the shape of it for some time. The river gave you the last piece."
 
 The river. The Tidecaller and what it had taken from him and what it had given back in exchange — the three weeks of sessions in the shallows and then the deeper water, the nights he had come back to the farm too exhausted to speak, the slow learning of what it meant to have no fixed ground. He had not understood what he was building. He had understood only the next lesson.
 
-"You knew this would happen," Thirteen said.
+"You knew this would happen," William said.
 
 "I knew it was close." The Steward's voice was careful. "I did not know when."
 
-Thirteen believed the second statement. He was less certain about the first.
+William believed the second statement. He was less certain about the first.
 
 He pulled his hands from the mud slowly, and the imprints filled with water and disappeared. He did not stand yet.
 
 "What changes?" he asked.
 
-The Steward looked at the paddy for a moment. At the rice. At the growing light. "You can hear her now," he said. "Truly hear. Every dị thú you contract with, you will be able to hear." A pause. "The hunger does not change. The boundary does not change."
+The Steward looked at the paddy for a moment. At the rice. At the growing light. "You can hear her now," he said. "Truly hear. Every beast you contract with, you will be able to hear." A pause. "The hunger does not change. The boundary does not change."
 
 "I wasn't asking about the hunger."
 
@@ -180,19 +180,19 @@ Another pause. Longer.
 
 "No," the Steward said. "You weren't."
 
-He looked at Thirteen with the expression he used when he was deciding how much to give. Thirteen had learned to wait him out rather than press. The Steward gave what he gave at his own time.
+He looked at William with the expression he used when he was deciding how much to give. William had learned to wait him out rather than press. The Steward gave what he gave at his own time.
 
 "What changes," the old man said, "is that you can no longer pretend not to know what you are doing."
 
-Thirteen was quiet.
+William was quiet.
 
-"When you were in Linh giác — when you could only sense, not speak — there was a limit to what you could be asked to choose. You acted on instinct and urgency and the most basic communication. You could not be fully responsible for the choices you made with your dị thú, because you did not fully know them." The Steward turned and looked at the treeline to the north. "Now you can know them. Now you will know what they want. What they understand. What they are willing to do, and what they are not."
+"When you were in Linh giác — when you could only sense, not speak — there was a limit to what you could be asked to choose. You acted on instinct and urgency and the most basic communication. You could not be fully responsible for the choices you made with your beast, because you did not fully know them." The Steward turned and looked at the treeline to the north. "Now you can know them. Now you will know what they want. What they understand. What they are willing to do, and what they are not."
 
 The light was growing. In the east, behind the paddy ridge, the first color was beginning — a deep grey-blue giving way to something warmer at the horizon.
 
 "That responsibility," the Steward said, "is not light."
 
-Lumara shifted against Thirteen's shoulder. He felt her — felt her fully now, the particular shape of her awareness, the intelligence behind it that was nothing like human intelligence and nothing like the instinct of an ordinary bird. Something with its own structure. Its own concerns. Its own long patience.
+Lumara shifted against William's shoulder. He felt her — felt her fully now, the particular shape of her awareness, the intelligence behind it that was nothing like human intelligence and nothing like the instinct of an ordinary bird. Something with its own structure. Its own concerns. Its own long patience.
 
 *I know*, she said to him, and it was only for him — not the Steward, not the air, only him.
 
@@ -226,7 +226,7 @@ Lumara tilted her head. In all the years he had known her, that gesture had been
 
 The Steward was still standing at the paddy's edge, watching the eastern sky.
 
-"The tiger," Thirteen said. "When it comes back—"
+"The tiger," William said. "When it comes back—"
 
 "When it comes back," the Steward agreed, without turning, "you will be better prepared than you were."
 
@@ -234,7 +234,7 @@ The hunger shifted in his chest. Not easing — it never fully eased — but reo
 
 He breathed.
 
-The farm woke around him in the ordinary way: the first birds in the bamboo, the distant sound of the Kì Cùng, a thin plume of smoke beginning from the kitchen chimney where the Steward had, at some point, thought to put water on.
+The farm woke around him in the ordinary way: the first birds in the bamboo, the distant sound of the Rimbrook, a thin plume of smoke beginning from the kitchen chimney where the Steward had, at some point, thought to put water on.
 
 *You must hurry.*
 
@@ -260,9 +260,9 @@ The Steward looked at him for a moment.
 
 It was not an answer to the question he had asked. They both knew it.
 
-Thirteen looked at him. The Steward looked back. In the Steward's eyes was the usual composed stillness, the water that had settled — but underneath it, something else. Something that had been there for thirteen years and that he was only now beginning to see with the clarity of his new stage: a concern so old it had become architecture. The thing the Steward had built his decisions around for as long as Thirteen had existed.
+William looked at him. The Steward looked back. In the Steward's eyes was the usual composed stillness, the water that had settled — but underneath it, something else. Something that had been there for thirteen years and that he was only now beginning to see with the clarity of his new stage: a concern so old it had become architecture. The thing the Steward had built his decisions around for as long as William had existed.
 
-"When you're ready," Thirteen said, "I'd like to know what you're building."
+"When you're ready," William said, "I'd like to know what you're building."
 
 He did not wait for an answer. He turned and went back out into the cold morning, Lumara at his heel, and walked toward the paddies to begin the day's work.
 

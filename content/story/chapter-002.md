@@ -8,7 +8,7 @@ draft: false
 
 The cry split the night — and then silence.
 
-Thirteen stood frozen at the henhouse door. His bare feet sank into the cold earth, the night's damp chill threading up through his ankles, his shins, his chest. One hand gripped the wooden frame. He did not step forward.
+William stood frozen at the henhouse door. His bare feet sank into the cold earth, the night's damp chill threading up through his ankles, his shins, his chest. One hand gripped the wooden frame. He did not step forward.
 
 Inside, something glowed.
 
@@ -18,11 +18,11 @@ Slow footsteps behind him.
 
 "Go on in."
 
-The Steward's voice was unhurried. Not surprised. Not frightened. He might have been telling Thirteen to come to breakfast. The boy turned and saw him standing at the edge of the yard, arms folded inside wide sleeves, his white hair silver-pale in the moonlight, his face entirely calm.
+The Steward's voice was unhurried. Not surprised. Not frightened. He might have been telling William to come to breakfast. The boy turned and saw him standing at the edge of the yard, arms folded inside wide sleeves, his white hair silver-pale in the moonlight, his face entirely calm.
 
 Too calm.
 
-Thirteen swallowed. He pushed the door open and stepped inside.
+William swallowed. He pushed the door open and stepped inside.
 
 ---
 
@@ -36,7 +36,7 @@ She had grown. Nearly doubled in size since morning, though he'd seen her at sun
 
 And her eyes.
 
-Thirteen could not look away from her eyes.
+William could not look away from her eyes.
 
 They were clear. Still. Luminous in a way no chicken's eyes had ever been — no animal's eyes, he thought, except perhaps in the oldest stories the wandering merchant sometimes told, the ones about creatures that had lived so long they grew wise and strange. She was not looking through him the way animals do, unseeing, fixed on grain or movement. She was *looking at him.* Actually looking. The way a person looks when they are deciding whether to speak.
 
@@ -44,21 +44,21 @@ He stepped back.
 
 "Don't be afraid." The Steward stepped in behind him, his voice the same measured quiet as before. "She won't hurt you."
 
-"She's—" Thirteen opened his mouth and found no words sufficient. "What is she?"
+"She's—" William opened his mouth and found no words sufficient. "What is she?"
 
-"She's still your hen." The Steward came to stand beside him, studying the creature with an expression Thirteen had never seen on the old man before — something solemn, almost reverent, the way someone might look at a thing they have spent years waiting for. "She has simply... woken."
+"She's still your hen." The Steward came to stand beside him, studying the creature with an expression William had never seen on the old man before — something solemn, almost reverent, the way someone might look at a thing they have spent years waiting for. "She has simply... woken."
 
 The Lumara — he did not know that was her name, had never heard the word before, but it surfaced in his mind the way certain dreams surface at the moment of waking, familiar and sourceless — rose from her place with deliberate grace. She spread her wings halfway. The copper light on her feathers flared and then faded, faded, until only the deep metallic sheen remained, glimmering where the moonlight entered through the doorframe's cracks.
 
 She walked toward him.
 
-Thirteen did not retreat this time. He stood still, both hands clenched at his sides, his heart hammering in his throat.
+William did not retreat this time. He stood still, both hands clenched at his sides, his heart hammering in his throat.
 
 The Lumara stopped one step away. She tilted her head. Regarded him with those impossible eyes.
 
 Then she spoke — not in any language, not with any sound he could parse into words. The sound she made was lower than a normal hen's call, fuller, resonant, like a small bell struck once in an empty room, the note hanging and hanging and refusing to die.
 
-And Thirteen understood it.
+And William understood it.
 
 Not with his ears. Not through any mechanism he could have named. But the meaning arrived in him the way warmth arrives when you step from shadow into sunlight — sudden, undeniable, belonging entirely to the body.
 
@@ -68,15 +68,15 @@ Not with his ears. Not through any mechanism he could have named. But the meanin
 
 The Steward stood in the corner of the henhouse and said nothing more.
 
-Only when Thirteen turned to him, face full of questions he couldn't sequence into speech, did the old man approach. He stooped to study the Lumara closely, and in his eyes was the look of a man greeting something long overdue.
+Only when William turned to him, face full of questions he couldn't sequence into speech, did the old man approach. He stooped to study the Lumara closely, and in his eyes was the look of a man greeting something long overdue.
 
 "Khai linh," he said.
 
 "What?"
 
-"What happened to her. It is called khai linh." He straightened and looked at the boy. "Do you remember yesterday morning? The storage shed."
+"What happened to her. It is called Kindling." He straightened and looked at the boy. "Do you remember yesterday morning? The storage shed."
 
-Thirteen remembered. He'd dragged Gold out by her feet, annoyed, because she'd tracked through the honey jars and left sticky prints across the floor.
+William remembered. He'd dragged Gold out by her feet, annoyed, because she'd tracked through the honey jars and left sticky prints across the floor.
 
 "That honey," the Steward said, choosing each word with the care of a man defusing something delicate. "Was not ordinary honey."
 
@@ -90,7 +90,7 @@ Thirteen remembered. He'd dragged Gold out by her feet, annoyed, because she'd t
 
 Then he was gone.
 
-Thirteen remained in the henhouse alone. The Lumara had returned to the corner she always occupied, settling herself with the same patient economy she had always shown. The copper light on her feathers had nearly gone out — only a faint warmth remained, less visible now than felt. She might have been sleeping. He was no longer sure he could tell.
+William remained in the henhouse alone. The Lumara had returned to the corner she always occupied, settling herself with the same patient economy she had always shown. The copper light on her feathers had nearly gone out — only a faint warmth remained, less visible now than felt. She might have been sleeping. He was no longer sure he could tell.
 
 He wanted to ask a dozen things.
 
@@ -100,7 +100,7 @@ He didn't know whom to ask.
 
 The birthday meal was quieter than usual.
 
-The Steward had made white rice, slow-braised chicken with ginger, and a bowl of fragrant broth. At the center of the table, beside the oil lamp, sat a small brown ceramic jar — the same shape Thirteen had looked at his entire life. Honey.
+The Steward had made white rice, slow-braised chicken with ginger, and a bowl of fragrant broth. At the center of the table, beside the oil lamp, sat a small brown ceramic jar — the same shape William had looked at his entire life. Honey.
 
 He stared at it longer than he normally would.
 
@@ -110,11 +110,11 @@ He stared at it longer than he normally would.
 
 "Eat first."
 
-He ate. The rice was good, the chicken soft and warm, the honey sweet and heavy over every mouthful. It tasted like every meal the Steward had ever made him. But Thirteen ate differently now — slowly, paying attention, trying to find in each swallow some quality that set it apart from ordinary sweetness.
+He ate. The rice was good, the chicken soft and warm, the honey sweet and heavy over every mouthful. It tasted like every meal the Steward had ever made him. But William ate differently now — slowly, paying attention, trying to find in each swallow some quality that set it apart from ordinary sweetness.
 
 He found nothing he could name.
 
-The Steward brewed tea and set two cups on the table, sliding one toward Thirteen.
+The Steward brewed tea and set two cups on the table, sliding one toward William.
 
 "The honey I've been feeding you all these years." He lifted his own cup and watched the steam rise from it. "It is the same thing."
 
@@ -124,11 +124,11 @@ The Steward brewed tea and set two cups on the table, sliding one toward Thirtee
 
 Silence.
 
-Thirteen set his cup down. He looked directly at the Steward's face — something he rarely did, because the old man's eyes always gave him the sensation of looking into water that was deeper than it appeared.
+William set his cup down. He looked directly at the Steward's face — something he rarely did, because the old man's eyes always gave him the sensation of looking into water that was deeper than it appeared.
 
 "Then I'll also..." He didn't have the word.
 
-"Perhaps." The Steward drank. "Khai linh doesn't happen to everyone. But you have been eating that since before you could remember. Thirteen years."
+"Perhaps." The Steward drank. "Khai linh doesn't happen to everyone. But you have been eating that since before you could remember. William years."
 
 "Why?"
 
@@ -142,23 +142,23 @@ The meal ended without resolution.
 
 ---
 
-Thirteen lay awake for a long time.
+William lay awake for a long time.
 
 Wind moved through the walls. Insects somewhere in the dark fields. And from the direction of the henhouse — he couldn't be certain whether he was imagining it — the soft, even sound of breathing that was not quite animal anymore.
 
 He thought about the hen with the knowing eyes.
 
-He thought about the brown ceramic jar. Thirteen years. Every morning, every evening, the Steward setting it out like a ritual too old to question. *I've been feeding you this since before you could remember.* Not habit. Not because it tasted fine. Something deliberate. Something planned.
+He thought about the brown ceramic jar. William years. Every morning, every evening, the Steward setting it out like a ritual too old to question. *I've been feeding you this since before you could remember.* Not habit. Not because it tasted fine. Something deliberate. Something planned.
 
 He thought about his parents.
 
-They had reasons of their own, the Steward always said. Thirteen had stopped asking years ago, or had stopped asking aloud. The question lived permanently in the space between what he knew and what the old man would tell him — father and mother gone, a farm and an old man and a name that meant nothing more than a number, no explanation ever offered, no story ever told.
+They had reasons of their own, the Steward always said. William had stopped asking years ago, or had stopped asking aloud. The question lived permanently in the space between what he knew and what the old man would tell him — father and mother gone, a farm and an old man and a name that meant nothing more than a number, no explanation ever offered, no story ever told.
 
-*Why Thirteen? Why this farm? Why honey that is not ordinary honey?*
+*Why William? Why this farm? Why honey that is not ordinary honey?*
 
 His eyes grew heavy. The thoughts slid sideways, blurred at their edges, lost their grip.
 
-Thirteen fell into sleep without knowing the moment he crossed over.
+William fell into sleep without knowing the moment he crossed over.
 
 ---
 
@@ -174,7 +174,7 @@ Then light — not the light of any lamp or sun, but cold, sourceless illuminati
 
 Nothing.
 
-Thirteen stood — no, *existed* — in a space that had no floor beneath his feet and no sky above his head. Only the infinite middle distance in every direction. He could not tell if he was falling or standing still.
+William stood — no, *existed* — in a space that had no floor beneath his feet and no sky above his head. Only the infinite middle distance in every direction. He could not tell if he was falling or standing still.
 
 Then the world appeared before him.
 
@@ -206,7 +206,7 @@ A curtain hung before the sun. He had no better word for it. It stretched across
 
 Someone had done this. Someone had chosen which half of the world would receive the sun and which would not.
 
-The realization moved through Thirteen with the weight of a stone.
+The realization moved through William with the weight of a stone.
 
 ---
 
@@ -220,7 +220,7 @@ It would not heal. Whatever had made it was not interested in healing it.
 
 ---
 
-Thirteen looked out to the far edges of the world, and saw the chains.
+William looked out to the far edges of the world, and saw the chains.
 
 They encircled the sphere at its equator, at its poles, in vast diagonal loops crossing one hemisphere and the other — enormous links of black copper, each one the size of a village, stretching from the world's surface out into the dark and anchoring to pillars. The pillars rose from the void itself: bronze, immense, squared at their tops where the chains attached, darkened by age to a color past black, past brown, a shade that implied antiquity so absolute it predated the concept of rust. No moss. No weathering. The dark was sealed in, the surface permanent, untouched by anything that time normally does.
 
@@ -232,7 +232,7 @@ But it could go nowhere.
 
 It had been imprisoned.
 
-Thirteen felt this not as an observation but as a bodily knowledge, the way one knows pain or cold — deep in the chest, inescapable, not requiring argument. The world was caged. Had been caged for so long that the chains had forgotten they were restraints and had become simply part of the landscape, the way walls become invisible when you have lived inside them your whole life.
+William felt this not as an observation but as a bodily knowledge, the way one knows pain or cold — deep in the chest, inescapable, not requiring argument. The world was caged. Had been caged for so long that the chains had forgotten they were restraints and had become simply part of the landscape, the way walls become invisible when you have lived inside them your whole life.
 
 How long? He could not begin to form the number.
 
@@ -278,7 +278,7 @@ Another figure. This one did not stand so much as merge — the boundary between
 
 They blew.
 
-One long note. It stretched across a distance Thirteen couldn't measure, reaching the far edge of the void and coming back changed. The air shivered with it.
+One long note. It stretched across a distance William couldn't measure, reaching the far edge of the void and coming back changed. The air shivered with it.
 
 Then the ocean rose.
 
@@ -296,7 +296,7 @@ It was coming.
 
 The eighteen fought it.
 
-Waves of ocean-fury crashed against the dark and were absorbed. The mountain-mover sent geological force — stone and forest and the compressed weight of ages — hurtling into the void. Others Thirteen had not yet focused on unleashed their own violence: something like lightning, something like deep cold turned outward as a weapon, something that looked like the bones of the earth shearing upward through the surface in great white slabs.
+Waves of ocean-fury crashed against the dark and were absorbed. The mountain-mover sent geological force — stone and forest and the compressed weight of ages — hurtling into the void. Others William had not yet focused on unleashed their own violence: something like lightning, something like deep cold turned outward as a weapon, something that looked like the bones of the earth shearing upward through the surface in great white slabs.
 
 The dark receded.
 
@@ -306,7 +306,7 @@ It receded again. Pressed forward again.
 
 One figure was hurled across the plateau — not struck so much as simply *moved*, the way a strong current moves a stone it has decided to relocate. He landed hard in the cloud-cover below the peaks and was gone for a moment. Then he was back, climbing from the mist, returning to his place. No hesitation.
 
-Another was taken from below — the dark had sent part of itself under the surface, and it came up through the rock behind her and wrapped around an ankle and pulled. She cried out. A sharp, clean sound. She collapsed to one knee, and the cry cut Thirteen somewhere he didn't have a name for.
+Another was taken from below — the dark had sent part of itself under the surface, and it came up through the rock behind her and wrapped around an ankle and pulled. She cried out. A sharp, clean sound. She collapsed to one knee, and the cry cut William somewhere he didn't have a name for.
 
 She stood. Returned to the line.
 
@@ -322,7 +322,7 @@ As though someone had reached into time and thickened it. Each movement became d
 
 One by one, the eighteen turned their heads.
 
-They looked toward Thirteen.
+They looked toward William.
 
 He couldn't make out their faces — too far, or the light was wrong, or perhaps faces were simply not the mechanism by which these figures communicated. But he felt their attention fall on him the way you feel the weight of a hand placed on your shoulder: unmistakable, intimate, laden with meaning he hadn't yet earned the right to read.
 
@@ -350,7 +350,7 @@ Together. One syllable, one breath, one impossible chord of voices that was not 
 
 ---
 
-Thirteen woke.
+William woke.
 
 ---
 
@@ -376,7 +376,7 @@ The henhouse. Thirty paces east, on the other side of the yard wall. He knew it 
 
 The Lumara was waiting for him to wake.
 
-Thirteen opened his eyes.
+William opened his eyes.
 
 He didn't have a word for what he'd just done. He didn't know why he could do it this morning when he couldn't do it yesterday. He didn't know what it meant that the world had edges now that hadn't existed before, that existence seemed to extend past the boundary of his skin and touch the things around him.
 

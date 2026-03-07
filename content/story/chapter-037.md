@@ -6,15 +6,15 @@ draft: false
 
 # Chapter 037: March
 
-The gate stood open. It had always stood open — Thirteen had never once seen it latched against the morning — but this dawn it felt different. A frame through which the world divided into two things: what he was leaving, and what he was going toward.
+The gate stood open. It had always stood open — William had never once seen it latched against the morning — but this dawn it felt different. A frame through which the world divided into two things: what he was leaving, and what he was going toward.
 
 He didn't look back.
 
-Behind him: the Steward at the kitchen door, still as a fence post, hands folded. Pip at the edge of the lower field, standing the way thirteen-year-olds stand when they want to look older than they are, chin up, jaw set. Fern somewhere in the paddies, crouched beside the youngest shoots of Rootwhisper. She had risen before dawn. She had not said goodbye. Neither had Thirteen — it had seemed the wrong word for what she was doing, which was staying, which was necessary, which neither of them named.
+Behind him: the Steward at the kitchen door, still as a fence post, hands folded. Pip at the edge of the lower field, standing the way thirteen-year-olds stand when they want to look older than they are, chin up, jaw set. Fern somewhere in the paddies, crouched beside the youngest shoots of Rootwhisper. She had risen before dawn. She had not said goodbye. Neither had William — it had seemed the wrong word for what she was doing, which was staying, which was necessary, which neither of them named.
 
 The Rootwhisper pulsed once.
 
-Not through the bond-thread, not through the Tha Tam Tuc. Through the ground. A single pressure beneath the soles of his feet, slow and deep, like the heartbeat of something very large and very patient. There, then gone, as though the rice had simply wanted him to know: *I felt you leave.*
+Not through the bond-thread, not through the Hearthspeak. Through the ground. A single pressure beneath the soles of his feet, slow and deep, like the heartbeat of something very large and very patient. There, then gone, as though the rice had simply wanted him to know: *I felt you leave.*
 
 He kept walking.
 
@@ -24,7 +24,7 @@ Four of them. Small. Purposeful.
 
 At the northern tree line, something shifted.
 
-Thirteen felt it in the same way he felt Lumara's presence through the bond — not sight, not sound, something older and less precise. A warmth. A banked, enormous attention turned toward him from among the dark pines. He did not reach for the Tha Tam Tuc. The contact wasn't that kind — it wasn't language, wasn't image. It was the way a fire is present in a room even when you aren't looking at it.
+William felt it in the same way he felt Lumara's presence through the bond — not sight, not sound, something older and less precise. A warmth. A banked, enormous attention turned toward him from among the dark pines. He did not reach for the Hearthspeak. The contact wasn't that kind — it wasn't language, wasn't image. It was the way a fire is present in a room even when you aren't looking at it.
 
 *Go,* the warmth said. Not in words. In the way that Amberrex had always said things — with the whole weight of a body that had survived a hundred winters and intended to survive a hundred more. *I keep the house.*
 
@@ -50,7 +50,7 @@ Nothing. No hum of life below. No faint tracery of root-movement. The smell was 
 
 *Wide. Fanning outward from the northwest. Like water spreading from a crack in a vessel.*
 
-Cade came up beside him, looked at the ground, then at the thinning trees ahead. He said nothing for a moment. He was the kind of man who looked before speaking, which Thirteen had already understood was worth more than the other kind.
+Cade came up beside him, looked at the ground, then at the thinning trees ahead. He said nothing for a moment. He was the kind of man who looked before speaking, which William had already understood was worth more than the other kind.
 
 "She's been here longer than we thought," Cade said. "This kind of depletion — this takes months. You can't drain a landscape in a week."
 
@@ -72,21 +72,21 @@ The people did not look at strangers. They looked at the road. At the ground ahe
 
 One man stopped.
 
-He was old — older than the Steward, which meant something, because the Steward seemed to Thirteen like a man who had outlasted the era he was built for. This man had the same quality. He stopped in the road and looked at Thirteen directly, which the others had not done. Then he looked at Lumara. Then back at Thirteen — at the way Thirteen moved, maybe, or at something in the quality of how he occupied the ground he stood on.
+He was old — older than the Steward, which meant something, because the Steward seemed to William like a man who had outlasted the era he was built for. This man had the same quality. He stopped in the road and looked at William directly, which the others had not done. Then he looked at Lumara. Then back at William — at the way William moved, maybe, or at something in the quality of how he occupied the ground he stood on.
 
 "You're going the wrong way," the old man said.
 
-"I know," Thirteen said.
+"I know," William said.
 
 The old man was quiet for a moment. The chickens passed them on their owner's back. A child, small enough to be carried, stared at Lumara from over its father's shoulder with the calm, unafraid curiosity that children reserve for remarkable things.
 
 "Don't let her take the hill," the old man said. "The one to the northwest — you'll see it. Limestone. Old spring at the base." He paused. "Four villages use that water. If she takes the hill, she takes the source."
 
-Thirteen held this. "Has she moved toward it?"
+William held this. "Has she moved toward it?"
 
-"She has people moving toward everything." The old man adjusted the bundle on his back. "But the hill — that's the one that matters. Everything downstream from it." He looked at Thirteen for a moment longer, the way people look when they're deciding whether to say the last thing they were going to say. Then he walked on.
+"She has people moving toward everything." The old man adjusted the bundle on his back. "But the hill — that's the one that matters. Everything downstream from it." He looked at William for a moment longer, the way people look when they're deciding whether to say the last thing they were going to say. Then he walked on.
 
-Thirteen turned to Lumara.
+William turned to Lumara.
 
 She was already rising.
 
@@ -104,7 +104,7 @@ When Lumara returned, she folded herself to his shoulder with the precision of s
 
 *Two hours. If we don't stop.*
 
-Thirteen looked at Cade.
+William looked at Cade.
 
 Cade said: "Then we don't stop."
 
@@ -112,13 +112,13 @@ Cade said: "Then we don't stop."
 
 He had brought rice from the farm — dried Rootwhisper grain wrapped in cloth, enough for several days. He had not planned to give it away. He gave it away.
 
-The first time was almost accidental. An older couple sitting at the road's edge, the woman's feet wrapped in cloth that had been rewrapped too many times. Thirteen stopped. He didn't think about it. He untied the bundle and gave them a handful.
+The first time was almost accidental. An older couple sitting at the road's edge, the woman's feet wrapped in cloth that had been rewrapped too many times. William stopped. He didn't think about it. He untied the bundle and gave them a handful.
 
 They looked at it. The woman touched a grain. Put it in her mouth.
 
 She stopped. Looked up. Her face changed — not dramatically, not the way faces change in stories. Subtly. As though something she had been holding very tightly had been, just slightly, released. She breathed differently. She said: "What is this?"
 
-Thirteen didn't know how to answer. He knew what the rice *was* — but he didn't know how to say what it *did* to people who hadn't lived with it, who didn't have a bond-thread to explain the sensation. "Food," he said.
+William didn't know how to answer. He knew what the rice *was* — but he didn't know how to say what it *did* to people who hadn't lived with it, who didn't have a bond-thread to explain the sensation. "Food," he said.
 
 She looked at her husband. They shared something wordless.
 
@@ -140,7 +140,7 @@ Cade walked beside him and didn't comment. Wren, three paces back, did not comme
 
 He hadn't noticed the squinting. He noticed it now.
 
-The hunger had built so gradually he had stopped feeling it as hunger. It was structural now, an architectural absence, a hand around his sternum that squeezed when he reached for the Tha Tam Tuc, when he pushed out his awareness to check on the wild creatures along the road — the birds in the thinner-than-normal canopy, the small mammals gone quiet at the edge of the dead zone. The Tha Tam Tuc still worked. But it required concentration now in a way it hadn't for months.
+The hunger had built so gradually he had stopped feeling it as hunger. It was structural now, an architectural absence, a hand around his sternum that squeezed when he reached for the Hearthspeak, when he pushed out his awareness to check on the wild creatures along the road — the birds in the thinner-than-normal canopy, the small mammals gone quiet at the edge of the dead zone. The Hearthspeak still worked. But it required concentration now in a way it hadn't for months.
 
 He stopped walking. Looked at the cloth bundle. Took out a single grain, held it between two fingers. This small. This much.
 
@@ -156,7 +156,7 @@ They camped in a hollow where a streambed had dried completely — the creek tha
 
 Cade built the fire the way professional soldiers build fires: small, hot, no more than necessary. He cleaned his sword by its light with the same methodical attention he gave everything — not ritual, just maintenance. The habit of a man who understood that the things you maintained were the things that didn't fail you.
 
-Wren sat apart, knees drawn up, looking northwest. In the firelight her face was composed. She'd been composed all day, in the controlled way of someone who is managing something carefully, keeping it from spilling. Thirteen had seen the same composure on the Steward when the Steward was deciding how much to say.
+Wren sat apart, knees drawn up, looking northwest. In the firelight her face was composed. She'd been composed all day, in the controlled way of someone who is managing something carefully, keeping it from spilling. William had seen the same composure on the Steward when the Steward was deciding how much to say.
 
 He lay down and looked up at Lumara on a branch above him. She returned the look with the sharp, specific attention of a creature whose eyes were built for distances.
 
@@ -194,9 +194,9 @@ They moved.
 
 The dead land held its particular quiet around them as they walked — the specific absence of ordinary sound. No insect-hum. No rustle of small things in undergrowth. The wind moved through the branches but there was nothing in the branches to stir, no leaves left to catch it. Just the dry creak of wood.
 
-Thirteen moved through it and kept his attention on the ground ahead, on the northwest dark, on the distant shape of the hill that would emerge with the light. Lumara watched the sky. Cade watched the flanks. Wren watched the northwest.
+William moved through it and kept his attention on the ground ahead, on the northwest dark, on the distant shape of the hill that would emerge with the light. Lumara watched the sky. Cade watched the flanks. Wren watched the northwest.
 
-The six refugees who had followed them the night before were gone — they had stayed at the hollow, which was the right decision, and Thirteen had not asked them otherwise.
+The six refugees who had followed them the night before were gone — they had stayed at the hollow, which was the right decision, and William had not asked them otherwise.
 
 He was a farmer with a contract and a bird and two people who trusted him for complicated reasons, walking into the dark toward something he had to reach before it was taken.
 

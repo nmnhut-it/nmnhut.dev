@@ -34,13 +34,13 @@ They rose from the valley floor like something geological. Stone, pale grey in t
 
 Thousands.
 
-Thirteen stood at the crest of the hill and tried to count the cook-fires and gave up.
+William stood at the crest of the hill and tried to count the cook-fires and gave up.
 
 The farm had two people. Him, and the Steward. For sixteen years, that had been the sum of human presence — two life-signatures, clear and distinct, as readable through his awareness as a voice in a quiet room.
 
 What rose from the valley below was not a quiet room.
 
-He felt them before he reached the city walls. The Tha Tam Tuc — the skill he had trained for three years in a place where it was never overcrowded — opened like a eye into too much light. Life-signatures everywhere. Dense and overlapping, every person carrying their own distinct vitality, the way each tree in a forest had its own grain. But a forest was spread across hillsides. This was compressed. Hundreds of lives pressed together behind stone walls, and they hit his awareness all at once, a wave of sensation he had no framework for, and the headache arrived like a fist behind his eyes.
+He felt them before he reached the city walls. The Hearthspeak — the skill he had trained for three years in a place where it was never overcrowded — opened like a eye into too much light. Life-signatures everywhere. Dense and overlapping, every person carrying their own distinct vitality, the way each tree in a forest had its own grain. But a forest was spread across hillsides. This was compressed. Hundreds of lives pressed together behind stone walls, and they hit his awareness all at once, a wave of sensation he had no framework for, and the headache arrived like a fist behind his eyes.
 
 He stopped walking.
 
@@ -50,7 +50,7 @@ He stopped walking.
 
 She understood immediately — he felt her attention sharpen through the bond, the shift from tactical to attentive. *Close it down. The way you narrow your eyes against bright light. Don't stop seeing — just... reduce the aperture.*
 
-He had never done this consciously. At the farm, the Tha Tam Tuc was always open because there was never a reason to close it. Two lives. A handful of beasts. The Rootwhisper's slow vegetable pulse. Now he stood at the edge of a crowd and tried to do something that had never been necessary: choose what to feel.
+He had never done this consciously. At the farm, the Hearthspeak was always open because there was never a reason to close it. Two lives. A handful of beasts. The Rootwhisper's slow vegetable pulse. Now he stood at the edge of a crowd and tried to do something that had never been necessary: choose what to feel.
 
 He shut his eyes. Thought of the farm — the specific, familiar quality of the Steward's life-signature, solid as the kitchen table, and Lumara's, bright as a struck bell. He let those two become the whole world for a moment. Then he imagined a door.
 
@@ -68,7 +68,7 @@ The wave of sensation dimmed. Not gone — he could still feel the city ahead, a
 
 ---
 
-The gate guards looked at him the way they looked at everything: with the flat professional attention of men who had processed ten thousand faces and assigned each one a category. Thirteen's category took perhaps two seconds to establish. Farm clothes. Bare feet — he had lost one sandal on the second day and the other had followed. A cloth pack across one shoulder. A brown hen riding the opposite shoulder with the resigned dignity of a creature accustomed to travel.
+The gate guards looked at him the way they looked at everything: with the flat professional attention of men who had processed ten thousand faces and assigned each one a category. William's category took perhaps two seconds to establish. Farm clothes. Bare feet — he had lost one sandal on the second day and the other had followed. A cloth pack across one shoulder. A brown hen riding the opposite shoulder with the resigned dignity of a creature accustomed to travel.
 
 They let him through without a word.
 
@@ -86,7 +86,7 @@ A queue had formed outside the temple's distribution hall, long enough to stretc
 
 She did not cry. She moved with the particular economy of someone who had already spent every resource she had on the journey to this moment, and had nothing left for grief.
 
-Thirteen watched her go. Then he watched the official turn and speak to the next person in line. Same gesture. Same head-shake.
+William watched her go. Then he watched the official turn and speak to the next person in line. Same gesture. Same head-shake.
 
 The distribution had run out before the queue.
 
@@ -96,13 +96,13 @@ He moved on.
 
 He spent the morning learning the city's grammar.
 
-The Steward had outlined the system in the way he outlined most things: functionally, without commentary. The Temple of Thiên Hậu held the khai linh licensing authority — all distribution passed through them, which meant all access required their approval. Merchants purchased limited supply from the temple and resold it in the market quarter. Prices in the market were, by any visible measure, beyond the reach of most people in the queue outside the temple hall.
+The Steward had outlined the system in the way he outlined most things: functionally, without commentary. The Temple of the Heavenly Mother held the Kindling licensing authority — all distribution passed through them, which meant all access required their approval. Merchants purchased limited supply from the temple and resold it in the market quarter. Prices in the market were, by any visible measure, beyond the reach of most people in the queue outside the temple hall.
 
-The already-awakened received priority access. The Steward had stated this as a logistical fact. Standing in the market quarter and watching it operate, Thirteen understood it as something else: a mechanism that made itself permanent. If you had no khai linh, you could not easily afford the market price for the material needed to awaken. If you had not awakened, you could not earn the income that would let you access priority distribution. If you could not access priority distribution, you relied on the temple's rationed supply, which ran out before the queue ended.
+The already-awakened received priority access. The Steward had stated this as a logistical fact. Standing in the market quarter and watching it operate, William understood it as something else: a mechanism that made itself permanent. If you had no Kindling, you could not easily afford the market price for the material needed to awaken. If you had not awakened, you could not earn the income that would let you access priority distribution. If you could not access priority distribution, you relied on the temple's rationed supply, which ran out before the queue ended.
 
 The already-awakened got more. The unawakened got less. And less became harder to change into more with each passing season.
 
-He watched a merchant in good-quality cotton finish a transaction — a small cloth bag changing hands for a price that made the buyer's hands shake. The buyer tucked the bag inside his clothing with the care of someone handling something precious. He was young. Younger than Thirteen. He walked away with the expression of someone who had just committed to something that would determine the shape of the next year.
+He watched a merchant in good-quality cotton finish a transaction — a small cloth bag changing hands for a price that made the buyer's hands shake. The buyer tucked the bag inside his clothing with the care of someone handling something precious. He was young. Younger than William. He walked away with the expression of someone who had just committed to something that would determine the shape of the next year.
 
 A guard in a coat of better quality than anyone around him stood near the merchant's stall. Not protecting the buyer. Protecting the inventory.
 
@@ -110,27 +110,27 @@ A guard in a coat of better quality than anyone around him stood near the mercha
 
 He was navigating toward the inn district — the Steward had been specific about that, at least — when his awareness caught it.
 
-He had the door mostly closed. Just enough open to read nearby movement, close threats, animals. But this came through the gap without effort: a life-signature distinct enough to separate itself from the background murmur of the crowd. Not the warm, specific quality of a dị thú bond — he had learned that frequency on the farm, knew its grain. Something else. A vitality that had been shaped. Enhanced. The particular quality of a life that had been changed by khai linh, recognizable the same way a trained voice was recognizable even through noise.
+He had the door mostly closed. Just enough open to read nearby movement, close threats, animals. But this came through the gap without effort: a life-signature distinct enough to separate itself from the background murmur of the crowd. Not the warm, specific quality of a beast bond — he had learned that frequency on the farm, knew its grain. Something else. A vitality that had been shaped. Enhanced. The particular quality of a life that had been changed by Kindling, recognizable the same way a trained voice was recognizable even through noise.
 
 Awakened.
 
 He didn't look. He kept walking.
 
-The signature didn't move. Which meant its owner was sitting somewhere ahead and to his right, and had already — he was nearly certain — felt Thirteen the same way Thirteen had felt him.
+The signature didn't move. Which meant its owner was sitting somewhere ahead and to his right, and had already — he was nearly certain — felt William the same way William had felt him.
 
 He looked.
 
 A man at a tea stall. Middle-aged, heavier than most people in the quarter, dressed in cloth of a quality that landed between merchant and minor official. Sitting alone at a low table with a cup he was not drinking. His head was up.
 
-Looking at Thirteen.
+Looking at William.
 
-Directly. Through the crowd, through the bodies and movement and noise, he had located Thirteen with the same precision Thirteen had used to locate him. There was a slight quality of recognition in his expression — not surprise, not threat. The faint attention of someone who has unexpectedly met someone interesting.
+Directly. Through the crowd, through the bodies and movement and noise, he had located William with the same precision William had used to locate him. There was a slight quality of recognition in his expression — not surprise, not threat. The faint attention of someone who has unexpectedly met someone interesting.
 
-He said something. Thirteen was too far to hear it over the market noise, but he read the shape of the words:
+He said something. William was too far to hear it over the market noise, but he read the shape of the words:
 
 *What contract do you hold, young man?*
 
-Thirteen walked on.
+William walked on.
 
 He kept his pace even. Did not hurry. Did not look back. The door in his head he pushed a little further shut — not closed, because he needed to know if the man moved. He kept his attention on the sensation rather than the source.
 
@@ -140,25 +140,25 @@ He turned into a side street, moved twenty paces, stopped in the shadow of a doo
 
 *He watched you leave*, Lumara said from somewhere above. Her voice came through the bond rather than his ears — she had been on the rooftops since they entered the gate. *Didn't follow. Still at the tea stall. He's drinking his tea now.*
 
-Thirteen let out a breath he hadn't noticed holding.
+William let out a breath he hadn't noticed holding.
 
 *He smiled*, Lumara added. *When you turned into the alley. He knew you were gone, and he smiled.*
 
-Not pleased with himself. Not predatory. Something more settled — the expression, Thirteen thought, of someone who has had a suspicion confirmed. He had felt Thirteen, and Thirteen had felt him, and they had both known what the other was doing, and neither of them had needed to say a word.
+Not pleased with himself. Not predatory. Something more settled — the expression, William thought, of someone who has had a suspicion confirmed. He had felt William, and William had felt him, and they had both known what the other was doing, and neither of them had needed to say a word.
 
 He was very far from a farm with two people on it.
 
 ---
 
-The lodging house cost two copper coins for a corner space on the communal sleeping floor. The innkeeper had looked at the coins and then at Thirteen's bare feet, and made a calculation that ended in the coins disappearing and a thin blanket appearing. Lumara settled on a crossbeam overhead. The other lodgers — four of them, all travelers, none awakened — were asleep before the oil lamp guttered.
+The lodging house cost two copper coins for a corner space on the communal sleeping floor. The innkeeper had looked at the coins and then at William's bare feet, and made a calculation that ended in the coins disappearing and a thin blanket appearing. Lumara settled on a crossbeam overhead. The other lodgers — four of them, all travelers, none awakened — were asleep before the oil lamp guttered.
 
-Thirteen sat in his corner with his pack and thought.
+William sat in his corner with his pack and thought.
 
-The farm produced Rootwhisper rice. The bees produced the honey. He ate khai linh material every morning the way other people ate ordinary grain — dissolved it on his tongue, received the easing of the hunger-tether, went about his day. He had done this for as long as he could remember. He had not known, for most of his life, what it was. The Steward had taught him its name and nature only in the past three years.
+The farm produced Rootwhisper rice. The bees produced the honey. He ate Kindling material every morning the way other people ate ordinary grain — dissolved it on his tongue, received the easing of the hunger-tether, went about his day. He had done this for as long as he could remember. He had not known, for most of his life, what it was. The Steward had taught him its name and nature only in the past three years.
 
 What the entire city had queued for since before dawn, he had eaten for breakfast.
 
-The woman with the child who had been turned away from the distribution hall — she had waited hours for a portion of what he consumed daily without thinking. The young man who had paid with shaking hands for a small cloth bag — what was in that bag would have lasted Thirteen perhaps two mornings on the farm.
+The woman with the child who had been turned away from the distribution hall — she had waited hours for a portion of what he consumed daily without thinking. The young man who had paid with shaking hands for a small cloth bag — what was in that bag would have lasted William perhaps two mornings on the farm.
 
 He pressed his palm to the floor of the lodging house. Not Rootwhisper-soil — compacted dirt and old straw, the accumulated weight of many years of people sleeping here. He felt nothing through it.
 
@@ -166,7 +166,7 @@ The farm wasn't a prison. He had known that, in an abstract way, since the Stewa
 
 The most valuable piece of land within a hundred li. Possibly further.
 
-And the people who sent men to search along the Kì Cùng river for its source — they knew it was out there. They didn't know where. Not yet.
+And the people who sent men to search along the Rimbrook river for its source — they knew it was out there. They didn't know where. Not yet.
 
 He thought about Corwin arriving at the forest's edge with a broken arm and a stripped cart. *Three groups*, the merchant had said. *Asking about glowing rice or unusual honey.* He had said it with the apologetic air of a man delivering news he hadn't wanted to carry.
 
@@ -234,4 +234,4 @@ He closed his eyes again, and this time sleep came quickly, the way it always di
 
 Outside the walls, the city breathed. Inside them, thousands of lives layered on each other in the darkness, each one distinct, each one its own small vitality, the whole of them pressed together behind six-man-high stone.
 
-Thirteen let the door in his head stay mostly shut, and rested.
+William let the door in his head stay mostly shut, and rested.

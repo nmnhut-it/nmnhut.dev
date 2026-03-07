@@ -6,11 +6,11 @@ draft: false
 
 # Chapter 017: The Tremor
 
-Two weeks after the Tremor first surfaced at the boundary ditch, Thirteen lay on the floor of his room and listened to the earth.
+Two weeks after the Tremor first surfaced at the boundary ditch, William lay on the floor of his room and listened to the earth.
 
 Not through the Rootwhisper. He had spent the past week learning to feel the ground through the rice's roots — a skill that had saved him from the worst of the creature's attacks, a way to read the medium he could not enter — but tonight he placed his palm flat on the packed dirt floor and listened with nothing between them. His hand. The earth. Whatever moved below.
 
-For a long time there was nothing. The ordinary silence of a farmhouse at night: bamboo settling, Lumara's breathing on her perch, the distant murmur of the Kì Cùng carrying its autumn freight.
+For a long time there was nothing. The ordinary silence of a farmhouse at night: bamboo settling, Lumara's breathing on her perch, the distant murmur of the Rimbrook carrying its autumn freight.
 
 Then, under all of that — below the silence, below the familiar — a rhythm.
 
@@ -28,11 +28,11 @@ He understood, lying on the floor of his room with his hand on the dirt and the 
 
 He went to the rocky ground west of the farm before dawn.
 
-The Steward had not directed him there this morning. For the past two weeks, the old man had walked him to the training area each day, standing at a distance with the same composed watchfulness he had shown during the river sessions. Today Thirteen did not wait. He dressed, ate nothing, and walked into the cold dark with Lumara at his heel.
+The Steward had not directed him there this morning. For the past two weeks, the old man had walked him to the training area each day, standing at a distance with the same composed watchfulness he had shown during the river sessions. Today William did not wait. He dressed, ate nothing, and walked into the cold dark with Lumara at his heel.
 
 The western training ground was a stretch of hard-packed earth and exposed stone — the one part of the farm that had never been cultivated, the soil too thin and rocky for planting. The Steward had brought him here after that first evening when the ground near the southern paddy had collapsed. "The creature lives in the deep clay," the old man had said. "But it surfaces where the substrate is thinnest. This is where it will meet you."
 
-Thirteen sat down on the flat stone at the area's center.
+William sat down on the flat stone at the area's center.
 
 He placed both hands on the ground.
 
@@ -152,13 +152,13 @@ He did not know when that had started.
 
 ---
 
-Lumara had not moved. She sat on her root and watched, and when the creature's tremor-plate turned from Thirteen toward her she did not flinch. She regarded it with the quiet assessment she gave to all things that were real and consequential, and it regarded her with whatever regard a creature of tremor could offer, and something passed between them that Thirteen felt through the Tha Tâm Tức as a simple acknowledgment: *ah, you too.*
+Lumara had not moved. She sat on her root and watched, and when the creature's tremor-plate turned from William toward her she did not flinch. She regarded it with the quiet assessment she gave to all things that were real and consequential, and it regarded her with whatever regard a creature of tremor could offer, and something passed between them that William felt through the Hearthspeak as a simple acknowledgment: *ah, you too.*
 
 The creature sank.
 
 Slowly, the way it had risen — the earth accepting its body back, the clay closing over it section by section, the interlocking plates disappearing into the medium that had made them. The tremor-plate was the last thing to submerge, vibrating steadily until the earth sealed over it and the ground was ground again.
 
-The flat stone beneath Thirteen's feet was warm.
+The flat stone beneath William's feet was warm.
 
 Not from the sun — from below. From the passage of something large and patient returning to its domain, leaving behind a warmth that was not heat but presence. The memory of contact.
 
@@ -168,9 +168,9 @@ He stood in the early morning light and felt the farm beneath him — the whole 
 
 The Steward was standing at the edge of the training area.
 
-He had not been there when Thirteen arrived. He was there now, both hands wrapped around a clay cup, his expression the one he wore when assessing weather — calm, observational, the face of a man who measures conditions rather than reacts to events.
+He had not been there when William arrived. He was there now, both hands wrapped around a clay cup, his expression the one he wore when assessing weather — calm, observational, the face of a man who measures conditions rather than reacts to events.
 
-"It surfaced," Thirteen said.
+"It surfaced," William said.
 
 "Yes."
 
@@ -178,7 +178,7 @@ He had not been there when Thirteen arrived. He was there now, both hands wrappe
 
 The Steward took a slow sip. "I know."
 
-Thirteen looked at the old man across the scored and cracked ground of the training area, this stretch of rocky earth that had been his classroom for two weeks. "You didn't bring this one, did you."
+William looked at the old man across the scored and cracked ground of the training area, this stretch of rocky earth that had been his classroom for two weeks. "You didn't bring this one, did you."
 
 It was not a question, but the Steward answered it anyway. "No."
 
@@ -186,23 +186,23 @@ It was not a question, but the Steward answered it anyway. "No."
 
 "The Rootwhisper called it."
 
-Thirteen was quiet.
+William was quiet.
 
-"Your rice," the Steward said, and there was something in his voice — the genuine careful that had appeared once before, at the Linh ngu breakthrough, the careful of a man choosing words for things that mattered. "Your Rootwhisper. It has been growing through this ground for three years, and the ground has been holding it, and the creature that maintains this ground has been... aware. Of the roots moving through its passages. Of something new growing in its medium." He set the cup on a nearby stone. "It came because the rice asked it to come. Not with words. With roots."
+"Your rice," the Steward said, and there was something in his voice — the genuine careful that had appeared once before, at the Stillmind breakthrough, the careful of a man choosing words for things that mattered. "Your Rootwhisper. It has been growing through this ground for three years, and the ground has been holding it, and the creature that maintains this ground has been... aware. Of the roots moving through its passages. Of something new growing in its medium." He set the cup on a nearby stone. "It came because the rice asked it to come. Not with words. With roots."
 
-Thirteen thought about this. About the Rootwhisper he had contracted with three years ago — the quiet, patient, foundational presence that had seemed so passive, so much like background. The thing he stood on. The thing he ate from. The thing that bound him to this land through hunger.
+William thought about this. About the Rootwhisper he had contracted with three years ago — the quiet, patient, foundational presence that had seemed so passive, so much like background. The thing he stood on. The thing he ate from. The thing that bound him to this land through hunger.
 
 "The rice is doing things I don't know about."
 
 "The rice," the Steward said, "has always been doing things you don't know about. The contract grows by attention — yours and its. You have been attending to it for three years. It has been attending to you for the same." A pause. "You are not the only one in this relationship who acts."
 
-He looked at Thirteen with an expression that, for the first time in three years, Thirteen could read without effort. Not pride. Not satisfaction. Something quieter and older than either — the expression of someone watching something they planted begin to bear its intended fruit. A gardener recognizing the first bud on a tree whose harvest was years away but no longer uncertain.
+He looked at William with an expression that, for the first time in three years, William could read without effort. Not pride. Not satisfaction. Something quieter and older than either — the expression of someone watching something they planted begin to bear its intended fruit. A gardener recognizing the first bud on a tree whose harvest was years away but no longer uncertain.
 
 "The tiger teaches the surface," the Steward said. "The fish teaches what moves. The earth teaches what holds." He picked up his cup. "Now you know all three."
 
 ---
 
-Lumara dropped from her root and walked to Thirteen across the training ground. Her feet found the cracks and avoided them, precise as always, and she pressed her side against his ankle and was warm.
+Lumara dropped from her root and walked to William across the training ground. Her feet found the cracks and avoided them, precise as always, and she pressed her side against his ankle and was warm.
 
 *You learned to listen to the tiger*, she said. *You learned to listen to the fish. Now you have learned to listen to the earth.*
 
@@ -210,7 +210,7 @@ She tilted her head, the gesture he had watched a thousand times, the reading of
 
 *And me — you have been listening to me for a long time already.*
 
-He crouched and pressed his hand against her feathers. She was warm in the way she had always been warm — quick, sustained, the heat of something that burned steady. Through the Tha Tâm Tức he felt the texture of her thought: satisfaction that was not pride, recognition that was not surprise. She had known this was coming. Perhaps she had known longer than he had.
+He crouched and pressed his hand against her feathers. She was warm in the way she had always been warm — quick, sustained, the heat of something that burned steady. Through the Hearthspeak he felt the texture of her thought: satisfaction that was not pride, recognition that was not surprise. She had known this was coming. Perhaps she had known longer than he had.
 
 "How long?" he asked.
 
@@ -230,7 +230,7 @@ Beneath his feet, every step, he felt the network. The roots and the tunnels. Th
 
 The Steward fell into step beside him at the gate.
 
-"There's a question I haven't asked," Thirteen said.
+"There's a question I haven't asked," William said.
 
 The old man waited.
 
@@ -244,7 +244,7 @@ They walked through the gate and into the farmyard, and the sounds of morning be
 
 The dream came that night.
 
-The eighteen figures in their circle. The woman who had said *There you are.* The one who had stood rooted while the darkness attacked. Tonight, that one — the figure who had planted his feet and held while the ground shook — turned toward Thirteen.
+The eighteen figures in their circle. The woman who had said *There you are.* The one who had stood rooted while the darkness attacked. Tonight, that one — the figure who had planted his feet and held while the ground shook — turned toward William.
 
 He did not speak.
 
@@ -252,7 +252,7 @@ He nodded. Once. The slow, heavy nod of something made of the same substance as 
 
 Acknowledgment.
 
-Thirteen woke in the dark and pressed his hand against the floor and felt the earth's pulse, steady and deep, and the creature moving through it, and the roots growing through both.
+William woke in the dark and pressed his hand against the floor and felt the earth's pulse, steady and deep, and the creature moving through it, and the roots growing through both.
 
 *You must hurry,* said the dream-voice, as it always did.
 

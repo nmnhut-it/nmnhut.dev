@@ -12,7 +12,7 @@ Not stand the way he had always stood — upright, balanced, weight distributed 
 
 He could no longer trust the ground.
 
-For seven days he had practiced sensing through the Rootwhisper's roots — extending his awareness downward into the clay and gravel of the western field, learning to read the density of earth the way he had learned to read the current of the Kì Cùng. He knew when the creature was near. The ground grew heavier in one direction, as though gravity had acquired a preference. He could track it — a slow, massive presence moving beneath the topsoil like a thought moving through a sleeping mind.
+For seven days he had practiced sensing through the Rootwhisper's roots — extending his awareness downward into the clay and gravel of the western field, learning to read the density of earth the way he had learned to read the current of the Rimbrook. He knew when the creature was near. The ground grew heavier in one direction, as though gravity had acquired a preference. He could track it — a slow, massive presence moving beneath the topsoil like a thought moving through a sleeping mind.
 
 But knowing where it was did not help when the ground opened.
 
@@ -20,7 +20,7 @@ The pit had taught him that. The sudden absence of surface, the clay splitting a
 
 "You cannot dodge what is beneath you," the Steward said.
 
-They were standing in the packed-earth yard between the kitchen and the barn. Early morning, the light still grey. The Steward held a wooden staff — the same one Thirteen had used against the tiger, its surface worn smooth by three years of handling.
+They were standing in the packed-earth yard between the kitchen and the barn. Early morning, the light still grey. The Steward held a wooden staff — the same one William had used against the tiger, its surface worn smooth by three years of handling.
 
 "The tiger comes from ahead. The fish comes from the water. Both can be seen, or felt, or anticipated in a direction." The Steward planted the staff vertically and rested his hands on it. "This one comes from below. From the surface you stand on. There is no direction to dodge toward when the attack is the ground itself."
 
@@ -36,9 +36,9 @@ The stance was simple in the way that all of the Steward's teachings were simple
 
 Feet wider than the shoulders. Knees bent, not locked — the angle that held weight without transmitting shock upward. Centre of gravity low, sunk into the hips rather than held in the chest. Arms loose. Breathing steady. The body arranged not for movement but for *remaining* — organized around the single principle that whatever happened below, the structure above would not collapse.
 
-"Hold," the Steward said, and struck Thirteen's left shin with the staff.
+"Hold," the Steward said, and struck William's left shin with the staff.
 
-The blow came fast and horizontal, aimed at the bone. Thirteen's body lurched sideways, the leg wanting to fold, the instinct to dodge screaming through his reflexes. His right foot slid on the packed earth. He stumbled, caught himself on one knee.
+The blow came fast and horizontal, aimed at the bone. William's body lurched sideways, the leg wanting to fold, the instinct to dodge screaming through his reflexes. His right foot slid on the packed earth. He stumbled, caught himself on one knee.
 
 "Again."
 
@@ -48,7 +48,7 @@ The staff cracked against his right calf. He swayed but held. Barely — his tee
 
 "Better." The Steward circled. "The temptation is always to move. The tiger trained you to move — to find the opening, to step toward it. The river trained you to yield. Both of those instincts will fail you now. The ground does not present openings. You cannot yield to something beneath your feet."
 
-Another strike, this time at the back of both legs simultaneously. Thirteen went down. His knees hit the hard earth and his palms slapped the surface and the jolt ran through his arms into his shoulders.
+Another strike, this time at the back of both legs simultaneously. William went down. His knees hit the hard earth and his palms slapped the surface and the jolt ran through his arms into his shoulders.
 
 He got up.
 
@@ -60,15 +60,15 @@ By mid-morning he had been swept off his feet seven times.
 
 His shins ached in two places. His right knee had a scrape that wept thin blood into the dust. Lumara had settled on his left shoulder after the third fall — not to assist, but to add her weight. An extra challenge, or an extra presence. He could feel her talons through his shirt, the small adjustments she made each time he swayed, the patient way she redistributed herself when he recovered. She was heavier than people assumed. Dense, in the way of creatures that flew — compact muscle and hollow bone and the particular solidity of something that could hold itself in the air.
 
-"She's not helping," Thirteen said between breaths, meaning the additional weight.
+"She's not helping," William said between breaths, meaning the additional weight.
 
 *I am helping*, Lumara said. *You are simply not finished learning why.*
 
-The Steward paused, staff resting across his forearms. He looked at Thirteen — at the stance, the breathing, the way the boy's body had begun, despite the repeated falls, to reorganize itself around the new principle. Not movement. Not yield. Hold.
+The Steward paused, staff resting across his forearms. He looked at William — at the stance, the breathing, the way the boy's body had begun, despite the repeated falls, to reorganize itself around the new principle. Not movement. Not yield. Hold.
 
 "Enough," he said. "Go to the western field."
 
-Thirteen looked at him. The western field. The rocky ground where the Tremor had first shown itself — the place where, a week ago, he had fallen into a pit that opened without warning beneath him.
+William looked at him. The western field. The rocky ground where the Tremor had first shown itself — the place where, a week ago, he had fallen into a pit that opened without warning beneath him.
 
 "Now?"
 
@@ -78,7 +78,7 @@ Thirteen looked at him. The western field. The rocky ground where the Tremor had
 
 The western field in late afternoon. Low sun, long shadows from the treeline. The ground here was different from the paddy — harder, shot through with stone, the kind of earth that broke mattock handles and grew nothing willingly. The Steward had never cultivated this section. It had always been the farm's dead ground, the place where tools went to be sharpened and firewood went to be split.
 
-Now Thirteen understood why it had been left empty. The Tremor's territory. Or not territory — medium. The way the Kì Cùng was the Tidecaller's medium.
+Now William understood why it had been left empty. The Tremor's territory. Or not territory — medium. The way the Rimbrook was the Tidecaller's medium.
 
 He stood in the centre of the field and sank into the stance. Feet wide. Knees bent. Centre low. Lumara on his shoulder, her weight familiar now, her talons steady.
 
@@ -122,23 +122,23 @@ He did not fall.
 
 *What is it doing?* Lumara asked from his shoulder. Her voice carried the particular quality he was learning to recognize as unease — not the bright, sharp alertness she had for things she could fight, but a quieter thing. Uncertainty. She could not sense the Tremor the way she sensed the tiger or the Tidecaller. Its vitality did not radiate outward. It was absorbed inward, held close, indistinguishable from the earth it inhabited.
 
-"Waiting," Thirteen said through gritted teeth.
+"Waiting," William said through gritted teeth.
 
 *For what?*
 
 He did not know. The creature's ridge of armored stone remained half-emerged from the broken ground, its eyeless face — if it could be called a face — oriented toward him by vibration. The two breathing slits pulsed slowly. The ground around them both continued its subtle motion.
 
-He tried to reach it with the Tha Tam Tuc.
+He tried to reach it with the Hearthspeak.
 
 Nothing.
 
-Not the nothing of a creature that did not hear — the nothing of a creature that did not communicate in the medium he was offering. When he spoke to Lumara through the Tha Tam Tuc, the exchange moved through a shared space between their minds, a frequency they both inhabited. When he had tried to speak to the Tidecaller, he had reached into the cold depth of water-consciousness and found, eventually, a channel.
+Not the nothing of a creature that did not hear — the nothing of a creature that did not communicate in the medium he was offering. When he spoke to Lumara through the Hearthspeak, the exchange moved through a shared space between their minds, a frequency they both inhabited. When he had tried to speak to the Tidecaller, he had reached into the cold depth of water-consciousness and found, eventually, a channel.
 
 The Tremor had no channel. Or its channel was so far from the frequency of thought-and-word that reaching for it was like trying to pour water into stone. The creature did not think in words. It did not think in images. It thought in tremors — in the language of compression and release, of weight shifting through strata, of the slow conversations that stone had with stone over millennia.
 
 *It doesn't hear you*, Lumara said. Not unkindly. *It is not like us. It thinks in what it is.*
 
-"Tremors," Thirteen said.
+"Tremors," William said.
 
 *Yes.*
 
@@ -186,15 +186,15 @@ The sky was clear and very far away.
 
 ---
 
-The Steward appeared at the field's edge. He had not been there before — or if he had, Thirteen had not noticed him. The old man walked across the broken ground with the unhurried steps of someone who knew the creature would not interfere with him, and crouched beside Thirteen.
+The Steward appeared at the field's edge. He had not been there before — or if he had, William had not noticed him. The old man walked across the broken ground with the unhurried steps of someone who knew the creature would not interfere with him, and crouched beside William.
 
-He looked at the shoulder. Pressed two fingers against the joint, probing. Thirteen hissed through his teeth.
+He looked at the shoulder. Pressed two fingers against the joint, probing. William hissed through his teeth.
 
 "Not dislocated," the Steward said. "Bruised. Deeply."
 
 He produced a strip of cloth from somewhere — he always had cloth, the way he always had tea, as though the necessities of care existed in his sleeves by permanent arrangement — and wrapped the shoulder in quick, practiced turns.
 
-"It changed direction," Thirteen said.
+"It changed direction," William said.
 
 "Yes."
 
@@ -204,33 +204,33 @@ He produced a strip of cloth from somewhere — he always had cloth, the way he 
 
 "What?"
 
-The old man sat back on his heels and looked at Thirteen with an expression that was, for a fractional moment, unguarded. Not the composed assessment. Not the measuring. Something simpler. Something that might have been the expression of a man watching a plant he had been tending for a long time begin to grow in the direction he had hoped.
+The old man sat back on his heels and looked at William with an expression that was, for a fractional moment, unguarded. Not the composed assessment. Not the measuring. Something simpler. Something that might have been the expression of a man watching a plant he had been tending for a long time begin to grow in the direction he had hoped.
 
 "Your mother would have wanted you to know this," the Steward said quietly, then stopped himself. The words hung in the air like something that had slipped out of his hands before he could stop it.
 
-Thirteen went very still.
+William went very still.
 
-*Your mother.* Not "a person." Not "someone before you." *Your mother.* In three years the Steward had never mentioned parents. Had never acknowledged that Thirteen had come from anywhere at all — as though he had simply appeared on the farm at age thirteen, formed from the same clay the rice grew in.
+*Your mother.* Not "a person." Not "someone before you." *Your mother.* In three years the Steward had never mentioned parents. Had never acknowledged that William had come from anywhere at all — as though he had simply appeared on the farm at age thirteen, formed from the same clay the rice grew in.
 
 The old man's face closed. The usual stillness returned, swift and complete, a door shut on something that had been opened by mistake.
 
-Thirteen filed it. Beside the questions he already carried — *why this farm, why this contract, why me* — he placed the new one: *the Steward knew my mother.* He did not ask. He had learned, across three years of silences and calibrated answers, that the old man's slips were rarer and more honest than his explanations.
+William filed it. Beside the questions he already carried — *why this farm, why this contract, why me* — he placed the new one: *the Steward knew my mother.* He did not ask. He had learned, across three years of silences and calibrated answers, that the old man's slips were rarer and more honest than his explanations.
 
 "Tomorrow," he said. "Today you rest."
 
-He helped Thirteen to his feet. The shoulder protested. The legs, battered from a morning of staff strikes and an afternoon of shifting ground, protested louder. Thirteen stood in the western field with his shoulder bound and his body aching and looked at the ground where the creature had erupted from the side.
+He helped William to his feet. The shoulder protested. The legs, battered from a morning of staff strikes and an afternoon of shifting ground, protested louder. William stood in the western field with his shoulder bound and his body aching and looked at the ground where the creature had erupted from the side.
 
 The earth was already resealing. The cracks filling in, the gravel resettling, the surface smoothing itself with the patient self-repair of a world that had been broken and mended more times than could be counted.
 
 ---
 
-That night, sitting by the kitchen fire with the shoulder wrapped and the ache settling into the bone, he tried to explain what the Tha Tam Tuc had failed to do.
+That night, sitting by the kitchen fire with the shoulder wrapped and the ache settling into the bone, he tried to explain what the Hearthspeak had failed to do.
 
 "I can't reach it," he said. "The way I reach Lumara, or the way I reached for the Tidecaller through the water. It doesn't... it's not there. Not in the place where communication happens."
 
 The Steward poured tea. "What place is that?"
 
-"The place where thought meets thought. Where I send something and something comes back." Thirteen turned the clay cup in his hands. "Lumara thinks in words now — or something that becomes words when it reaches me. The Tidecaller thought in... directions. Pressures. I could translate those into something I understood. But this one—"
+"The place where thought meets thought. Where I send something and something comes back." William turned the clay cup in his hands. "Lumara thinks in words now — or something that becomes words when it reaches me. The Tidecaller thought in... directions. Pressures. I could translate those into something I understood. But this one—"
 
 He stopped.
 
@@ -238,17 +238,17 @@ He stopped.
 
 The Steward set down the pot.
 
-"Every creature communicates in the medium of its existence," the old man said. "The bird in air. The fish in water. The thing beneath us in earth." He paused. "Tha Tam Tuc opens the door between your mind and theirs. But if their mind operates in a language your body cannot produce—"
+"Every creature communicates in the medium of its existence," the old man said. "The bird in air. The fish in water. The thing beneath us in earth." He paused. "Hearthspeak opens the door between your mind and theirs. But if their mind operates in a language your body cannot produce—"
 
 "Then I need to learn to speak in tremors."
 
-The Steward looked at him. The firelight moved across his face, catching the lines of his expression, and for a moment Thirteen saw — as he sometimes saw now, with the new clarity of Linh ngu — the deep structure of the old man's thinking. Not his thoughts. The architecture behind them. The pattern of a mind that had been building something for a very long time and was watching the pieces fall into position.
+The Steward looked at him. The firelight moved across his face, catching the lines of his expression, and for a moment William saw — as he sometimes saw now, with the new clarity of Stillmind — the deep structure of the old man's thinking. Not his thoughts. The architecture behind them. The pattern of a mind that had been building something for a very long time and was watching the pieces fall into position.
 
 "You need to learn," the Steward agreed, "that not everything communicates the way you do. Some things can only be understood by becoming more like what they are."
 
 He drank his tea.
 
-The fire settled. Outside, the farm was quiet in the way it was always quiet — the distant Kì Cùng, the bamboo, the Rootwhisper breathing in its rows. And beneath all of it, too deep for hearing, too slow for attention that measured in heartbeats: the Tremor, moving through the earth in rhythms that predated the farm, the rice, and the boy who sat above it learning that the world contained languages he had not yet imagined.
+The fire settled. Outside, the farm was quiet in the way it was always quiet — the distant Rimbrook, the bamboo, the Rootwhisper breathing in its rows. And beneath all of it, too deep for hearing, too slow for attention that measured in heartbeats: the Tremor, moving through the earth in rhythms that predated the farm, the rice, and the boy who sat above it learning that the world contained languages he had not yet imagined.
 
 ---
 
@@ -256,23 +256,23 @@ He dreamed.
 
 The eighteen figures stood as they always stood — scattered across the grey landscape that was nowhere and everywhere. But tonight, one of them was different.
 
-One figure stood at the edge of the formation, apart from the others. Not fighting the bóng đen, not engaging the endless battle that played out across the dream-landscape in sequences he could never quite remember upon waking. This one stood still.
+One figure stood at the edge of the formation, apart from the others. Not fighting the shadow, not engaging the endless battle that played out across the dream-landscape in sequences he could never quite remember upon waking. This one stood still.
 
 Absolutely still.
 
-Both feet on the ground, and the ground — which elsewhere in the dream cracked and buckled and broke apart under the force of whatever the bóng đen brought — did not crack beneath this figure. The earth around the still one held. Not because it was stronger ground, not because some barrier protected it. Because the figure standing on it was so completely part of the ground that breaking one would mean breaking the other.
+Both feet on the ground, and the ground — which elsewhere in the dream cracked and buckled and broke apart under the force of whatever the shadow brought — did not crack beneath this figure. The earth around the still one held. Not because it was stronger ground, not because some barrier protected it. Because the figure standing on it was so completely part of the ground that breaking one would mean breaking the other.
 
-Thirteen watched.
+William watched.
 
-The bóng đen surged toward the still figure. The ground shook. The other seventeen heroes moved and fought and fell and rose. The still one did not move.
+The shadow surged toward the still figure. The ground shook. The other seventeen heroes moved and fought and fell and rose. The still one did not move.
 
-The bóng đen hit the ground around the figure and the ground did not break.
+The shadow hit the ground around the figure and the ground did not break.
 
 *Hold*, said no voice, from everywhere at once.
 
 *Hold what you stand on by standing on it.*
 
-He woke in the dark. The shoulder ached. The contract thread hummed its Linh ngu frequency, quiet and steady.
+He woke in the dark. The shoulder ached. The contract thread hummed its Stillmind frequency, quiet and steady.
 
 Outside, the earth held what it held.
 

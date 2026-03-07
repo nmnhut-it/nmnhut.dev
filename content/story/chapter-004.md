@@ -1,12 +1,12 @@
 ---
 title: "Chapter 004: Hunger Calls the Hunt"
-weight: 04
+weight: 4
 draft: false
 ---
 
 # Chapter 004: Hunger Calls the Hunt
 
-Three weeks after the contract, Thirteen had learned the shape of his hunger.
+Three weeks after the contract, William had learned the shape of his hunger.
 
 It was not the hunger of a boy who had skipped lunch. It was older than that — a hollow pressure beneath the breastbone that had nothing to do with the stomach, that could not be tricked by eating. He had tried. In the first days after touching the Rootwhisper, he had stuffed himself until he could not sit straight, and the hollow had watched him do it with complete indifference. Rice filled the stomach. The hunger lived somewhere the stomach could not reach.
 
@@ -16,7 +16,7 @@ He had asked the Steward, on the third day, whether the hunger would worsen.
 
 "Stabilize," the old man had said, without looking up from the pot he was stirring. "Once you understand it."
 
-Thirteen had not found it especially helpful. But by the second week, he thought he saw what the Steward meant. The hunger did not grow. It remained constant — a fixed condition, like the weight of a stone placed on the chest, present every morning and every night and every hour between. He had stopped waking hoping it would be gone. He had stopped eating extra rice. He had stopped, in some exhausted and necessary way, treating it as a problem that might be solved, and started treating it as weather.
+William had not found it especially helpful. But by the second week, he thought he saw what the Steward meant. The hunger did not grow. It remained constant — a fixed condition, like the weight of a stone placed on the chest, present every morning and every night and every hour between. He had stopped waking hoping it would be gone. He had stopped eating extra rice. He had stopped, in some exhausted and necessary way, treating it as a problem that might be solved, and started treating it as weather.
 
 Weather. Permanent and inarguable.
 
@@ -32,7 +32,7 @@ The contract did not forgive distance.
 
 He had come back that evening and sat in the yard for a long time before he went inside. The Steward had not remarked on where he had been. He had only placed a bowl of congee on the table and poured tea, and the silence between them had been what it always was: without apology and without explanation.
 
-Thirteen had found, sometime in the third week, that he did not hate the farm.
+William had found, sometime in the third week, that he did not hate the farm.
 
 He had thought he might. He had stood in the paddies after the contract knowing he was bound here, and the knowing had sat in him sour and hard. But a thing you cannot change becomes, in time, simply real. The paddies were green. The mornings came clear and cold. Lumara wandered the yard with the measured dignity she had acquired since her awakening, and sometimes she came to press herself against his feet with the focused warmth of an old friend choosing to stay.
 
@@ -44,17 +44,17 @@ These were different things.
 
 It was the Steward who came to him, on the morning of the twenty-second day.
 
-Thirteen was mending a section of the yard fence — two boards had warped and pulled their nails, and the gap let small creatures through from the undergrowth. He had his mallet and was working steadily. Lumara crouched nearby in a patch of sun, watching the work with the attentive stillness she had developed lately, as though she found the repetition instructive.
+William was mending a section of the yard fence — two boards had warped and pulled their nails, and the gap let small creatures through from the undergrowth. He had his mallet and was working steadily. Lumara crouched nearby in a patch of sun, watching the work with the attentive stillness she had developed lately, as though she found the repetition instructive.
 
 "Come," the Steward said.
 
-Thirteen straightened. The old man stood at the edge of the yard, already turned toward the east path — not the paddies, but the rough track that ran along the edge of the property and curved away into the treeline. Thirteen had never followed it past where the trees began to thicken.
+William straightened. The old man stood at the edge of the yard, already turned toward the east path — not the paddies, but the rough track that ran along the edge of the property and curved away into the treeline. William had never followed it past where the trees began to thicken.
 
 "Come where?"
 
 The Steward did not answer. He simply began to walk.
 
-Thirteen set down the mallet, glanced at Lumara. She had risen from her crouch and was watching the Steward's retreating figure with an expression that, if a hen could be said to have expressions, he would have called alert.
+William set down the mallet, glanced at Lumara. She had risen from her crouch and was watching the Steward's retreating figure with an expression that, if a hen could be said to have expressions, he would have called alert.
 
 He followed.
 
@@ -62,13 +62,13 @@ He followed.
 
 The forest beyond the east track was old growth — timber that had not been thinned in decades, the canopy high and closing, the undergrowth sparse where the light could not reach the ground. The air changed the moment they passed beneath the first line of trees. Cooler. Denser. Carrying the smell of wet bark and something older, like stone that had been rained on for centuries.
 
-Lumara walked between them. She had not hesitated at the treeline, which Thirteen had half-expected — awakened creature or not, she was still a hen, and the forest was not her ground. But she kept pace with her head up and her gaze moving, reading the spaces between the trunks with those dark eyes that saw more than they should.
+Lumara walked between them. She had not hesitated at the treeline, which William had half-expected — awakened creature or not, she was still a hen, and the forest was not her ground. But she kept pace with her head up and her gaze moving, reading the spaces between the trunks with those dark eyes that saw more than they should.
 
-The hunger, away from the farm, sharpened. Not to crisis — not yet — but enough that Thirteen felt each step as a small expenditure, a cost drawn against a balance that was already thin. He said nothing about it. The Steward had not told him how far they were going.
+The hunger, away from the farm, sharpened. Not to crisis — not yet — but enough that William felt each step as a small expenditure, a cost drawn against a balance that was already thin. He said nothing about it. The Steward had not told him how far they were going.
 
 He did not ask.
 
-They walked for perhaps a quarter hour. The path the Steward took was not a path at all — a direction, rather, a practiced movement through the trees that only looked purposeful because the old man moved through it so easily. Thirteen watched the ground and kept his footing.
+They walked for perhaps a quarter hour. The path the Steward took was not a path at all — a direction, rather, a practiced movement through the trees that only looked purposeful because the old man moved through it so easily. William watched the ground and kept his footing.
 
 Then the Steward stopped.
 
@@ -78,7 +78,7 @@ There was a place between two ancient trees where the undergrowth opened into a 
 
 The Three-Legged Tiger sat in the center of the clearing.
 
-Thirteen went still.
+William went still.
 
 He had seen tigers before. Travelers passing through the valley sometimes described them; one winter, a farmer who had lost three sheep brought an account to the village hall, detailed and frightened. He had formed a picture from those descriptions. Large. Striped. Dangerous in the blunt, ordinary way of large predators.
 
@@ -90,11 +90,11 @@ And where the left foreleg should have been, there was nothing.
 
 Not a wound. Not a healed stump. The leg simply ended at the shoulder, the fur smooth and unbroken, as though it had been made this way. The tiger bore its own weight on the three remaining limbs with a settled, practiced ease. It did not list. It did not compensate in the obvious way of injured creatures. It simply — stood, the way something stands when it has long since accepted what it is.
 
-It was looking at Thirteen.
+It was looking at William.
 
 Not with the flat attention of an ordinary animal, calculating distance and the mathematics of pursuit. This was different. Measured. Patient. The gaze of a creature that has time, that has had time for a long while, and is in no hurry to use it up.
 
-Thirteen understood, in his bones before his mind caught up: *this creature has undergone khai linh.*
+William understood, in his bones before his mind caught up: *this creature has undergone Kindling.*
 
 The Steward stood to his left, both hands clasped behind his back, his face turned toward the tiger. He said nothing. He gave no instruction.
 
@@ -102,19 +102,19 @@ The hunger pulled, sharper than it had been since the first days — tugged at t
 
 ---
 
-Thirteen breathed slowly.
+William breathed slowly.
 
 "You brought it here," he said. Not a question.
 
 "It was already close," the Steward said. "I made a path."
 
-A path. The old man could arrange tigers the way he arranged breakfast — as simple logistics, as things that needed placing. Thirteen had known, for three weeks now, that the Steward had planned all of this. The millet. The honeybee. The Lumara. Every step the Steward seemed to suggest had in fact been a step placed for him to land on, so that he arrived where the Steward had already decided he would arrive. He had stopped being surprised by this. He had not yet decided what to do with it.
+A path. The old man could arrange tigers the way he arranged breakfast — as simple logistics, as things that needed placing. William had known, for three weeks now, that the Steward had planned all of this. The millet. The honeybee. The Lumara. Every step the Steward seemed to suggest had in fact been a step placed for him to land on, so that he arrived where the Steward had already decided he would arrive. He had stopped being surprised by this. He had not yet decided what to do with it.
 
 "What do I do?" he asked.
 
 "What does the hunger want you to do?"
 
-He hated this. The old man's way of answering questions with questions, as though the knowledge were already inside Thirteen and only needed to be located. Maybe it was. Maybe that made it no less infuriating.
+He hated this. The old man's way of answering questions with questions, as though the knowledge were already inside William and only needed to be located. Maybe it was. Maybe that made it no less infuriating.
 
 He looked at the tiger.
 
@@ -122,7 +122,7 @@ The tiger looked back.
 
 The hunger was a fist pressed beneath his ribs, insistent and precise, pointing at the animal the way a compass needle points to its fixed north. *There. That. It needs you, and you need it.*
 
-Thirteen took one step forward.
+William took one step forward.
 
 The tiger did not move.
 
@@ -134,9 +134,9 @@ The tiger's eyes were golden — the same pale gold as the Rootwhisper in the mo
 
 One of the tiger's ears turned toward him, slow and complete, the way a person turns their head to hear better.
 
-Thirteen held out his hand.
+William held out his hand.
 
-He did not know why he did it — it was the same gesture he had made toward the rice, toward Lumara on the morning after her khai linh. Something in him recognized the motion as appropriate, the way the body sometimes knows the right word before the mind does.
+He did not know why he did it — it was the same gesture he had made toward the rice, toward Lumara on the morning after her Kindling. Something in him recognized the motion as appropriate, the way the body sometimes knows the right word before the mind does.
 
 The tiger regarded his outstretched hand for a long moment.
 
@@ -158,7 +158,7 @@ Not painfully. It was more like a door swinging wide — the hunger that had bee
 
 It was still there. It would always be there. But it was quieter. Much quieter. The way a high wind drops, not into silence but into something that can be lived in.
 
-Thirteen stood with his palm against the tiger's forehead and breathed.
+William stood with his palm against the tiger's forehead and breathed.
 
 The tiger was still.
 
@@ -168,11 +168,11 @@ Lumara, from somewhere behind him, made a small sound — not startled, more lik
 
 He did not know how long they stood there. Long enough that the column of light in the clearing shifted, the angle changing as the sun moved, the shadows on the moss rearranging themselves in their slow, indifferent way.
 
-When Thirteen finally lowered his hand, the tiger raised its head and watched him with those golden eyes.
+When William finally lowered his hand, the tiger raised its head and watched him with those golden eyes.
 
 The Steward had not moved. He stood at the edge of the clearing with his hands behind his back, looking at nothing in particular — the canopy, the treeline — and he did not speak.
 
-Thirteen looked at him. "Now what?"
+William looked at him. "Now what?"
 
 The old man glanced over. "That's your question to answer."
 
@@ -180,7 +180,7 @@ The old man glanced over. "That's your question to answer."
 
 "You have three weeks' experience of the hunger. What is it telling you?"
 
-Thirteen turned back to the tiger.
+William turned back to the tiger.
 
 The hollow in his chest had settled to its quietest in twenty-two days. And when he paid attention to it — really paid attention, the way he had learned to track the Rootwhisper's breathing through the soil — he could feel that the tiger was part of this now. Not contracted, not bound. But present in the hunger's awareness the way a heat source is present to cold hands: distinct, specific, real.
 
@@ -192,7 +192,7 @@ What happened instead: the tiger rose to its feet. One smooth motion — the thr
 
 As if it, too, had been ready for this a long time. As if the clearing and the old-growth forest and the morning light were all stages it had passed through, and the only remaining question had been when the farm boy would come to walk the path back with it.
 
-Thirteen breathed out.
+William breathed out.
 
 "All right," he said, to the tiger, to the forest, to himself.
 
@@ -200,7 +200,7 @@ He turned and began to walk.
 
 ---
 
-The Steward fell in behind them. The tiger moved at Thirteen's left side — not close enough to touch, but close enough that he could feel the shift of air when its great body moved. Lumara kept to his right, head up, following the path through the trees with a new kind of attention in her bearing, as though the world had expanded by exactly one category and she was updating her understanding accordingly.
+The Steward fell in behind them. The tiger moved at William's left side — not close enough to touch, but close enough that he could feel the shift of air when its great body moved. Lumara kept to his right, head up, following the path through the trees with a new kind of attention in her bearing, as though the world had expanded by exactly one category and she was updating her understanding accordingly.
 
 The hunger had not gone. It was never going to go. But right now it lay quiet, held in balance by the presence moving alongside him through the old-growth, and the farm's pull was a thing he walked toward rather than a thing pulling him back.
 
@@ -214,13 +214,13 @@ He was beginning to understand that hurrying did not mean moving fast. It meant 
 
 Continuing, even when continuing was the only choice you had.
 
-The treeline broke. The east track opened before them, and beyond it the paddies caught the morning sun, and the smell of turned earth and growing things came to meet them — the smell Thirteen had known since before he could remember knowing anything. The farm.
+The treeline broke. The east track opened before them, and beyond it the paddies caught the morning sun, and the smell of turned earth and growing things came to meet them — the smell William had known since before he could remember knowing anything. The farm.
 
 He walked out of the forest with a tiger at his side, and he did not look back at the trees.
 
 At the edge of the yard, the tiger stopped.
 
-It stood at the gate and regarded the farm — the paddies, the henhouse, the small house with its plain tile roof — and then it turned and walked back into the tree line without sound, without hurry, without any explanation Thirteen could read. Only the certainty of an animal that has decided something and acted on it.
+It stood at the gate and regarded the farm — the paddies, the henhouse, the small house with its plain tile roof — and then it turned and walked back into the tree line without sound, without hurry, without any explanation William could read. Only the certainty of an animal that has decided something and acted on it.
 
 He stood at the gate and watched it go.
 

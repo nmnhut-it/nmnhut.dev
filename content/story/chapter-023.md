@@ -8,7 +8,7 @@ draft: false
 
 He woke before dawn and knew immediately.
 
-Not because of sound. Not because of the Tha Tam Tuc going still, or the contract thread shifting register, or any of the sensory apparatus the khai linh had built into him over three years of slow and patient work. He knew because of the quality of the sky beyond the window — the particular dark before first light, cloudless and immense and empty in a way that was not simply night.
+Not because of sound. Not because of the Hearthspeak going still, or the contract thread shifting register, or any of the sensory apparatus the Kindling had built into him over three years of slow and patient work. He knew because of the quality of the sky beyond the window — the particular dark before first light, cloudless and immense and empty in a way that was not simply night.
 
 He lay still for a moment.
 
@@ -18,11 +18,11 @@ He didn't need her to.
 
 ---
 
-Outside, the air was cold. The kind of cold that came in the last weeks before winter proper, when the season had decided but not yet fully arrived — the air tasted of frost that hadn't fallen yet, of mornings that were coming that would be harder than this one. Thirteen stood in the farmyard in the dark and looked up.
+Outside, the air was cold. The kind of cold that came in the last weeks before winter proper, when the season had decided but not yet fully arrived — the air tasted of frost that hadn't fallen yet, of mornings that were coming that would be harder than this one. William stood in the farmyard in the dark and looked up.
 
 The sky was clean. Not the watchful quiet of three nights ago, when the hawk's vitality had circled at the edge of his awareness like a blade being stropped. Not the held breath of an afternoon waiting for the next strike. Just sky. Wide and dark and without feature.
 
-*Lumara had said it the night before his arrival*, Thirteen thought. *The sky has been quiet too long.* He had stood in this same yard and looked up, and she had told him: something is coming. The quiet of absence, of waiting.
+*Lumara had said it the night before his arrival*, William thought. *The sky has been quiet too long.* He had stood in this same yard and looked up, and she had told him: something is coming. The quiet of absence, of waiting.
 
 Now the quiet was different.
 
@@ -64,7 +64,7 @@ He was not sure what he meant by it. Not yet, or not today, or not for reasons I
 
 ---
 
-The Kì Cùng was audible before it was visible — the river's low constant voice, a sound so familiar he normally passed through it without noticing. He stopped at the bank and stood on the cold mud, the roots of the Rootwhisper running in thin threads through the substrate below his feet, and looked at the water.
+The Rimbrook was audible before it was visible — the river's low constant voice, a sound so familiar he normally passed through it without noticing. He stopped at the bank and stood on the cold mud, the roots of the Rootwhisper running in thin threads through the substrate below his feet, and looked at the water.
 
 The Tidecaller's signature came up from below the surface. Cold. Depthless. The quality of something that lived in the dark places of a river and found them not dark at all — the absence of light was just a different kind of seeing.
 
@@ -76,7 +76,7 @@ It did not surface. It did not acknowledge him with any of the gestures he had c
 
 He pressed his hand to the mud.
 
-*Something to stand on*, he said silently, not through the Tha Tam Tuc — the fish did not receive it that way — but in his own thoughts, in the direction of the water. *Thank you.*
+*Something to stand on*, he said silently, not through the Hearthspeak — the fish did not receive it that way — but in his own thoughts, in the direction of the water. *Thank you.*
 
 The current moved around the stone of the Tidecaller's presence. The river did not answer. It didn't need to.
 
@@ -122,15 +122,15 @@ Some things pass through cleanly. And the clean passing is the teaching.
 
 ---
 
-The Steward was in the kitchen when Thirteen came back.
+The Steward was in the kitchen when William came back.
 
-Two bowls of rice porridge. The dark amber honey from the hive that lived in the walls. Morning light slanting through the shutters in its autumn angle, warm and flat. Nothing about the morning was different from any other morning — and that, Thirteen had learned, was a thing the Steward did deliberately.
+Two bowls of rice porridge. The dark amber honey from the hive that lived in the walls. Morning light slanting through the shutters in its autumn angle, warm and flat. Nothing about the morning was different from any other morning — and that, William had learned, was a thing the Steward did deliberately.
 
 He sat. He ate.
 
 Lumara took her place on the windowsill.
 
-"Skytalon," Thirteen said. Not a question.
+"Skytalon," William said. Not a question.
 
 "Yes," the Steward said.
 
@@ -140,7 +140,7 @@ They ate. The porridge was warm, sweet with the honey, and he ate all of it and 
 
 The Steward set his spoon down.
 
-He was quiet for a moment — not the silence of evasion, which Thirteen knew well by now, the careful selecting of what to reveal. Something else. The silence of a man who has been waiting a long time to be asked the right question and has not quite let himself believe it was being asked.
+He was quiet for a moment — not the silence of evasion, which William knew well by now, the careful selecting of what to reveal. Something else. The silence of a man who has been waiting a long time to be asked the right question and has not quite let himself believe it was being asked.
 
 "Because they are old," the Steward said. "Older than this farm. Older than me." He looked at his hands on the table. "When creatures live long enough on this world — truly long, longer than you can measure by generations — they carry that mark. It means they remember."
 
@@ -150,11 +150,11 @@ He looked up.
 
 The kitchen was very still.
 
-Thirteen thought of the dream from the night of his khai linh — the sphere, small and blue, turning in the dark. The sun covered. The moon pierced. The chains wrapped around and around until the sphere was enclosed, bound, visible only in pieces through the gaps. He had seen it once and had never stopped seeing it, the way certain images pressed themselves into the mind and did not release.
+William thought of the dream from the night of his Kindling — the sphere, small and blue, turning in the dark. The sun covered. The moon pierced. The chains wrapped around and around until the sphere was enclosed, bound, visible only in pieces through the gaps. He had seen it once and had never stopped seeing it, the way certain images pressed themselves into the mind and did not release.
 
 "They don't remember in the way we remember things," the Steward said. His voice was careful. He was choosing words the way a man chose his footing on uncertain ground. "Not events, not faces, not the names of things. They remember in the way their bodies remember — the tiger remembers what strength was before it was constrained. The fish remembers what water moved like before channels were cut for it. The earth creature remembers the soil before it was broken and parceled." A pause. "The hawk remembers open sky."
 
-Thirteen looked at the window. The sky beyond it was fully light now, the pale blue of late autumn, clean.
+William looked at the window. The sky beyond it was fully light now, the pale blue of late autumn, clean.
 
 "Open sky," he said.
 
@@ -162,7 +162,7 @@ Thirteen looked at the window. The sky beyond it was fully light now, the pale b
 
 He did not need to.
 
-Thirteen thought about the hawk's vitality — the quality he had felt in his awareness, sharp as a blade, bright and compressed. Not rage. Not grief. Just — compressed. Like something used to a larger space, accustomed to it over centuries, still moving as though the space existed even though the walls were closer now than they had once been.
+William thought about the hawk's vitality — the quality he had felt in his awareness, sharp as a blade, bright and compressed. Not rage. Not grief. Just — compressed. Like something used to a larger space, accustomed to it over centuries, still moving as though the space existed even though the walls were closer now than they had once been.
 
 He thought about the lessons.
 
@@ -184,13 +184,13 @@ That was all. The most confirmation he had ever given.
 
 ---
 
-The dream came early that night, before Thirteen had fully settled into sleep — the way the most significant dreams came, sliding in through the threshold before the mind had time to build its defenses.
+The dream came early that night, before William had fully settled into sleep — the way the most significant dreams came, sliding in through the threshold before the mind had time to build its defenses.
 
 The eighteen figures were there, in the grey impossible landscape. But tonight they were not fighting.
 
 They were planting.
 
-Each of the eighteen figures bent to the earth in their particular way — some with deliberate slowness, some with quick precise movements, some with the practiced ease of long habit. The ground they worked was dark and rich, the smell of it reaching Thirteen even in dream. They were pressing things into the soil. Seeds. Roots. Cuttings. Impossible to see clearly, but the gesture of it was unmistakable — not the gesture of people building a wall or wielding a weapon. The gesture of people who believed there would be a harvest.
+Each of the eighteen figures bent to the earth in their particular way — some with deliberate slowness, some with quick precise movements, some with the practiced ease of long habit. The ground they worked was dark and rich, the smell of it reaching William even in dream. They were pressing things into the soil. Seeds. Roots. Cuttings. Impossible to see clearly, but the gesture of it was unmistakable — not the gesture of people building a wall or wielding a weapon. The gesture of people who believed there would be a harvest.
 
 He found the woman almost immediately.
 
@@ -212,7 +212,7 @@ He woke in the dark room and lay still for a long moment. Lumara's breathing at 
 
 He was not afraid.
 
-For the first time since the khai linh, the waking from dream was not the waking from urgency. He held the image: eighteen people planting, not fighting. The woman's hands in Rootwhisper's earth. The seedling's roots spreading wide.
+For the first time since the Kindling, the waking from dream was not the waking from urgency. He held the image: eighteen people planting, not fighting. The woman's hands in Rootwhisper's earth. The seedling's roots spreading wide.
 
 *Now you know.*
 
@@ -224,19 +224,19 @@ Morning.
 
 He found the Steward on the porch, already seated, watching the eastern light come in over the paddy. The rice was pale gold at this hour, the stalks still, not yet moving in the day's first wind. From here the farm looked small. From Lumara's height it would look smaller — but from her height you could also see how far the roots ran, the invisible architecture below the visible surface.
 
-Thirteen sat beside the old man.
+William sat beside the old man.
 
-They were quiet for a while. This was not unusual. The Steward had never needed words to fill a silence, and three years had taught Thirteen to read the difference between the silence that waited for something and the silence that was simply itself.
+They were quiet for a while. This was not unusual. The Steward had never needed words to fill a silence, and three years had taught William to read the difference between the silence that waited for something and the silence that was simply itself.
 
 This was simply itself. For a while.
 
-"The farm has taught me what it can," Thirteen said.
+"The farm has taught me what it can," William said.
 
 It was not quite a question. It was not quite a statement. It was the thing that existed between the two — the thing you said when you had been turning it over for a long time and were finally ready to say it out loud and hear whether it was true.
 
 The Steward looked east.
 
-Toward the direction the dawn came from. Toward the path that ran south from the farm gate and turned eventually onto the road that ran east, toward the lowlands, toward the city that Thirteen had seen only in the Steward's careful avoidances when it was mentioned. Ashwall.
+Toward the direction the dawn came from. Toward the path that ran south from the farm gate and turned eventually onto the road that ran east, toward the lowlands, toward the city that William had seen only in the Steward's careful avoidances when it was mentioned. Ashwall.
 
 "Not yet," the Steward said.
 
@@ -246,7 +246,7 @@ A long pause.
 
 The eastern light was the particular quality of late autumn — flat and clear, without the warmth of summer or the weight of winter, just light doing what light did. The rice moved in a breath of wind that came from nowhere and went back to nowhere.
 
-Thirteen thought about what *soon* meant to a man who had arranged everything. Who had prepared the tiger's path and the river's conditions and allowed the Tremor passage through the farm's substrate. Who had stood back from the hawk because for once he could not arrange, could not prepare, could only wait and hope.
+William thought about what *soon* meant to a man who had arranged everything. Who had prepared the tiger's path and the river's conditions and allowed the Tremor passage through the farm's substrate. Who had stood back from the hawk because for once he could not arrange, could not prepare, could only wait and hope.
 
 He thought *soon* probably meant: when the last thing is ready. And he thought the last thing might not be a lesson. It might be a kind of knowing. The knowing that it was time.
 

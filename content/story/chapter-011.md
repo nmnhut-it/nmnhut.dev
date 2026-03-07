@@ -10,19 +10,19 @@ Two days after the successful dodge in the flood pool, the Steward took him to t
 
 "The pool was shallow," the Steward said as they walked. "Contained. Today is different."
 
-He said nothing more as they walked the narrow path east of the farm, through the stand of silver birch where the ground stayed damp even in dry weeks, down the slope where the soil changed from the dark loam of the paddy to the gray clay that meant you were close to water. Thirteen followed. Lumara rode his shoulder, her weight familiar, her warmth a constant pressure against the hunger that was always there.
+He said nothing more as they walked the narrow path east of the farm, through the stand of silver birch where the ground stayed damp even in dry weeks, down the slope where the soil changed from the dark loam of the paddy to the gray clay that meant you were close to water. William followed. Lumara rode his shoulder, her weight familiar, her warmth a constant pressure against the hunger that was always there.
 
-The river came into view through the tree trunks first — a brightness between dark verticals, silver and moving. Then the path opened and there was the Kì Cùng, wide and gray-green, running fast and cold from the mountains he'd never seen. The bank here was stone undercut by current, the exposed roots of old willows trailing in the water like fingers. Wider than the pool. Faster. Deeper.
+The river came into view through the tree trunks first — a brightness between dark verticals, silver and moving. Then the path opened and there was the Rimbrook, wide and gray-green, running fast and cold from the mountains he'd never seen. The bank here was stone undercut by current, the exposed roots of old willows trailing in the water like fingers. Wider than the pool. Faster. Deeper.
 
 The Steward stopped.
 
 "Take off your boots," he said.
 
-Thirteen did.
+William did.
 
 The stone was cold under his feet. He stood at the water's edge and felt the current pulling at the air above the surface, the slight chill that rose off fast water even on a warm day. More aggressive than the pool's current. Insistent.
 
-"The pool taught you the fish exists," the Steward said. He was standing a few paces back, not looking at Thirteen but at the water. "That you can meet it. This teaches you something else."
+"The pool taught you the fish exists," the Steward said. He was standing a few paces back, not looking at William but at the water. "That you can meet it. This teaches you something else."
 
 He paused.
 
@@ -30,15 +30,15 @@ He paused.
 
 ---
 
-Thirteen looked at the river.
+William looked at the river.
 
-He could feel something in it. His sense — the one that came with khai linh and had grown clearer and stranger through three years of training — pressed outward through the air, through the stone bank, into the moving water. There was life in there. Not the dense patient vitality of the Three-Legged Tiger, not the bright compact energy of Lumara. Something more diffuse. Multiple, maybe. The water made it difficult to read — it scattered his awareness the way wind scattered smoke, carried fragments of it downstream before he could form a complete picture.
+He could feel something in it. His sense — the one that came with Kindling and had grown clearer and stranger through three years of training — pressed outward through the air, through the stone bank, into the moving water. There was life in there. Not the dense patient vitality of the Three-Legged Tiger, not the bright compact energy of Lumara. Something more diffuse. Multiple, maybe. The water made it difficult to read — it scattered his awareness the way wind scattered smoke, carried fragments of it downstream before he could form a complete picture.
 
 "There's something in there," he said.
 
 "Several somethings."
 
-Thirteen waited.
+William waited.
 
 "But one that matters today." The Steward finally looked at him. "You won't see it coming. That is the first thing you need to understand. Against the tiger you could watch its shoulders, read its balance. Against what lives in this water, sight is a disadvantage. You'll be looking for movement on the surface when the strike comes from below."
 
@@ -46,7 +46,7 @@ Thirteen waited.
 
 "Feel it," the Steward said. "What you practiced on the farm. But the water will fight you."
 
-Lumara made a sound against Thirteen's ear. Not the ready cry she made before a fight — something more uncertain, the sound she made when the weather was going to change and she had not decided how she felt about it.
+Lumara made a sound against William's ear. Not the ready cry she made before a fight — something more uncertain, the sound she made when the weather was going to change and she had not decided how she felt about it.
 
 He reached up and brought her down to the ground beside him. She looked at the water with an expression that he had come to understand meant *I don't like this but I won't say so.*
 
@@ -152,13 +152,13 @@ The Steward's voice came from behind him. "The tiger threw you twice."
 
 "Yes."
 
-Thirteen looked at the river. The Tidecaller was not visible. Only the current, moving, indifferent.
+William looked at the river. The Tidecaller was not visible. Only the current, moving, indifferent.
 
 "How do I fight something I can't see in an environment that doesn't hold still?" he asked.
 
 The Steward was quiet for a moment. "How did you fight the tiger when you'd lost the spade and your legs were giving out?"
 
-Thirteen thought back. Standing in the paddies, hands in the water, the contract thread — and the answer arrived sideways, the way most things had arrived since khai linh. Not reasoning but recognition.
+William thought back. Standing in the paddies, hands in the water, the contract thread — and the answer arrived sideways, the way most things had arrived since Kindling. Not reasoning but recognition.
 
 "I asked the rice," he said slowly.
 
@@ -202,15 +202,15 @@ But the second time he had half a second of warning. The third time, almost a fu
 
 The Tidecaller retreated to the deep after the fifth attempt and did not come back.
 
-Thirteen waded out. He sat on the bank with Lumara and let the sun work on him, the warmth coming back into his hands and feet gradually. He was exhausted in a way that was different from the tiger — not the body-exhaustion of running and fighting but something deeper, the kind of tiredness that came from sustained attention, from the specific strain of trying to listen with faculties that were not yet strong enough for what was being asked of them.
+William waded out. He sat on the bank with Lumara and let the sun work on him, the warmth coming back into his hands and feet gradually. He was exhausted in a way that was different from the tiger — not the body-exhaustion of running and fighting but something deeper, the kind of tiredness that came from sustained attention, from the specific strain of trying to listen with faculties that were not yet strong enough for what was being asked of them.
 
 The Steward stood at the treeline.
 
-"The Rootwhisper helped," Thirteen said. He wasn't asking.
+"The Rootwhisper helped," William said. He wasn't asking.
 
 "It will always help, if you ask clearly."
 
-Thirteen thought about that. The thread in his chest, warm even now, even this far from home. He had not known, when he'd pressed his hands into the roots three years ago in a moment of desperation, what he was agreeing to. He still did not know everything that agreement meant.
+William thought about that. The thread in his chest, warm even now, even this far from home. He had not known, when he'd pressed his hands into the roots three years ago in a moment of desperation, what he was agreeing to. He still did not know everything that agreement meant.
 
 But he was beginning to understand that it meant more than hunger.
 
@@ -222,7 +222,7 @@ But he was beginning to understand that it meant more than hunger.
 
 "When it decides you're worth returning to." The Steward's tone carried no judgment. Simply fact, the way he stated all facts. "That is a different calculation from the tiger's. The tiger tested your willingness to stand in front of something larger than yourself. The Tidecaller is asking something else."
 
-Thirteen waited.
+William waited.
 
 "Whether you can learn to fight in a world that doesn't behave the way you expect it to."
 
@@ -234,7 +234,7 @@ Lumara pressed her beak against his wrist. Warm, insistent, alive.
 
 He was sixteen and he had spent the morning learning how to fall better.
 
-He looked at the river. The Kì Cùng ran past him without acknowledgment, carrying its cargo of melt-water and silt and cold from far mountains, indifferent to what happened on its banks.
+He looked at the river. The Rimbrook ran past him without acknowledgment, carrying its cargo of melt-water and silt and cold from far mountains, indifferent to what happened on its banks.
 
 "All right," he said.
 
@@ -244,7 +244,7 @@ He stood. Put his boots back on.
 
 "Every morning," the Steward said. "Until it decides otherwise."
 
-Thirteen nodded. He looked at the river a moment longer — the way the current bent around the willow roots, the place near the far bank where the water dimpled over a submerged stone, the specific shade of green-gray that meant deep water. Storing it. The river was not going to become familiar the way the paddies were familiar. But he was going to learn its vocabulary.
+William nodded. He looked at the river a moment longer — the way the current bent around the willow roots, the place near the far bank where the water dimpled over a submerged stone, the specific shade of green-gray that meant deep water. Storing it. The river was not going to become familiar the way the paddies were familiar. But he was going to learn its vocabulary.
 
 He was going to have to.
 

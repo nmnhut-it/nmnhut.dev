@@ -12,7 +12,7 @@ Dawn: take position at the fence post's shadow along the eastern paddy. Feet wid
 
 Wait. Feel for the change in her attention. When she tensed — he tensed.
 
-In four days he had learned to read sixty, perhaps seventy percent of Skytalon's strikes before they landed. Not to dodge them cleanly. But to move in time to take them on the shoulder rather than the throat, to catch the wind-shift that preceded each dive and angle his body so the talons raked armor rather than found flesh. It was not victory. It was survival with increasing precision, and Thirteen had learned, across three arcs of training, that precision was what growth looked like before it became mastery.
+In four days he had learned to read sixty, perhaps seventy percent of Skytalon's strikes before they landed. Not to dodge them cleanly. But to move in time to take them on the shoulder rather than the throat, to catch the wind-shift that preceded each dive and angle his body so the talons raked armor rather than found flesh. It was not victory. It was survival with increasing precision, and William had learned, across three arcs of training, that precision was what growth looked like before it became mastery.
 
 He was still in position at the fence line when Skytalon arrived that morning.
 
@@ -50,7 +50,7 @@ The hawk moved through the rows with deliberate economy. It was not diving and w
 
 It was not destroying the field. It was editing it.
 
-Thirteen stood at the fence line and felt each cut register through the contract — a small sharp point of sensation in his sternum, there and gone, there and gone, like someone pressing the tip of a finger against the same spot over and over. Not painful. Rootwhisper was vast enough that the loss of a few dozen stalks was nothing to the whole — he knew this. The rice would not falter. The roots below were intact. The field would persist.
+William stood at the fence line and felt each cut register through the contract — a small sharp point of sensation in his sternum, there and gone, there and gone, like someone pressing the tip of a finger against the same spot over and over. Not painful. Rootwhisper was vast enough that the loss of a few dozen stalks was nothing to the whole — he knew this. The rice would not falter. The roots below were intact. The field would persist.
 
 He knew this.
 
@@ -142,7 +142,7 @@ The sky above was very still. Cold, clean, quiet.
 
 And then — not on his face, not as wind usually arrived — he felt it differently.
 
-He had always felt wind. Three years on a farm meant constant awareness of weather: the direction of the morning air that told what the afternoon would bring, the particular chill that meant the Kì Cùng was running high, the way gusts changed texture when they came off the forest as opposed to coming across the open paddy. He knew wind the way he knew the sound of the Steward's footstep on the kitchen floor — functionally, automatically, without examination.
+He had always felt wind. Three years on a farm meant constant awareness of weather: the direction of the morning air that told what the afternoon would bring, the particular chill that meant the Rimbrook was running high, the way gusts changed texture when they came off the forest as opposed to coming across the open paddy. He knew wind the way he knew the sound of the Steward's footstep on the kitchen floor — functionally, automatically, without examination.
 
 What he felt now was not that.
 
@@ -170,13 +170,13 @@ He did not speak either.
 
 The field was quiet. Somewhere to the north the river made its sound. The cold air moved across the cut stems.
 
-"Ngươi đã sai," she said at last. *You were wrong.*
+"You were wrong," she said at last.
 
 He said nothing. There was nothing to say to that.
 
 She waited a moment longer.
 
-"Nhưng ngươi đã học được thứ gì đó." *But you learned something.*
+"But you learned something."
 
 He sat up slowly. His ribs protested. The cut stems around him stood at their new, shorter height, the field reshaped into a minor scar that the roots below would not remember. He looked at his hand, at the dirt on his palm, and felt the contract thread running steady through his chest.
 
@@ -184,21 +184,21 @@ He sat up slowly. His ribs protested. The cut stems around him stood at their ne
 
 Her head turned slightly. That particular tilt that meant she was processing, holding something still before she responded.
 
-"Khi ngươi chạy ra," she said carefully, "ta mất ngươi. Không phải mất vị trí — mất liên kết." *When you ran out — I lost you. Not lost your position — lost the connection.*
+"When you ran out," she said carefully, "I lost you. Not lost your position — lost the connection."
 
 He looked up at her.
 
-"Tha Tâm Tức yếu đi khi ngươi không tĩnh. Ta đang đọc Skytalon, đang chuẩn bị truyền — và đột nhiên ngươi không còn ở đó nữa. Liên kết im lặng." *The Tha Tam Tuc weakens when you are not calm. I was reading Skytalon, preparing to relay — and suddenly you were no longer there. The bond went quiet.*
+"The Hearthspeak weakens when you are not calm. I was reading Skytalon, preparing to relay — and suddenly you were no longer there. The bond went quiet."
 
 He absorbed this. He thought about the Tidecaller — the way the water had gone opaque to him when he stopped trying to fight it and started trying to escape it, the way his own panic had narrowed his awareness to the circle of his own body. He thought about the Tremor — how in the early sessions, when the ground shook and his fear spiked, he would lose the contract-sense entirely, emerge from the earth unable to feel anything at all.
 
-He had known that Tha Tam Tuc required calm. He had known it.
+He had known that Hearthspeak required calm. He had known it.
 
-"Ta có thể bảo vệ Rootwhisper không?" he asked. *Can I protect Rootwhisper?*
+"Can I protect Rootwhisper?" he asked.
 
 Lumara was quiet for a moment.
 
-"Bằng cách đứng yên tại vị trí của ngươi và đọc gió," she said. "Bằng cách tin tưởng rễ của nó." *By standing at your position and reading the wind. By trusting its roots.*
+"By standing at your position and reading the wind," she said. "By trusting its roots."
 
 He looked at the cut stems again. At the clean transections, the soil undisturbed around the bases. The roots were down there — alive, growing, entirely uninterested in what had happened above ground. He touched a cut end once more and felt through the contract: patience. The endurance of something that had decided long ago that being cut was not the same as being ended.
 
@@ -210,9 +210,9 @@ He did not look for the Steward.
 
 But at the far edge of the farmyard — past the fence line, near the path that ran between the barn and the western field — a still figure stood. Not positioned to intervene. Not walking toward him. Just there, in the middle distance, watching without expression.
 
-He had not helped. He had not called out. He had not lifted a hand when Skytalon hit Thirteen three times in the open field.
+He had not helped. He had not called out. He had not lifted a hand when Skytalon hit William three times in the open field.
 
-Thirteen looked at him for a moment. The old man's face told him nothing — the composed stillness that had, across sixteen years, become the texture of the world itself, as constant as the sound of the Kì Cùng.
+William looked at him for a moment. The old man's face told him nothing — the composed stillness that had, across sixteen years, become the texture of the world itself, as constant as the sound of the Rimbrook.
 
 He thought: *you knew this would happen.*
 
@@ -220,9 +220,9 @@ He thought: *you knew and you did not stop it.*
 
 He thought: *and you were right not to.*
 
-The Steward did not move. His hands were folded at his back. His eyes were on Thirteen, and in them — if Thirteen was reading correctly, if three years of learning to read that face had taught him anything — there was something that was not quite satisfaction, not quite grief. The expression of someone watching a thing he has tended for a long time reach the moment he has been tending toward.
+The Steward did not move. His hands were folded at his back. His eyes were on William, and in them — if William was reading correctly, if three years of learning to read that face had taught him anything — there was something that was not quite satisfaction, not quite grief. The expression of someone watching a thing he has tended for a long time reach the moment he has been tending toward.
 
-Thirteen looked away first.
+William looked away first.
 
 He turned back to the field. The rice stood in its rows — most of it whole, some of it shorter, all of it rooted. Lumara landed on the fence post nearest him and tucked her wings with the clean economy of a bird that had learned not to waste motion.
 

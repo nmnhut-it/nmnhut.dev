@@ -1,0 +1,50 @@
+{{- define "main" }}
+
+{{- $storyPages := where site.RegularPages "Type" "story" }}
+{{- $storyPages = $storyPages.ByParam "weight" }}
+
+<article class="post-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title entry-hint-parent">
+      {{ .Title }}
+    </h1>
+    {{- if .Description }}
+    <div class="post-description">
+      {{ .Description }}
+    </div>
+    {{- end }}
+  </header>
+
+  {{- if .Content }}
+  <div class="post-content">
+    {{- if not (.Param "disableAnchoredHeadings") }}
+    {{- partial "anchored_headings.html" .Content -}}
+    {{- else }}{{ .Content }}{{ end }}
+  </div>
+  {{- end }}
+
+  <footer class="post-footer">
+    {{- if gt (len $storyPages) 1 }}
+    <nav class="paginav">
+      {{- with $storyPages.Next . }}
+      <a class="prev" href="{{ .Permalink }}">
+        <span class="title">« Prev Chapter</span>
+        <br>
+        <span>{{- .Title -}}</span>
+      </a>
+      {{- end }}
+      {{- with $storyPages.Prev . }}
+      <a class="next" href="{{ .Permalink }}">
+        <span class="title">Next Chapter »</span>
+        <br>
+        <span>{{- .Title -}}</span>
+      </a>
+      {{- end }}
+    </nav>
+    {{- end }}
+  </footer>
+
+</article>
+
+{{- end }}{{/* end main */}}

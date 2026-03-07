@@ -6,7 +6,7 @@ draft: false
 
 # Chapter 030: Gathering
 
-One week after the visitors, Thirteen was drilling with the staff in the western field when the forest changed.
+One week after the visitors, William was drilling with the staff in the western field when the forest changed.
 
 He had been working through the sequence the Steward had built across three years of training — the grounding stance from the earth trials, the fluid transitions from the river, the explosive forward step from the tiger sessions, the windward awareness from the hawk. Four elements woven into a single practice that he ran each morning before the light was fully up, Lumara circling above to call corrections through the bond. *Weight too far forward. Hips locked. Better.*
 
@@ -14,7 +14,7 @@ The staff cracked against the fence post he used as a target. He reset, breathed
 
 And then — warmth.
 
-Not the warmth of the morning sun, which was barely a suggestion at the treeline. Not the warmth of effort, which lived in his arms and shoulders. This came through his awareness, through the sense that khai linh had given him for the vitality of living things — a signature he had not felt in months, but recognized the way the body recognized the smell of a place it had once been happy.
+Not the warmth of the morning sun, which was barely a suggestion at the treeline. Not the warmth of effort, which lived in his arms and shoulders. This came through his awareness, through the sense that Kindling had given him for the vitality of living things — a signature he had not felt in months, but recognized the way the body recognized the smell of a place it had once been happy.
 
 Dense. Patient. Old.
 
@@ -30,7 +30,7 @@ Lumara dropped from her circle and landed on the fence post.
 
 Amberrex had returned.
 
-Thirteen found the tiger at the northern treeline, in the same place it had first appeared three years ago — the gap between two ancient oaks where the underbrush grew thin and the ground was packed hard by the passage of large things. The tiger stood motionless, its amber hide dark in the morning shadow, the empty space where its left foreleg should have been as familiar as the Steward's composed expression.
+William found the tiger at the northern treeline, in the same place it had first appeared three years ago — the gap between two ancient oaks where the underbrush grew thin and the ground was packed hard by the passage of large things. The tiger stood motionless, its amber hide dark in the morning shadow, the empty space where its left foreleg should have been as familiar as the Steward's composed expression.
 
 It was larger than he remembered. Or perhaps his memory had calibrated wrong — it had been months since the last encounter, months of training with creatures that operated on different scales. But the tiger filled the space between the trees with a presence that made the air heavier.
 
@@ -38,15 +38,15 @@ Its eyes were amber. The same amber as the Tidecaller's. The same amber as the T
 
 Four creatures. Four amber eyes. The question the Steward had answered in the quiet morning after the hawk left — *because they remember. They remember the world before the chains* — still turned in his mind.
 
-He stopped at the boundary of the cleared ground and opened the Tha Tam Tuc.
+He stopped at the boundary of the cleared ground and opened the Hearthspeak.
 
-This was different from the last time he had faced Amberrex. Then, there had been no language between them — only the tiger's physical presence, its charges and retreats, the education of the body through collision. Now, with Linh ngu and the breath between hearts, the channel was open.
+This was different from the last time he had faced Amberrex. Then, there had been no language between them — only the tiger's physical presence, its charges and retreats, the education of the body through collision. Now, with Stillmind and the breath between hearts, the channel was open.
 
 "Why did you come back?"
 
 The tiger's awareness met his.
 
-Not words — Amberrex did not think in words, not the way Lumara did. The tiger thought in weight and intention, in the dense grammatics of a predator whose communication was primarily physical. But through the Tha Tam Tuc, Thirteen could translate: not precise language, but the shape of meaning, the way someone might read a face across a crowded room and understand what was meant without a syllable being spoken.
+Not words — Amberrex did not think in words, not the way Lumara did. The tiger thought in weight and intention, in the dense grammatics of a predator whose communication was primarily physical. But through the Hearthspeak, William could translate: not precise language, but the shape of meaning, the way someone might read a face across a crowded room and understand what was meant without a syllable being spoken.
 
 What came through was slow, heavy, deliberate. Like the sound of distant drumming heard through stone.
 
@@ -54,17 +54,17 @@ What came through was slow, heavy, deliberate. Like the sound of distant drummin
 
 "What is it?"
 
-A pause. The tiger's amber eyes held his, and through the Tha Tam Tuc, Thirteen felt something he had never associated with Amberrex.
+A pause. The tiger's amber eyes held his, and through the Hearthspeak, William felt something he had never associated with Amberrex.
 
 *The forest is afraid.*
 
-Thirteen was very still. Amberrex was Hoa linh — level three. One of the most powerful creatures in the region. A being old enough to remember the world before chains, whose amber eyes held the accumulated weight of time beyond counting.
+William was very still. Amberrex was Hoa linh — level three. One of the most powerful creatures in the region. A being old enough to remember the world before chains, whose amber eyes held the accumulated weight of time beyond counting.
 
 And it was telling him the forest was afraid.
 
 "Of what?"
 
-*I do not know its name. But I know the feeling.* The tiger's gaze moved — past Thirteen, past the farm, toward something beyond the southern hills that Thirteen could not see. *Old. Dark. It eats what it touches — not the body. The self.*
+*I do not know its name. But I know the feeling.* The tiger's gaze moved — past William, past the farm, toward something beyond the southern hills that William could not see. *Old. Dark. It eats what it touches — not the body. The self.*
 
 The same quality Lumara had described when the earth collapsed beneath the southern paddy, months ago — the absence that the Tremor left behind. But this was different. The Tremor had been heavy, geological, belonging to the earth. What Amberrex described did not belong to anything. It consumed belonging itself.
 
@@ -76,23 +76,23 @@ The rice was gathering its allies.
 
 ---
 
-Thirteen went to the river that afternoon.
+William went to the river that afternoon.
 
-The Kì Cùng ran cold and full in late autumn, the current carrying the particular freight of a river preparing for winter — leaf matter, silt, the accumulated debris of a season ending. He stood on the bank where the Steward had first brought him for the water trials and reached his awareness outward.
+The Rimbrook ran cold and full in late autumn, the current carrying the particular freight of a river preparing for winter — leaf matter, silt, the accumulated debris of a season ending. He stood on the bank where the Steward had first brought him for the water trials and reached his awareness outward.
 
 The Tidecaller was there.
 
 Not in the deep channel where it usually lurked — closer, in the shallows near the bank, a presence that registered in his awareness as cold and deep and patient. The fish had moved upstream, he realized. It was now at the nearest point of the river to the farm.
 
-Through the Tha Tam Tuc, the connection was thinner than with Amberrex — speaking to a water creature through air was like speaking through fog, the meaning arriving muted and refracted. But the fish's attention was unmistakable. It was watching. Waiting.
+Through the Hearthspeak, the connection was thinner than with Amberrex — speaking to a water creature through air was like speaking through fog, the meaning arriving muted and refracted. But the fish's attention was unmistakable. It was watching. Waiting.
 
 *The current is wrong*, came through the fog. Not words — the pressure of water against resistance, the fluid intelligence of something that thought in flow. *The water is darker. Something upstream is changing what the river carries.*
 
-Thirteen knelt at the bank and put his hand in the water. Cold — the familiar cold of the Kì Cùng, the same water that fed the Rootwhisper through three years of underground channels.
+William knelt at the bank and put his hand in the water. Cold — the familiar cold of the Rimbrook, the same water that fed the Rootwhisper through three years of underground channels.
 
 Through the contract thread, through the roots that reached to the river's edge, he could feel the Tidecaller more clearly. The fish was alert in a way that was new — not the predatory focus of their training sessions, but a broader watchfulness. The same quality Amberrex had carried.
 
-The creatures that had trained him were positioning themselves around the farm. Not because the Steward had arranged it. Not because Thirteen had asked.
+The creatures that had trained him were positioning themselves around the farm. Not because the Steward had arranged it. Not because William had asked.
 
 Because Rootwhisper had called them.
 
@@ -100,13 +100,13 @@ Because Rootwhisper had called them.
 
 By evening, the farm had changed.
 
-It was not visible — nothing a visitor would have noticed, nothing the Prefecture delegates would have catalogued in their careful observation. But Thirteen, sitting on the kitchen step with his hands around a bowl of rice porridge, could feel it through the contract thread like a change in barometric pressure.
+It was not visible — nothing a visitor would have noticed, nothing the Prefecture delegates would have catalogued in their careful observation. But William, sitting on the kitchen step with his hands around a bowl of rice porridge, could feel it through the contract thread like a change in barometric pressure.
 
 The forest to the north: Amberrex, settled at the treeline. Not pacing, not hunting. Stationed. The tiger's dense vitality was a wall of warmth at the edge of his awareness.
 
 The river to the east: the Tidecaller, holding position in the shallows. The fish's cold presence was a current running parallel to the farm's boundary.
 
-And something else — smaller, distributed. He had noticed it building over the past week, a gradual accumulation that he had attributed to the season: birds gathering in the bamboo, field mice burrowing closer to the barn foundations, a family of weasels that had appeared beneath the woodpile. Small creatures, not khai linh awakened, but alive and present in numbers that were unusual.
+And something else — smaller, distributed. He had noticed it building over the past week, a gradual accumulation that he had attributed to the season: birds gathering in the bamboo, field mice burrowing closer to the barn foundations, a family of weasels that had appeared beneath the woodpile. Small creatures, not Kindling awakened, but alive and present in numbers that were unusual.
 
 They were gathering around the Rootwhisper.
 
@@ -118,7 +118,7 @@ Lumara watched from the fence rail, her gold eyes tracking a group of sparrows t
 
 *The rice is calling them*, she said. *Not with words. Not even with roots. With what it is. They feel it and they come.*
 
-"It's building something," Thirteen said.
+"It's building something," William said.
 
 *Yes.* Lumara tilted her head. *Not a wall. More like — a body. With the tiger as one limb and the fish as another and the small things as the blood between them.*
 
@@ -146,25 +146,25 @@ She stood in the fading light and looked at the farm — really looked, not with
 
 "I feel it," she said quietly. "Not like you do. Not through — whatever your bond is. But there is something here. Something different." She put her hand on her stomach, unconsciously. "The thing inside me — it responds. When I stand in the field, near the rice. It gets warmer."
 
-Thirteen looked at her. The thing inside her — the residue of six months of forced khai linh feeding, the incomplete process that had changed her body without her consent. Lumara had told him, the first day: *Inside her there is something that resembles Rootwhisper. But wrong.*
+William looked at her. The thing inside her — the residue of six months of forced Kindling feeding, the incomplete process that had changed her body without her consent. Lumara had told him, the first day: *Inside her there is something that resembles Rootwhisper. But wrong.*
 
 "Does it hurt?"
 
 "No." She paused. "It used to hurt. Here — it is quiet. Like the rice is... talking to it." She shook her head. "I do not understand this world."
 
-"Neither do I," Thirteen said.
+"Neither do I," William said.
 
 She almost smiled. Not quite — the muscles attempted the shape but abandoned it halfway, the habit of not-smiling too deeply established. But the attempt was there.
 
 Lumara dropped from the fence and walked across the farmyard to Wren's feet. She looked up at the young woman with the particular assessment she gave to things she was deciding about — the same look she had given the tiger, the river, the sky. Reading angles. Making calculations.
 
-*She can be trusted*, Lumara said to Thirteen. Private. Through the bond alone. *Not because she is good. Because she has nowhere else to be herself.*
+*She can be trusted*, Lumara said to William. Private. Through the bond alone. *Not because she is good. Because she has nowhere else to be herself.*
 
 ---
 
 The Steward appeared at the kitchen door.
 
-He had been quiet all day — not absent, but withdrawn in the way Thirteen had learned to recognize as calculation. The old man was processing. Assessing variables, adjusting plans, doing whatever it was he did in the architecture behind his composed expression.
+He had been quiet all day — not absent, but withdrawn in the way William had learned to recognize as calculation. The old man was processing. Assessing variables, adjusting plans, doing whatever it was he did in the architecture behind his composed expression.
 
 "Amberrex is at the treeline," the Steward said. Not a question.
 
@@ -174,13 +174,13 @@ The Steward nodded. He did not seem surprised. "The creatures are not mine. They
 
 "What is coming?"
 
-The old man looked at Thirteen with the careful expression that contained more than it showed — the look Thirteen had been decoding for sixteen years, the look that always meant: *I know more than I am telling you, and I have reasons for the gap.*
+The old man looked at William with the careful expression that contained more than it showed — the look William had been decoding for sixteen years, the look that always meant: *I know more than I am telling you, and I have reasons for the gap.*
 
 "The delegates were the announcement. The scouts. What follows the scouts is the main body." He paused. "I should have told you more. Before Ashwall. Before the hawk. There are things I held back because I believed we had more time."
 
-He stopped himself. The composed expression flickered — not cracking, not breaking, but showing the strain of what it contained. For a fractional moment, Thirteen saw the old man as he actually was: not calm. Controlled. A man holding a structure in place through sheer practiced force, the way the grounding stance held a body in place when the earth moved beneath it.
+He stopped himself. The composed expression flickered — not cracking, not breaking, but showing the strain of what it contained. For a fractional moment, William saw the old man as he actually was: not calm. Controlled. A man holding a structure in place through sheer practiced force, the way the grounding stance held a body in place when the earth moved beneath it.
 
-"Tell me now," Thirteen said.
+"Tell me now," William said.
 
 The Steward looked at the farm. At the Rootwhisper in the failing light. At the creatures gathering in the margins. At the young woman standing in the farmyard with a thing inside her that the rice was learning to soothe.
 
@@ -188,11 +188,11 @@ The Steward looked at the farm. At the Rootwhisper in the failing light. At the 
 
 He went inside.
 
-Thirteen stood in the farmyard and listened to the night settle. The tiger at the treeline. The fish in the shallows. The small creatures in the barn and the bamboo and the spaces between the stones. Lumara on his shoulder, warm and specific, her attention a steady pulse in his awareness.
+William stood in the farmyard and listened to the night settle. The tiger at the treeline. The fish in the shallows. The small creatures in the barn and the bamboo and the spaces between the stones. Lumara on his shoulder, warm and specific, her attention a steady pulse in his awareness.
 
 The farm was not quiet. It was gathering.
 
-And somewhere beyond the hills — beyond the Prefecture's reach, beyond the traders' routes, beyond the edges of the map Thirteen was still learning to read — the thing that the forest feared was moving closer.
+And somewhere beyond the hills — beyond the Prefecture's reach, beyond the traders' routes, beyond the edges of the map William was still learning to read — the thing that the forest feared was moving closer.
 
 He could not feel it yet. But Amberrex could. And the tiger had come to stand between it and the farm.
 

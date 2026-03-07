@@ -8,7 +8,7 @@ draft: false
 
 One week.
 
-Every morning Thirteen took position in the farmyard before the light was fully committed — feet wide, knees bent, weight low, the grounding stance now as involuntary as breathing. Rootwhisper spread beneath his boot soles like an open hand pressing into earth. Lumara went up. Higher each day — thirty feet, fifty, eighty — banking slow circles through the early currents that Skytalon also rode, reading the grammar that creature wrote into the air with its body.
+Every morning William took position in the farmyard before the light was fully committed — feet wide, knees bent, weight low, the grounding stance now as involuntary as breathing. Rootwhisper spread beneath his boot soles like an open hand pressing into earth. Lumara went up. Higher each day — thirty feet, fifty, eighty — banking slow circles through the early currents that Skytalon also rode, reading the grammar that creature wrote into the air with its body.
 
 *Northwest. High. Soaring.*
 
@@ -28,7 +28,7 @@ They were improving.
 
 Just not fast enough.
 
-*It reads your intent*, Lumara said on the fifth evening. They were sitting on the fence rail watching Skytalon vanish into the dark above. *When I read it, it reads me. I see the direction change — but the Tha Tam Tuc takes time. By the time you receive it, the moment has passed.*
+*It reads your intent*, Lumara said on the fifth evening. They were sitting on the fence rail watching Skytalon vanish into the dark above. *When I read it, it reads me. I see the direction change — but the Hearthspeak takes time. By the time you receive it, the moment has passed.*
 
 He nodded. He had known. This was the limit — not of skill but of the bridge between them. Lumara read the sky. He processed what she sent. But from her eyes to his understanding, information had to travel through language. Had to be rendered into direction, into image, into warning. Every step of translation was a fraction of a second lost.
 
@@ -42,7 +42,7 @@ Lumara turned her head to look at him. Her amber eyes caught the lamp light from
 
 Day seven. Midday.
 
-No clouds. The autumn sun drove straight down into the farmyard — not gentle, not forgiving. The kind of light that made shadows hard-edged and made the eyes work. Thirteen stood in position, feeling Rootwhisper spread beneath the earth in its rows like fingers laid open against a table. Lumara was sixty feet above him, circling, silent.
+No clouds. The autumn sun drove straight down into the farmyard — not gentle, not forgiving. The kind of light that made shadows hard-edged and made the eyes work. William stood in position, feeling Rootwhisper spread beneath the earth in its rows like fingers laid open against a table. Lumara was sixty feet above him, circling, silent.
 
 Skytalon was coming.
 
@@ -86,7 +86,7 @@ Not a gradual redirect. Not the smooth course-correction of a fish adjusting in 
 
 *— I cannot —*
 
-The strike hit Thirteen's left shoulder.
+The strike hit William's left shoulder.
 
 Not talons. The leading edge of the wing, the bone-ridge sweeping through — enough force to spin him half-around and drive him to one knee. Real pain, not the scrape-and-sting of previous sessions: a deep impact at the shoulder joint that ran down through his arm and up into his neck. He got his other hand to the ground and kept himself from going fully down.
 
@@ -108,7 +108,7 @@ She had seen it, and something in her — something that had been accumulating a
 
 There was no flash of light.
 
-No concussive wave, no surge of visible energy. When Rootwhisper had undergone khai linh Thirteen had been too young to understand what he was watching. When Lumara had first awakened he had been standing in a morning farmyard and had simply noticed, in the space between one breath and the next, that a bird was looking at him with comprehension. He had not known what evolution looked like.
+No concussive wave, no surge of visible energy. When Rootwhisper had undergone Kindling William had been too young to understand what he was watching. When Lumara had first awakened he had been standing in a morning farmyard and had simply noticed, in the space between one breath and the next, that a bird was looking at him with comprehension. He had not known what evolution looked like.
 
 Now he knew.
 
@@ -126,7 +126,7 @@ Through the bond — all at once, the way a door swings open rather than the way
 
 Before, Lumara had sent him *directions and images*. Northwest, high, diving. The description of someone stationed above, cataloguing what lay below.
 
-Now: Thirteen *saw*.
+Now: William *saw*.
 
 ---
 
@@ -138,9 +138,9 @@ Through Lumara's eyes: the farm from altitude.
 
 Imperfect. Like looking through a thin scrim of gauze, like looking at a reflection in still water rather than the thing itself. Soft at the edges. The colors slightly wrong, shifted away from the frequencies his own eyes produced. But *real*. He was looking down at the farm from sixty feet up, through the vision of a creature in flight.
 
-The farmyard — smaller than he had always felt it to be. From above it was a square of packed dust between roof lines. The eastern paddy — Rootwhisper — spread out as a geometric green net: rows straight, spacing even, and beneath the surface, visible through some quality of Lumara's khai linh perception that he could not name, the root network below lay like the veins on the back of a held-up hand. Not hidden. Not obscured. Present, and legible.
+The farmyard — smaller than he had always felt it to be. From above it was a square of packed dust between roof lines. The eastern paddy — Rootwhisper — spread out as a geometric green net: rows straight, spacing even, and beneath the surface, visible through some quality of Lumara's Kindling perception that he could not name, the root network below lay like the veins on the back of a held-up hand. Not hidden. Not obscured. Present, and legible.
 
-The northern forest was enormous. Genuinely enormous — three times the size it felt from the ground. The Kì Cùng in the distance was a silver line writing itself through the terrain.
+The northern forest was enormous. Genuinely enormous — three times the size it felt from the ground. The Rimbrook in the distance was a silver line writing itself through the terrain.
 
 And at the center of all of it, small in a way that surprised him: a boy standing in a farmyard, one knee dusty from a fall, eyes closed, face turned upward.
 
@@ -150,7 +150,7 @@ The feeling that came with this had no prior name. It was altitude without the v
 
 Lumara: *This is what I always see. Now you see it too.*
 
-And in that field of vision — farther out, higher — a moving point. What would have been a speck to his own eyes resolved, through Lumara's, into clarity: Skytalon in a wide banking arc, unhurried, open. Not concealing itself. Not preparing a feint. Circling with the patient rotation of a creature that had not yet decided what it wanted. And Thirteen — for the first time across seven days of training — saw the *entire shape of the arc*. He saw the wing-tilt that preceded a direction change. He saw the point at which the flight path began to curve before the body followed. He saw —
+And in that field of vision — farther out, higher — a moving point. What would have been a speck to his own eyes resolved, through Lumara's, into clarity: Skytalon in a wide banking arc, unhurried, open. Not concealing itself. Not preparing a feint. Circling with the patient rotation of a creature that had not yet decided what it wanted. And William — for the first time across seven days of training — saw the *entire shape of the arc*. He saw the wing-tilt that preceded a direction change. He saw the point at which the flight path began to curve before the body followed. He saw —
 
 For the first time. The first time in all of this.
 
@@ -164,7 +164,7 @@ Reading what was about to.
 
 Skytalon dove.
 
-Thirteen, eyes still closed, read the full arc through Lumara's vision.
+William, eyes still closed, read the full arc through Lumara's vision.
 
 The wing angle was not a straight-attack angle. Slightly offset right — preparation for a mid-dive break. He had seen Skytalon do this: the displayed line a misdirection, the real trajectory hidden behind it. But this time he saw it *before the break* — saw it in the partial wing-tuck, in the way the tail adjusted to pre-compensate, saw the true ballistic path behind the false one the way you saw a bend in a river before you rounded it.
 
@@ -180,7 +180,7 @@ Skytalon pulled up.
 
 One inch short of contact.
 
-Wings spreading to their maximum span — because they had to, because the body of a bird of prey was not constructed for hovering and this was as close to hovering as it could achieve, each wingbeat driving a pulse of compressed air downward that Thirteen felt against his face and shoulder like a sequence of open-handed strikes. Raptors did not hang in place. Their anatomy argued against it at every joint and tendon. Skytalon was spending itself against its own design, beating everything it had into remaining in this exact position.
+Wings spreading to their maximum span — because they had to, because the body of a bird of prey was not constructed for hovering and this was as close to hovering as it could achieve, each wingbeat driving a pulse of compressed air downward that William felt against his face and shoulder like a sequence of open-handed strikes. Raptors did not hang in place. Their anatomy argued against it at every joint and tendon. Skytalon was spending itself against its own design, beating everything it had into remaining in this exact position.
 
 Remaining in this moment.
 
@@ -200,11 +200,11 @@ It cut across the noon hour the way a blade leaves a scabbard — clean, ringing
 
 It crossed the farmyard and reached the northern tree line. He could not see that far but he heard the echo travel — the cry finding the canopy, returning as a thin shadow of itself, then gone entirely.
 
-Thirteen stood with his palm still raised.
+William stood with his palm still raised.
 
 He thought about Amberrex — the tiger's bow, the slow and heavy lowering of that enormous head, the way it had inclined the full weight of acknowledgment toward him. Body language. Not sound.
 
-He thought about the Tidecaller — the fish's withdrawal to deep water, the deliberate turning away that had communicated, through the Tha Tam Tuc, *you may leave now*. The language of absence. Not sound.
+He thought about the Tidecaller — the fish's withdrawal to deep water, the deliberate turning away that had communicated, through the Hearthspeak, *you may leave now*. The language of absence. Not sound.
 
 He thought about the Tremor — the ground left whole after the creature's passage. The grammar of what remained. Not sound.
 
@@ -232,7 +232,7 @@ Rootwhisper trembled.
 
 Faint — so faint that at first he thought it was wind moving through the grain. It was not. This was a vibration he knew: not alarm, not the response to an external threat. Rootwhisper was answering something *inside its own network* — an awareness the rice had no language to express but had a body to feel.
 
-And through the contract thread — the thread that bound him to both: Lumara above, Rootwhisper below — Thirteen felt three frequencies simultaneously.
+And through the contract thread — the thread that bound him to both: Lumara above, Rootwhisper below — William felt three frequencies simultaneously.
 
 His own. Lumara's. Rootwhisper's.
 
@@ -246,7 +246,7 @@ Then it passed.
 
 Skytalon had already climbed, had already banked once at a height where individual birds became difficult to resolve, had already angled north and was gone. No farewell. No lingering. The way it had come — fast, on its own schedule, on terms it had set before it arrived.
 
-Thirteen stood with his palm still open.
+William stood with his palm still open.
 
 ---
 
@@ -292,4 +292,4 @@ Somewhere above — very high, past the range of his unaided perception — that
 
 Rootwhisper breathed.
 
-And Thirteen stood in the autumn noon, his shoulder aching, his palm still warm, feeling the harmony that had already ended and yet persisted the way sound persists in a room after the instrument has been set down — present in the air, diminishing, real.
+And William stood in the autumn noon, his shoulder aching, his palm still warm, feeling the harmony that had already ended and yet persisted the way sound persists in a room after the instrument has been set down — present in the air, diminishing, real.

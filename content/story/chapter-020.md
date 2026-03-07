@@ -8,11 +8,11 @@ draft: false
 
 The morning was clear.
 
-Thirteen stood in the farmyard, feet wide, knees soft, weight settled into the ground the way the Tremor had taught him — not planted, but *present.* Around him the Rootwhisper breathed in its rows. The cold air held the smell of turned earth and late-autumn grass. Lumara was overhead somewhere, a distant shape against the pale sky.
+William stood in the farmyard, feet wide, knees soft, weight settled into the ground the way the Tremor had taught him — not planted, but *present.* Around him the Rootwhisper breathed in its rows. The cold air held the smell of turned earth and late-autumn grass. Lumara was overhead somewhere, a distant shape against the pale sky.
 
 He had been standing here since before first light. Two days since Skytalon's first appearance — two days of watching the horizon, watching the treeline, watching nothing at all. Waiting for the hawk to come when it decided to come, because there was no other way.
 
-The Steward had not come out this morning. The kitchen window was lit, a yellow square against the grey dawn, and Thirteen knew the old man was there. Watching, probably. From a distance he had said he could not close.
+The Steward had not come out this morning. The kitchen window was lit, a yellow square against the grey dawn, and William knew the old man was there. Watching, probably. From a distance he had said he could not close.
 
 He breathed out slowly.
 
@@ -64,7 +64,7 @@ He tried what had worked for the Tremor: opening the groundsense wide, feeling f
 
 But the hawk was not in the earth.
 
-He tried what had worked for Amberrex: the tiger's speed, the memory of how the great cat's explosive charge had felt from the inside of the Tha Tam Tuc — the coiled readiness, the body compressed into a spring. He held the posture, let the memory run through his muscles.
+He tried what had worked for Amberrex: the tiger's speed, the memory of how the great cat's explosive charge had felt from the inside of the Hearthspeak — the coiled readiness, the body compressed into a spring. He held the posture, let the memory run through his muscles.
 
 Wrong. Completely wrong. The tiger's charge was a single direction, a single instant, start to finish in a straight line. The hawk moved in three dimensions simultaneously. The speed was different in kind, not just degree.
 
@@ -124,7 +124,7 @@ He stood. Reset his stance. Feet wide, knees soft — the Tremor's posture, the 
 
 Then — keeping that anchor — he opened upward.
 
-Not with his eyes. Through the bond. Through the Tha Tam Tuc.
+Not with his eyes. Through the bond. Through the Hearthspeak.
 
 Through Lumara.
 
@@ -192,9 +192,9 @@ He did not say *well done.* He did not say *how many times were you hit.* He did
 
 He sat. He ate his rice. He looked at the sky.
 
-This was new. Thirteen recognized it the way he had learned to recognize the Tremor's farewell — not through words, but through the absence of the usual pattern. The Steward was not instructing. He was keeping company. There was a difference, and after three years of one and almost none of the other, the difference was sharp.
+This was new. William recognized it the way he had learned to recognize the Tremor's farewell — not through words, but through the absence of the usual pattern. The Steward was not instructing. He was keeping company. There was a difference, and after three years of one and almost none of the other, the difference was sharp.
 
-Thirteen ate slowly. The rice was warm. The salve smelled of pine resin and something else he had never identified.
+William ate slowly. The rice was warm. The salve smelled of pine resin and something else he had never identified.
 
 "Two," he said eventually.
 
@@ -222,7 +222,7 @@ He looked back at the treeline himself.
 
 The sky was pale now, the gold of late afternoon washing out toward the flat white of approaching cold. Somewhere in that direction, the hawk was gone — as completely gone as if it had never been, as if the two wounds on his arm and the pattern of dust disturbed in the farmyard were evidence of something dreamed rather than something survived.
 
-"Tomorrow," Thirteen said.
+"Tomorrow," William said.
 
 He did not phrase it as a question. He did not need to.
 
@@ -230,7 +230,7 @@ The Steward did not answer. But he stayed seated on the step while the light fad
 
 ---
 
-Later, in the dark of his room, Thirteen lay and examined the day the way the Rootwhisper examined new ground — methodically, from the edge inward.
+Later, in the dark of his room, William lay and examined the day the way the Rootwhisper examined new ground — methodically, from the edge inward.
 
 Wave one: survived by instinct. Could not have survived by plan. The body remembered what the mind could not process in time. This was the Tremor's lesson — not a technique but a *conditioning.* You did not think about dropping your center. You had dropped it so many times that dropping it was what your body chose when choice ran out.
 
@@ -240,7 +240,7 @@ Wave three: the anchor held. He had dodged two. The third had changed the patter
 
 Prediction. Not reaction. Not speed. *Foresight.*
 
-He lay in the dark and felt the farm around him — the Rootwhisper's steady presence beneath the floor, Lumara on her perch at the foot of the bed, the distant murmur of the Kì Cùng. The contract thread hummed. The wound on his arm had settled into a dull heat, familiar now, the kind of pain that did not demand attention.
+He lay in the dark and felt the farm around him — the Rootwhisper's steady presence beneath the floor, Lumara on her perch at the foot of the bed, the distant murmur of the Rimbrook. The contract thread hummed. The wound on his arm had settled into a dull heat, familiar now, the kind of pain that did not demand attention.
 
 Tomorrow, he thought.
 

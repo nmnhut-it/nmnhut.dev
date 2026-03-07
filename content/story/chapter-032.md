@@ -6,9 +6,9 @@ draft: false
 
 # Chapter 032: The Shadow
 
-One week after the bees, every dị thú within range of the farm went still at the same moment.
+One week after the bees, every beast within range of the farm went still at the same moment.
 
-Thirteen was carrying water from the well when he felt it — not through the Tha Tam Tuc, not through the contract thread, but through a register he had no name for. A register that lived in the bones, in the deep animal architecture of the body that predated khai linh and speech and thought itself.
+William was carrying water from the well when he felt it — not through the Hearthspeak, not through the contract thread, but through a register he had no name for. A register that lived in the bones, in the deep animal architecture of the body that predated Kindling and speech and thought itself.
 
 Cold.
 
@@ -18,9 +18,9 @@ He set the bucket down.
 
 At the treeline, Amberrex rose from its resting place. The tiger's massive body turned north, its amber eyes fixed on a point beyond the forest. Every line of its form was rigid — not the coiled readiness of a predator preparing to strike, but the locked stillness of something that had identified a threat too large to fight and was calculating whether to stand or run.
 
-In the river, the Tidecaller surged. Thirteen felt it through the roots — a displacement wave traveling upstream, the fish's body cutting the current with a velocity it had never shown during their training sessions. The fish was not fleeing. It was positioning.
+In the river, the Tidecaller surged. William felt it through the roots — a displacement wave traveling upstream, the fish's body cutting the current with a velocity it had never shown during their training sessions. The fish was not fleeing. It was positioning.
 
-The sparrows in the barn eaves fell silent. The field mice retreated deeper into their burrows. Even the bees — the thousands of bees that lived in the farm's walls and whom Thirteen now felt as a constant, subliminal hum — contracted inward, their vibration dropping to a frequency so low it was more felt than heard.
+The sparrows in the barn eaves fell silent. The field mice retreated deeper into their burrows. Even the bees — the thousands of bees that lived in the farm's walls and whom William now felt as a constant, subliminal hum — contracted inward, their vibration dropping to a frequency so low it was more felt than heard.
 
 Lumara was in the air before he reached for her. She climbed in a tight spiral, gaining altitude, and through the sensory link he saw what she saw: the farm from above, the terraces, the forest, the river — and beyond the northern treeline, at the edge of what her enhanced vision could resolve, a darkness.
 
@@ -28,23 +28,23 @@ Not a shadow cast by cloud. Not the darkness of the forest canopy. Something tha
 
 *I cannot see it clearly*, Lumara said. Her voice through the bond carried a quality he had heard only once before — during the earth trials, when she could not reach him underground. Not fear. The thing that came before fear: the recognition that she was facing something outside her map of the world. *It is not there the way the tiger is there or the fish is there. It is more like — an absence that moves.*
 
-Thirteen reached through the Tha Tam Tuc for Amberrex.
+William reached through the Hearthspeak for Amberrex.
 
 The tiger's response came heavy and immediate, the drumming awareness that was Amberrex's native language pressed to its fullest weight.
 
 *The dark. Like in your dreams.*
 
-Thirteen went cold. "You know about my dreams?"
+William went cold. "You know about my dreams?"
 
 *I do not know your dreams. But I know this feeling. It is the same thing the eighteen fought. The same thing that has always been coming.*
 
-The eighteen heroes. The bóng đen. The darkness in the dream that was always rising, always needing to be met.
+The eighteen heroes. The shadow. The darkness in the dream that was always rising, always needing to be met.
 
 "How do you know what the eighteen fought?"
 
 *Because I was alive when they fought it.*
 
-The words — the meaning behind them, the weight of time they carried — settled into Thirteen's chest like a stone dropped into deep water. Amberrex remembered. The tiger's amber eyes, the eyes that all four training beasts shared, were not merely ancient. They were witnesses.
+The words — the meaning behind them, the weight of time they carried — settled into William's chest like a stone dropped into deep water. Amberrex remembered. The tiger's amber eyes, the eyes that all four training beasts shared, were not merely ancient. They were witnesses.
 
 He did not have time to pursue the revelation. The cold was deepening.
 
@@ -52,11 +52,11 @@ He did not have time to pursue the revelation. The cold was deepening.
 
 In the eastern paddy, the Rootwhisper contracted.
 
-Thirteen felt it through the contract — not the gradual withdrawal of a plant responding to drought or frost, but a sudden, deliberate pulling-inward. The roots that had been reaching outward for three years reversed course. The network that spread beneath the entire farm — the vast underground architecture of roots and tunnels and connections — drew itself toward the center.
+William felt it through the contract — not the gradual withdrawal of a plant responding to drought or frost, but a sudden, deliberate pulling-inward. The roots that had been reaching outward for three years reversed course. The network that spread beneath the entire farm — the vast underground architecture of roots and tunnels and connections — drew itself toward the center.
 
 The boundary of the farm shrank.
 
-Not by much. Perhaps ten strides in every direction, the root network retracting like fingers curling into a fist. But Thirteen felt each lost stride as a contraction in his chest, as though the contract thread itself were being wound tighter.
+Not by much. Perhaps ten strides in every direction, the root network retracting like fingers curling into a fist. But William felt each lost stride as a contraction in his chest, as though the contract thread itself were being wound tighter.
 
 The hunger increased. Not dramatically — a notch, a degree, the difference between discomfort and distress. But present and unmistakable.
 
@@ -82,19 +82,19 @@ He found Wren at the barn door. She was standing very still, her hand pressed fl
 
 "Like it is trying to shrink. Like it is pulling itself smaller, trying to hide." She looked at him. "What is out there?"
 
-"I don't know. Something the dị thú fear. Something the Rootwhisper is defending against."
+"I don't know. Something the beast fear. Something the Rootwhisper is defending against."
 
 She closed her eyes. Her breathing was measured — the breathing of someone who had learned to control panic through repetition, the way a soldier learned to control a sword through drill.
 
-"The people who held me," she said, "they spoke of something. A presence that preceded their master. A cold that came before the Black Figure. They said — they said that when the cold came, the khai linh materials responded. Drew inward. Became denser." She opened her eyes. "Like what your rice is doing now."
+"The people who held me," she said, "they spoke of something. A presence that preceded their master. A cold that came before the Black Figure. They said — they said that when the cold came, the Kindling materials responded. Drew inward. Became denser." She opened her eyes. "Like what your rice is doing now."
 
-The Meredith. The Black-Robed Figure. The villain that Thirteen had heard about in fragments — in the Steward's careful omissions, in Wren's compressed memories, in the notebook page he had taken from the abandoned estate outside Bach Dien. A presence that cultivated humans into Dược Nhân, into medicine for immortality.
+The Meredith. The Black-Robed Figure. The villain that William had heard about in fragments — in the Steward's careful omissions, in Wren's compressed memories, in the notebook page he had taken from the abandoned estate outside Whitfield. A presence that cultivated humans into the Hollowed, into medicine for immortality.
 
 And now something associated with that presence was approaching.
 
 ---
 
-Thirteen used the Tha Tam Tuc.
+William used the Hearthspeak.
 
 Not carefully — not the patient, targeted communication he had learned through the training beasts. He reached outward in every direction, casting his awareness like a net, touching every mind within range.
 
@@ -108,7 +108,7 @@ The field mice, deeper in their burrows: *Cold from above. The warmth is leaving
 
 A fox at the forest edge — the largest wild mind he could reach, its thoughts sharper than the birds': *The dark one walks and the forest bends away. Not wind. The trees lean like they are trying to get distance. The ground underneath it dies for a time. Then comes back. But different.*
 
-Thirteen pulled his awareness back. His head ached — reaching so many minds simultaneously was taxing, the Tha Tam Tuc not designed for broadcast but for bilateral connection. But the intelligence was clear.
+William pulled his awareness back. His head ached — reaching so many minds simultaneously was taxing, the Hearthspeak not designed for broadcast but for bilateral connection. But the intelligence was clear.
 
 The Meredith — or something belonging to it — was within two to three days of the farm. It moved with an escort of controlled humans. And it was not rushing. It was surveying.
 
@@ -116,11 +116,11 @@ The Meredith — or something belonging to it — was within two to three days o
 
 He told the Steward.
 
-The old man listened without interrupting — standing in the kitchen, his hands wrapped around a clay cup he had not drunk from, his expression the composed mask that Thirteen now understood was not calm but containment.
+The old man listened without interrupting — standing in the kitchen, his hands wrapped around a clay cup he had not drunk from, his expression the composed mask that William now understood was not calm but containment.
 
-When Thirteen finished, the Steward set down the cup.
+When William finished, the Steward set down the cup.
 
-"Dược Nhân," he said. "The figures behind it. People who walk but do not live. They are being controlled — their will suppressed, their bodies maintained as vessels." He paused. "The Black Figure does not travel without his creations."
+"the Hollowed," he said. "The figures behind it. People who walk but do not live. They are being controlled — their will suppressed, their bodies maintained as vessels." He paused. "The Black Figure does not travel without his creations."
 
 "How many?"
 
@@ -132,11 +132,11 @@ Wren spoke from the doorway. She had entered without sound — the survivor's ha
 
 The kitchen was very quiet.
 
-"He has not come for the farm," the Steward said. "Not directly. He is surveying the region — mapping its resources, identifying potential sources of khai linh material. The Prefecture's interest in us drew his attention. That is how these things work: legitimate power creates a signal, and predators follow the signal."
+"He has not come for the farm," the Steward said. "Not directly. He is surveying the region — mapping its resources, identifying potential sources of Kindling material. The Prefecture's interest in us drew his attention. That is how these things work: legitimate power creates a signal, and predators follow the signal."
 
 "Then what do we do?"
 
-The Steward looked at Thirteen with the expression he used for moments of decision — the look that said: *I know what I would do. What will you do?*
+The Steward looked at William with the expression he used for moments of decision — the look that said: *I know what I would do. What will you do?*
 
 "The Rootwhisper can expand," the Steward said. "I have told you this. The boundary of the farm is not fixed — it grows as the rice grows. If you extend the Rootwhisper further, the contract expands with it. Your range of movement increases."
 
@@ -144,7 +144,7 @@ The Steward looked at Thirteen with the expression he used for moments of decisi
 
 "Because if the Black Figure comes to the farm, there will be conflict. And conflict on the farm risks everything — the rice, the bees, the structures I have spent sixteen years building." He paused. "But if you can meet him *before* he reaches the farm — outside the boundary, but still within the contract's range..."
 
-Thirteen understood. "Extend the Rootwhisper. Expand the territory. Go out to meet him instead of waiting."
+William understood. "Extend the Rootwhisper. Expand the territory. Go out to meet him instead of waiting."
 
 "It will cost you. Every stride of expansion draws on your vitality through the contract. The hunger will increase. Your body will pay for the distance."
 
@@ -152,21 +152,21 @@ Thirteen understood. "Extend the Rootwhisper. Expand the territory. Go out to me
 
 "That is not something I can predict. The Rootwhisper has never been pushed this way. The expansion has always been the rice's own pace — slow, patient, organic. What I am suggesting is *directed* growth. You choosing the direction. You providing the energy."
 
-Thirteen looked at the eastern paddy through the kitchen window. The rice stood in its rows, the grain heavy, the roots pulled tight in their defensive contraction.
+William looked at the eastern paddy through the kitchen window. The rice stood in its rows, the grain heavy, the roots pulled tight in their defensive contraction.
 
 "The rice pulled back," he said. "It sensed the threat and it pulled back."
 
 "Yes. The Rootwhisper protects itself. Its first instinct is always preservation." The Steward's voice was careful. "But its second instinct — the deeper one — is growth. It contracted because it is preparing. Gathering resources for the next expansion."
 
-Thirteen thought about the Tremor. About the symbiotic relationship between roots and tunnels, the way Rootwhisper had reached into the earth and found an ally waiting there. About what Lumara had said: *Not a wall. A body.*
+William thought about the Tremor. About the symbiotic relationship between roots and tunnels, the way Rootwhisper had reached into the earth and found an ally waiting there. About what Lumara had said: *Not a wall. A body.*
 
 "If the Rootwhisper expands," he said, "what happens to the creatures that have gathered?"
 
 "They move with it. The zone expands. The tiger's range, the fish's territory, the small creatures' safe ground — all of it extends."
 
-He looked at the Steward. The old man's expression was unreadable — the containment in full effect. But Thirteen could read what was behind it now: the careful hope of a man watching his work approach the purpose he had designed it for.
+He looked at the Steward. The old man's expression was unreadable — the containment in full effect. But William could read what was behind it now: the careful hope of a man watching his work approach the purpose he had designed it for.
 
-"You planned this," Thirteen said. Not an accusation. A statement.
+"You planned this," William said. Not an accusation. A statement.
 
 "I planned for the possibility. Not the specific circumstance." The Steward's voice was quiet. "The farm was never meant to be a hiding place forever. It was meant to be a nursery. You grow in a nursery until you are ready to be transplanted."
 
@@ -176,17 +176,17 @@ The Steward did not answer. He picked up his tea and drank.
 
 ---
 
-That night, Thirteen sat at the edge of the eastern paddy and pressed his hands to the earth.
+That night, William sat at the edge of the eastern paddy and pressed his hands to the earth.
 
 The Rootwhisper's roots met his awareness. The defensive contraction was still in place — the root network dense and tight, the boundary of the farm pulled inward. But beneath the contraction, deeper, he could feel the rice's second nature. The growth imperative. The reaching.
 
 He thought about what the Steward had said. About directed expansion. About choosing the direction and providing the energy.
 
-He thought about the twelve delegates with their swords and the three khai linh among them. He thought about the darkness in the north that made the forest lean away. He thought about the walkers behind it — people who had been people, who had been fed and cultivated and broken.
+He thought about the twelve delegates with their swords and the three Kindling among them. He thought about the darkness in the north that made the forest lean away. He thought about the walkers behind it — people who had been people, who had been fed and cultivated and broken.
 
 He thought about Wren, who had almost been one of them.
 
-The hunger in his chest shifted. Not the usual contraction — the khế ước's constant companion, the pull toward Rootwhisper that anchored him to this ground. Something different. A restlessness. The hunger recognizing that the threat to the rice was also a threat to itself, and that the best defense was not contraction but reach.
+The hunger in his chest shifted. Not the usual contraction — the the Hunger's constant companion, the pull toward Rootwhisper that anchored him to this ground. Something different. A restlessness. The hunger recognizing that the threat to the rice was also a threat to itself, and that the best defense was not contraction but reach.
 
 He pushed.
 
@@ -234,7 +234,7 @@ Lumara pressed closer against his knee. Through the bond, he felt her assessment
 
 ---
 
-The Steward appeared at the paddy's edge. He had been watching — from how long, from where, Thirteen did not know. The old man looked at the earth where Thirteen's hands had been, and his expression carried something that was not quite pride and not quite fear.
+The Steward appeared at the paddy's edge. He had been watching — from how long, from where, William did not know. The old man looked at the earth where William's hands had been, and his expression carried something that was not quite pride and not quite fear.
 
 "You pushed it," the Steward said.
 
@@ -246,7 +246,7 @@ The Steward appeared at the paddy's edge. He had been watching — from how long
 
 The Steward looked at him for a long moment. Then: "Your mother—" He stopped. Caught himself, the way he had in the western field months ago, the words slipping before the gate could close.
 
-Thirteen waited.
+William waited.
 
 The Steward's jaw worked. The containment held. Whatever he had been about to say retreated behind the architecture of his composure.
 
@@ -254,8 +254,8 @@ The Steward's jaw worked. The containment held. Whatever he had been about to sa
 
 He walked away.
 
-Thirteen stayed at the paddy's edge. The stars were out — clear and numerous, the autumn constellations in their positions. Somewhere to the north, beyond the forest, the darkness moved. Somewhere to the south, the Prefecture's delegates carried their report. And here, on this patch of earth that he had been bound to for three years and raised on for sixteen, the Rootwhisper breathed and grew and reached, one root-tip at a time, toward whatever came next.
+William stayed at the paddy's edge. The stars were out — clear and numerous, the autumn constellations in their positions. Somewhere to the north, beyond the forest, the darkness moved. Somewhere to the south, the Prefecture's delegates carried their report. And here, on this patch of earth that he had been bound to for three years and raised on for sixteen, the Rootwhisper breathed and grew and reached, one root-tip at a time, toward whatever came next.
 
 *You must hurry*, said the dream-voice, from the place where it always lived.
 
-For the first time, Thirteen agreed with it completely.
+For the first time, William agreed with it completely.

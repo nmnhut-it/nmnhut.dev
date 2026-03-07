@@ -1,6 +1,6 @@
 ---
 title: "Chapter 005: First Blood"
-weight: 05
+weight: 5
 draft: false
 ---
 
@@ -8,7 +8,7 @@ draft: false
 
 The tiger came out of the tree line on the third morning.
 
-Thirteen heard it before he saw it — not with his ears, but with the sense that had woken inside him after khai linh. A pulse of presence, large and contained, moving through the undergrowth at the forest edge with a deliberate patience that had nothing in common with concealment. The creature was not hiding. It was simply taking its time.
+William heard it before he saw it — not with his ears, but with the sense that had woken inside him after Kindling. A pulse of presence, large and contained, moving through the undergrowth at the forest edge with a deliberate patience that had nothing in common with concealment. The creature was not hiding. It was simply taking its time.
 
 He set down the hoe.
 
@@ -16,7 +16,7 @@ Lumara had gone very still on the low fence rail behind him, her head tilted, wa
 
 The tiger stepped out into the open.
 
-It was not the size he had imagined. He had heard tigers described in the stories the Steward told on winter evenings — vast things, the length of two men lying end to end, striped like firelight, terrifying in the way that beauty is terrifying when it becomes dangerous. This one was smaller than that. But it moved differently than anything Thirteen had ever seen. Each stride settled into the earth with total certainty, as though the ground had agreed in advance to hold it.
+It was not the size he had imagined. He had heard tigers described in the stories the Steward told on winter evenings — vast things, the length of two men lying end to end, striped like firelight, terrifying in the way that beauty is terrifying when it becomes dangerous. This one was smaller than that. But it moved differently than anything William had ever seen. Each stride settled into the earth with total certainty, as though the ground had agreed in advance to hold it.
 
 He could feel its vitality from thirty paces. Not the gentle steady breathing of Lumara, not the deep slow pulse of the Rootwhisper. This was something that surged and coiled, alive and watchful, a fire banked but not extinguished.
 
@@ -24,7 +24,7 @@ Three legs.
 
 The front left ended above the joint, the stump healed long ago into a smooth rounded knob. And yet the animal moved without unevenness, without compensation. The three that remained simply carried what the fourth had once carried, and had become more for it.
 
-Thirteen did not move.
+William did not move.
 
 The tiger stopped at the edge of the field and regarded him. Yellow eyes, still as water in a bowl. A scar ran from the left eye back through the striping, pale against tawny fur.
 
@@ -32,7 +32,7 @@ Then the Steward's voice came from behind, calm as always, unhurried.
 
 "Pick up the hoe."
 
-Thirteen did not turn around. "What for?"
+William did not turn around. "What for?"
 
 "Hold something. Your hands need to know what to do before your feet do."
 
@@ -42,11 +42,11 @@ He picked up the hoe.
 
 What followed was not a fight.
 
-Thirteen had read enough of the Steward's old books to know the word for what the tiger did: it circled. Slowly, outside striking range — if there was a striking range, he did not know it — testing the edges of whatever it was that Thirteen occupied, that field of presence the tiger could read the way a current reads a stone.
+William had read enough of the Steward's old books to know the word for what the tiger did: it circled. Slowly, outside striking range — if there was a striking range, he did not know it — testing the edges of whatever it was that William occupied, that field of presence the tiger could read the way a current reads a stone.
 
 Every few passes it paused and looked at him directly. Not with hunger. Not with aggression. With assessment.
 
-Thirteen moved to keep facing it. The Steward had said: *pick up the hoe*, not *stand still*. He turned with the tiger's movement, slow and continuous, trying not to stumble on the uneven ground.
+William moved to keep facing it. The Steward had said: *pick up the hoe*, not *stand still*. He turned with the tiger's movement, slow and continuous, trying not to stumble on the uneven ground.
 
 His feet kept finding the wrong places.
 
@@ -62,13 +62,13 @@ From the fence rail, Lumara made a sound low in her throat. Not a warning. Somet
 
 "You know how to walk when walking is all you're doing."
 
-Thirteen adjusted his footing. Set his weight lower, the way he did when carrying heavy sacks from the storehouse. That was better — more connection, less height to fall from.
+William adjusted his footing. Set his weight lower, the way he did when carrying heavy sacks from the storehouse. That was better — more connection, less height to fall from.
 
 The tiger stood up.
 
 It came toward him without circling this time. Measured steps, purposeful. Not a charge — too slow for that, too deliberate. The kind of approach that has already decided where it will end up and is simply traveling there.
 
-Thirteen held the hoe across his body and breathed.
+William held the hoe across his body and breathed.
 
 The tiger came within ten paces. Eight. Five.
 
@@ -78,7 +78,7 @@ His hands had gone tight on the hoe shaft. He made himself loosen them.
 
 "Don't stand square to it," the Steward said quietly.
 
-Thirteen angled his body, left shoulder forward. Smaller target, better balance for moving.
+William angled his body, left shoulder forward. Smaller target, better balance for moving.
 
 The tiger's eyes tracked the shift. One ear tilted forward.
 
@@ -86,7 +86,7 @@ Then it came.
 
 ---
 
-Not the full force of the animal — Thirteen understood that even as it happened, even as instinct threw him backward and the hoe swung up in a clumsy arc that connected with nothing. The tiger's forepaw came out sideways, almost lazy, like a large cat swatting at a hanging leaf. The back of it struck his shoulder and spun him, and he went down on one knee in the clay.
+Not the full force of the animal — William understood that even as it happened, even as instinct threw him backward and the hoe swung up in a clumsy arc that connected with nothing. The tiger's forepaw came out sideways, almost lazy, like a large cat swatting at a hanging leaf. The back of it struck his shoulder and spun him, and he went down on one knee in the clay.
 
 He scrambled upright before the animal could press the advantage — if it wanted an advantage.
 
@@ -108,7 +108,7 @@ The second strike found his forearm.
 
 He had shifted his weight and his lead foot had given, tilting him for just a fraction of a second — and the fraction was enough. The paw came in low and the claws opened on the extension, three lines drawn across the outer forearm from wrist to elbow. Not deep. But the skin parted.
 
-Thirteen felt the sting before the blood. A bright immediate pain, precise as a line drawn with a brush.
+William felt the sting before the blood. A bright immediate pain, precise as a line drawn with a brush.
 
 He stepped back and looked at his arm.
 
@@ -144,7 +144,7 @@ It stood very still and looked at him with those unreadable yellow eyes, and the
 
 The breath was hot and even. There was no menace in it.
 
-Thirteen held still. The forearm stung. The blood had mostly dried in three dark lines. Lumara, on the fence rail, had not moved through any of this.
+William held still. The forearm stung. The blood had mostly dried in three dark lines. Lumara, on the fence rail, had not moved through any of this.
 
 He felt the tiger's vitality clearly now — closer than before, the circling had drawn them near enough that its presence filled the space the way a fire fills a cold room, warmth without edge. And through that warmth something moved from animal to boy, not instruction, not language, but the bodily knowledge of a creature that had learned to move with three legs when all its instinct still reached for four. To place weight where the earth would hold. To not fight the ground but read it.
 
@@ -154,7 +154,7 @@ Then the tiger turned, walked back to the tree line, and was gone.
 
 ---
 
-Thirteen stood in the paddy and looked at his forearm.
+William stood in the paddy and looked at his forearm.
 
 His heart had come down from its earlier hammering. His shoulder ached, the hip would make itself known later. The cuts were clean and would heal. He pressed the back of his clean hand against them, not to stanch — they had stopped bleeding — but because the pressure felt right against the sting.
 
@@ -172,13 +172,13 @@ But not the way it stirred when he was idle. When he sat still and did nothing, 
 
 He noticed this without entirely understanding it.
 
-The Steward appeared at the edge of the field. He walked without hurrying, his step the same at dusk as at dawn, carrying two bowls. He set one beside Thirteen without comment and sat on a section of raised bank with the other.
+The Steward appeared at the edge of the field. He walked without hurrying, his step the same at dusk as at dawn, carrying two bowls. He set one beside William without comment and sat on a section of raised bank with the other.
 
 Neither of them spoke immediately.
 
 The sky above the forest was beginning to turn. The blue deepened toward the east while the west kept its light longer, and the last warmth of the sun came horizontal across the paddies, catching the tips of the rice and turning them briefly to gold.
 
-Thirteen looked at the food in the bowl. Plain cooked rice, some salted vegetables. The ordinary supper of an ordinary evening.
+William looked at the food in the bowl. Plain cooked rice, some salted vegetables. The ordinary supper of an ordinary evening.
 
 "Eat," the Steward said.
 
@@ -208,7 +208,7 @@ The Steward sipped from his own bowl, watching the paddies. "It was doing what i
 
 The old man was quiet for a moment. "The difference matters less than what you do with it."
 
-Thirteen looked at his forearm. The three lines had dried to dark rust-red against his skin, the lines straight and precise, like a mark made with intention rather than accident.
+William looked at his forearm. The three lines had dried to dark rust-red against his skin, the lines straight and precise, like a mark made with intention rather than accident.
 
 He had been struck twice before the third exchange. Had failed at simple things — keeping weight low, keeping feet reading the ground, keeping his body from committing to a direction before it knew where the force was coming from. He had a list of those failures and they were specific, each one a distinct mistake he could now locate in his body's memory.
 
@@ -224,7 +224,7 @@ The evening settled in.
 
 The sky went from amber to rust to the deep purple-grey that preceded true dark. A pair of birds crossed the field at low altitude, black shapes against the fading sky. The air cooled quickly now, carrying the smell of water from the paddies and the distant green-dark scent of the forest.
 
-Thirteen did not go inside.
+William did not go inside.
 
 He sat with Lumara against his side and let the darkness come. The hunger was present, as it always was. But the day's exertion had given it a shape — gathered it inward, made it purposeful. In stillness it had been a spreading ache, a hollow that grew as he sat with it, demanding without direction. Now it was compact. Alive. Patient.
 

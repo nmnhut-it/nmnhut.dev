@@ -8,15 +8,15 @@ draft: false
 
 Day five.
 
-Thirteen sat on the slope of the inn's roof with his back against the clay tiles, knees drawn up, the small cloth pouch open in his palm. He had counted the grains three times already. The number did not change.
+William sat on the slope of the inn's roof with his back against the clay tiles, knees drawn up, the small cloth pouch open in his palm. He had counted the grains three times already. The number did not change.
 
 Five.
 
-The hunger had changed since yesterday — moved, somehow, from the center of his chest to the edge of his thoughts, where it sat like a low hum just below hearing. Not louder. Not quieter. Continuous. He could think through it the way you could think through a distant bell — the sound was there, constant, but it occupied a frequency separate from reasoning. For now. He knew from the weeks of careful progression before leaving the farm, from the Steward's precise and unhurried teaching, that this was a middle state. The hunger had stages. He was in the second. The third was when the Tha Tam Tuc began to thin out — the mental stillness the skill required started to fray at the edges, like a rope held under too much weight. The fourth stage he had never reached, but the Steward had described it once, briefly, with the particular flatness of voice he used when he meant *pay attention to this.*
+The hunger had changed since yesterday — moved, somehow, from the center of his chest to the edge of his thoughts, where it sat like a low hum just below hearing. Not louder. Not quieter. Continuous. He could think through it the way you could think through a distant bell — the sound was there, constant, but it occupied a frequency separate from reasoning. For now. He knew from the weeks of careful progression before leaving the farm, from the Steward's precise and unhurried teaching, that this was a middle state. The hunger had stages. He was in the second. The third was when the Hearthspeak began to thin out — the mental stillness the skill required started to fray at the edges, like a rope held under too much weight. The fourth stage he had never reached, but the Steward had described it once, briefly, with the particular flatness of voice he used when he meant *pay attention to this.*
 
 *You will not be able to reach them at all.*
 
-Five grains. Two days northwest to Bạch Điền. Two days back. Four days minimum. He needed six grains to make it home safely. He had five.
+Five grains. Two days northwest to Whitfield. Two days back. Four days minimum. He needed six grains to make it home safely. He had five.
 
 One grain short.
 
@@ -42,11 +42,11 @@ Lumara looked back at him.
 
 *She needed to find you. You needed to be found.*
 
-Thirteen did not argue. He was not sure the bird was wrong.
+William did not argue. He was not sure the bird was wrong.
 
 Wren drew her knees to her chest and looked out over the town below — smoke from morning fires, a cart already moving through the narrow street, a dog nosing at something near the well. Her hair was the shortest he had ever seen on a girl. She had cut it herself; the evenness was functional, not considered.
 
-"There's an abandoned manor near Bạch Điền," she said. "Two days northwest. I have landmarks." She reached into her sleeve and produced a folded cloth — not paper, he noticed. Cloth was harder to destroy. She had been prepared. "I drew the route. Three checkpoints where the path forks. The third fork goes past a dry streambed — you take the right branch, not the left. The left looks more traveled but it dead-ends at a quarry."
+"There's an abandoned manor near Whitfield," she said. "Two days northwest. I have landmarks." She reached into her sleeve and produced a folded cloth — not paper, he noticed. Cloth was harder to destroy. She had been prepared. "I drew the route. Three checkpoints where the path forks. The third fork goes past a dry streambed — you take the right branch, not the left. The left looks more traveled but it dead-ends at a quarry."
 
 She placed the cloth on the tiles between them.
 
@@ -80,7 +80,7 @@ She turned her head in that particular way of hers — a small rotation, precise
 
 ---
 
-He had used the Tha Tam Tuc with four beasts over three years of training. Amberrex the tiger, ancient and deliberate, whose acknowledgment came like a landslide deciding where to stop. The Tidecaller in the river, all cold current and endless patience. The Tremor in the earth, speaking in the slow grammar of stone. Skytalon above, who communicated mostly in intent — the angle of a wing, the decision to descend. All of them chosen, all of them willing participants in a relationship that the Steward had arranged and tended. All of them old enough and large enough that they had learned, over long lives, something resembling considered attention.
+He had used the Hearthspeak with four beasts over three years of training. Amberrex the tiger, ancient and deliberate, whose acknowledgment came like a landslide deciding where to stop. The Tidecaller in the river, all cold current and endless patience. The Tremor in the earth, speaking in the slow grammar of stone. Skytalon above, who communicated mostly in intent — the angle of a wing, the decision to descend. All of them chosen, all of them willing participants in a relationship that the Steward had arranged and tended. All of them old enough and large enough that they had learned, over long lives, something resembling considered attention.
 
 Wild animals, he was about to discover, were completely different.
 
@@ -98,7 +98,7 @@ A single image, sharp and brief: a quarry, white stone, the late-afternoon light
 
 Five seconds of contact. Then nothing.
 
-He sat with it for a moment. They had known. They had answered. But they had not waited for his question to finish — they had answered the impression of the question and moved on. Wild minds did not pause for comprehension. They were continuously in motion, and the Tha Tam Tuc caught only what happened to be facing his direction.
+He sat with it for a moment. They had known. They had answered. But they had not waited for his question to finish — they had answered the impression of the question and moved on. Wild minds did not pause for comprehension. They were continuously in motion, and the Hearthspeak caught only what happened to be facing his direction.
 
 *Different*, Lumara observed.
 
@@ -118,7 +118,7 @@ He stopped at the entrance to the alley. Then he sat down on the ground.
 
 This was not instinct. It was logic: the sparrows had required nothing from him. They were small and numerous and their safety was already guaranteed by altitude and speed. The cat was neither small nor numerous, and its safety depended on accurate assessment. If he approached, he would be something approaching. If he sat down, he became something stationary — a new feature of the landscape, requiring evaluation rather than immediate response.
 
-He opened the Tha Tam Tuc gently and made no move to reach. He simply held the channel open the way you held a door — not inviting, not excluding. Present.
+He opened the Hearthspeak gently and made no move to reach. He simply held the channel open the way you held a door — not inviting, not excluding. Present.
 
 The cat looked at him.
 
@@ -130,11 +130,11 @@ A full ten minutes passed. He counted by the changing angle of light on the tile
 
 The cat stood, stretched with the deliberate full-body extension of a creature for whom every physical moment was intentional, and walked toward him. It stopped just beyond arm's reach and sat again, its tail making a single slow sweep.
 
-*You smell like old rice*, it said — or rather, the impression came through the Tha Tam Tuc, translated into something like language only at the last moment. *Very old.*
+*You smell like old rice*, it said — or rather, the impression came through the Hearthspeak, translated into something like language only at the last moment. *Very old.*
 
 He recognized what it meant. Rootwhisper. The contract had its own signature, apparently — a deep, slow vegetable presence that had been part of his life for long enough that it had soaked into him the way wood absorbed oil. Even five days away from the farm, the scent of it clung.
 
-He kept very still. *I need to know the road northwest. To Bạch Điền.*
+He kept very still. *I need to know the road northwest. To Whitfield.*
 
 The cat's tail swept again. *Why?*
 
@@ -154,7 +154,7 @@ He remained seated for a moment.
 
 He had gone to the sparrows with a question and they had answered it and left. He had waited for the cat and it had come to him and negotiated terms. The sparrows operated by swarm logic — they shared everything instantly and nothing was private, so answering a stranger's question cost nothing. The cat operated by individual logic — every interaction was a transaction, and trust was not assumed, it was priced.
 
-The training beasts had chosen to be there. They had entered a relationship voluntarily and remained in it by choice. Wild animals did not serve. They traded. The Tha Tam Tuc was a tool of communication, but communication was not the same as cooperation, and cooperation was not the same as trust.
+The training beasts had chosen to be there. They had entered a relationship voluntarily and remained in it by choice. Wild animals did not serve. They traded. The Hearthspeak was a tool of communication, but communication was not the same as cooperation, and cooperation was not the same as trust.
 
 He had just learned something the Steward had never taught him, because the Steward had never been able to arrange it.
 
@@ -204,13 +204,13 @@ The road was wide enough for a cart. Dry. The autumn air carried a smell of turn
 
 They did not talk much.
 
-This was not uncomfortable. He had grown up in a place with two people and a bird; silence was his native condition. She seemed to share it. When they passed a farmhouse with a dog sleeping in the gate's shade, he paused. She stopped without asking why and waited while he crouched and opened the Tha Tam Tuc briefly.
+This was not uncomfortable. He had grown up in a place with two people and a bird; silence was his native condition. She seemed to share it. When they passed a farmhouse with a dog sleeping in the gate's shade, he paused. She stopped without asking why and waited while he crouched and opened the Hearthspeak briefly.
 
 The dog was old. It knew the road north with the exhaustive familiarity of a creature who had patrolled the same stretch of fence for years. It told him, in the dense layered impression of an animal who had almost no urgency left in its life, that nothing unusual had passed that way since the last rain. Then it went back to sleep.
 
 He stood. They kept walking.
 
-Later — mid-afternoon, the road climbing toward the first ridge — a hawk circled overhead. Not Lumara. A wild one, with the unhurried altitude of a bird that was hunting, not traveling. He watched it for a moment and the Tha Tam Tuc reached up toward it. The contact was brief and clear: *Big creatures on the road. Interesting smell. Not dangerous.* Then the hawk banked away and became a diminishing arc against the sky.
+Later — mid-afternoon, the road climbing toward the first ridge — a hawk circled overhead. Not Lumara. A wild one, with the unhurried altitude of a bird that was hunting, not traveling. He watched it for a moment and the Hearthspeak reached up toward it. The contact was brief and clear: *Big creatures on the road. Interesting smell. Not dangerous.* Then the hawk banked away and became a diminishing arc against the sky.
 
 Wren had been watching him.
 

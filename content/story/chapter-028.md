@@ -10,9 +10,9 @@ Day seven away from the farm.
 
 The hunger was no longer a feeling. It was a presence — something that had climbed out of his chest and spread into the architecture of him, lodged in his calves and the backs of his knees, pooled at the base of his skull. When he turned his head too quickly, the edges of his vision went white at the margins. Colours at a distance had started flattening into grey.
 
-Lumara's voice through the Tha Tam Tuc came as if from behind a wall. Not gone. Not severed. But the contract thread ran thin and wavering, like a line of smoke stretched across too much open air.
+Lumara's voice through the Hearthspeak came as if from behind a wall. Not gone. Not severed. But the contract thread ran thin and wavering, like a line of smoke stretched across too much open air.
 
-He and Wren lay at the edge of the treeline, looking down at Bạch Điền.
+He and Wren lay at the edge of the treeline, looking down at Whitfield.
 
 ---
 
@@ -40,7 +40,7 @@ A pause. She was counting.
 
 *About one hundred and forty steps. Perhaps six minutes.*
 
-Thirteen pressed his palm flat against the earth. The Tremor's work was still here — he could feel it, faint but readable, the compression ridges where the great creature had passed through the substrate some weeks ago and reshaped the clay beneath. The walls were built on old fill, the northeast corner sitting over a section where a tree root — long dead, but the channel remained — had fractured the base from below. Not collapsed. Just hollow in a particular way. The mortar there would be different. The clay denser above the void, lighter to either side.
+William pressed his palm flat against the earth. The Tremor's work was still here — he could feel it, faint but readable, the compression ridges where the great creature had passed through the substrate some weeks ago and reshaped the clay beneath. The walls were built on old fill, the northeast corner sitting over a section where a tree root — long dead, but the channel remained — had fractured the base from below. Not collapsed. Just hollow in a particular way. The mortar there would be different. The clay denser above the void, lighter to either side.
 
 He found the spot exactly.
 
@@ -54,7 +54,7 @@ She studied the wall for a long moment. She had not asked how he knew. After six
 
 ---
 
-Two small birds had been traveling with them since the first morning out of Lau Thành — not companions, not contracted, simply birds that had accepted some grain and a brief conversation and agreed, in their practical, transactional way, to provide what information passed through their territory. Thirteen had spoken to them through the Tha Tam Tuc, careful and slow, offering what they wanted (safety, food, the absence of sudden movements) in exchange for what he needed.
+Two small birds had been traveling with them since the first morning out of Lau Thành — not companions, not contracted, simply birds that had accepted some grain and a brief conversation and agreed, in their practical, transactional way, to provide what information passed through their territory. William had spoken to them through the Hearthspeak, careful and slow, offering what they wanted (safety, food, the absence of sudden movements) in exchange for what he needed.
 
 Now one of them sat in a pine tree at the treeline's edge, watching the manor's northeast wall.
 
@@ -66,7 +66,7 @@ When two birds called together, they waited.
 
 "He'll understand that?" Wren had asked, the night before, not with skepticism but with genuine uncertainty. She had seen enough by now to believe the communication worked. She was asking about the precision.
 
-"Birds understand patterns," Thirteen had said. "They count better than people think."
+"Birds understand patterns," William had said. "They count better than people think."
 
 Now they waited at the wall.
 
@@ -74,7 +74,7 @@ Wren had a coil of rope over one shoulder — thin cord, taken from an abandoned
 
 The single bird note came from the pine.
 
-Thirteen laced his hands together. Wren stepped into them without ceremony, and he pushed upward — the effort cost him more than it should have, his arms shaking with a weakness that was not fatigue but hunger, the body cannibalizing itself in the ordered way it did when the contract's sustaining pulled at nothing and found nothing. She caught the top of the wall, pulled herself up and over, gone.
+William laced his hands together. Wren stepped into them without ceremony, and he pushed upward — the effort cost him more than it should have, his arms shaking with a weakness that was not fatigue but hunger, the body cannibalizing itself in the ordered way it did when the contract's sustaining pulled at nothing and found nothing. She caught the top of the wall, pulled herself up and over, gone.
 
 He pressed himself against the base of the wall and waited.
 
@@ -90,7 +90,7 @@ He breathed.
 
 ---
 
-The guard's footsteps were audible now, a slow circuit on packed earth. Thirteen tracked them, counting. One hundred and forty steps. Six minutes. He had one hundred and ten before the man came back around.
+The guard's footsteps were audible now, a slow circuit on packed earth. William tracked them, counting. One hundred and forty steps. Six minutes. He had one hundred and ten before the man came back around.
 
 He did not need to be inside.
 
@@ -166,7 +166,7 @@ Wren was ahead of him with the boy. The girl ran on his right, slightly behind �
 
 Twenty minutes into the forest.
 
-Thirteen's right knee folded.
+William's right knee folded.
 
 Not gradually — not the slow giving-way of exhaustion. It simply ceased to respond to the instruction it was given, and he went down hard, left knee and both palms hitting the root-threaded ground, a jarring impact that ran up his arms and neck and knocked the breath out of him.
 
@@ -186,7 +186,7 @@ A hand closed on his arm. Not gentle — efficient, the grip of someone who had 
 
 The boy looked back from ten paces ahead. Wren's look sent him forward again.
 
-Thirteen stood. Lumara pressed closer against his neck. He followed her warmth through the dark.
+William stood. Lumara pressed closer against his neck. He followed her warmth through the dark.
 
 The guards did not come.
 
@@ -196,9 +196,9 @@ Three days back.
 
 He would not remember them clearly, later. What he would remember was the structure: the sequence of things that held him together when his own capacity to hold himself together gave out.
 
-The boy — he did not give his name, not yet, not those first days; names were for when you were safe — had wiry arms and an instinct for terrain, finding the path that cost the least effort and pointing Thirteen toward it without being asked. He had the watchfulness of a child who had survived by watching. Thirteen recognized it. He had once worn the same expression.
+The boy — he did not give his name, not yet, not those first days; names were for when you were safe — had wiry arms and an instinct for terrain, finding the path that cost the least effort and pointing William toward it without being asked. He had the watchfulness of a child who had survived by watching. William recognized it. He had once worn the same expression.
 
-The girl helped differently. She was quieter than the boy, more internal, and her way of helping was to position herself on Thirteen's right side when the terrain went difficult, close enough to catch him if his balance went, without making the help visible. She understood something about not diminishing people. That was its own kind of intelligence.
+The girl helped differently. She was quieter than the boy, more internal, and her way of helping was to position herself on William's right side when the terrain went difficult, close enough to catch him if his balance went, without making the help visible. She understood something about not diminishing people. That was its own kind of intelligence.
 
 Wren did not coddle him. She rationed water, calculated pace, made two decisions on the second day that redirected their route and saved them an hour — she had navigated this direction before, when she ran from the first place she was held. The landscape had a grammar she had read once and still knew.
 
@@ -236,7 +236,7 @@ Not faded. Not eased. *Dropped* — cut loose, a weight that had been pressing a
 
 The Rootwhisper closed around him.
 
-The contract thread — wire-thin, fraying at the edges, a thing he had been nursing across seven days and eight hundred li — *snapped* back to full strength. Not gradually. In the space of one breath. The warmth spread through his chest and down his arms, the specific warmth of the khai linh bond, of the rice network that knew him the way a root knew the soil it had grown through.
+The contract thread — wire-thin, fraying at the edges, a thing he had been nursing across seven days and eight hundred li — *snapped* back to full strength. Not gradually. In the space of one breath. The warmth spread through his chest and down his arms, the specific warmth of the Kindling bond, of the rice network that knew him the way a root knew the soil it had grown through.
 
 The roots *recognized* him.
 
@@ -246,17 +246,17 @@ He might have stayed there on his knees for some time.
 
 The Steward was at the boundary line.
 
-Not at the gate. Not at the house. At the boundary itself — standing in the rough grass at the place where the farm's root network began, where the hunger had released, as if he had known the exact location where Thirteen's legs would give with relief rather than exhaustion.
+Not at the gate. Not at the house. At the boundary itself — standing in the rough grass at the place where the farm's root network began, where the hunger had released, as if he had known the exact location where William's legs would give with relief rather than exhaustion.
 
 Perhaps he had.
 
-The old man's face: in the moment before he mastered it, in the two seconds between seeing Thirteen at the boundary and reassembling the composure he had worn every day of Thirteen's life — relief. Naked, uncontrolled, something the Steward had not permitted himself in public perhaps for years. Something that was not merely the return of a useful asset or a successful investment. Something that was the face of a man who had been afraid and was no longer afraid.
+The old man's face: in the moment before he mastered it, in the two seconds between seeing William at the boundary and reassembling the composure he had worn every day of William's life — relief. Naked, uncontrolled, something the Steward had not permitted himself in public perhaps for years. Something that was not merely the return of a useful asset or a successful investment. Something that was the face of a man who had been afraid and was no longer afraid.
 
 Two seconds. Then it was gone.
 
 "Come inside," the Steward said.
 
-He looked past Thirteen at Wren, at the boy, at the girl. His expression did not change from the composed version — the version that had replaced the unguarded one.
+He looked past William at Wren, at the boy, at the girl. His expression did not change from the composed version — the version that had replaced the unguarded one.
 
 "You brought people."
 
@@ -268,31 +268,31 @@ The Steward nodded once. Then he turned and walked toward the house.
 
 The kitchen, late that evening.
 
-The fire had burned down to coals. Thirteen had eaten — not much; the Steward had portioned it deliberately, a small bowl first, then another, then water, then the amber honey on a piece of dried bread. His body accepting in stages what it had been denied. He had not argued with the rationing. He knew why it was done this way.
+The fire had burned down to coals. William had eaten — not much; the Steward had portioned it deliberately, a small bowl first, then another, then water, then the amber honey on a piece of dried bread. His body accepting in stages what it had been denied. He had not argued with the rationing. He knew why it was done this way.
 
 Wren and the two rescued teenagers were in the barn. The Steward had opened it without comment and set down two blankets, then returned to the house. Not warmth. Not refusal either. The barn was dry, enclosed, the coals from the farmyard fire still warm. It was what was available.
 
-Thirteen told the Steward everything.
+William told the Steward everything.
 
-He told it in the order it happened: Corwin's arrival, the road, Lau Thành, the rumours about disappearances, Wren. The manor at Bạch Điền. The circle of blackened earth, the plant he did not recognize. The outbuilding, the captives, the amber honey and the white powder that he had recognized — ground fine, but the consistency of processed Rootwhisper grain, the faint luminescence under morning light that was not luminescence exactly but a quality of the material.
+He told it in the order it happened: Corwin's arrival, the road, Lau Thành, the rumours about disappearances, Wren. The manor at Whitfield. The circle of blackened earth, the plant he did not recognize. The outbuilding, the captives, the amber honey and the white powder that he had recognized — ground fine, but the consistency of processed Rootwhisper grain, the faint luminescence under morning light that was not luminescence exactly but a quality of the material.
 
 He placed the torn page on the table.
 
 The Steward read it.
 
-His face did not change. He read it twice — Thirteen watched the eyes, the minute movement of them across the lines of the dosing schedule, the notation in the bottom corner. He set it down.
+His face did not change. He read it twice — William watched the eyes, the minute movement of them across the lines of the dosing schedule, the notation in the bottom corner. He set it down.
 
 Silence.
 
 The fire shifted. A coal dropped.
 
-"What you did with me," Thirteen said. He had been composing this question since the second day of the return journey, in the spaces between pain and direction. "Is it the same as this?"
+"What you did with me," William said. He had been composing this question since the second day of the return journey, in the spaces between pain and direction. "Is it the same as this?"
 
 The Steward was quiet for longer than he had ever been quiet before — longer than the pauses in lessons, longer than the space before hard answers. Long enough that the fire shifted again.
 
 "The seed is one thing," he said finally. "What grows from it depends on who tends it."
 
-Thirteen sat with this.
+William sat with this.
 
 He did not argue with it. There was a way in which it was true — he had been given time, care, the Rootwhisper's slow growth and the honey and the years of training that had prepared him for something rather than simply *producing* something. The children in the outbuilding had been given a dosing schedule written in days and percentages. The difference was real.
 
@@ -306,7 +306,7 @@ The Steward looked at the page again. His eyes settled on the two characters in 
 
 The pronoun was clear. Not performed — stated, as if there had never been ambiguity about it and he simply had not been asked directly until now.
 
-Thirteen said nothing.
+William said nothing.
 
 The Steward folded the page — once, twice, precise — and set it at the edge of the table.
 
@@ -314,7 +314,7 @@ The Steward folded the page — once, twice, precise — and set it at the edge 
 
 ---
 
-That night, Thirteen could not make himself go inside.
+That night, William could not make himself go inside.
 
 He sat in the eastern paddy with his hands in the soil, fingers resting on the uppermost roots where they were closest to the surface. The Rootwhisper breathed around him — the slow rhythmic pulse of healthy rice, the deep patient network of roots that ran under the barn and the fence line and the rocky ground where he had once stamped his foot and waited for an answer.
 
@@ -360,7 +360,7 @@ He stood.
 
 The southern paddy was the newest, and it breathed differently.
 
-Thirteen moved through the farm in the early morning, while the mist was still in the lower terraces, until he reached the section where Rootwhisper had extended itself during the Tremor's reshaping of the soil. The stalks here were shorter, paler — the grain not yet formed, the roots still finding their depth in the looser earth the earth creature had threaded with its passages.
+William moved through the farm in the early morning, while the mist was still in the lower terraces, until he reached the section where Rootwhisper had extended itself during the Tremor's reshaping of the soil. The stalks here were shorter, paler — the grain not yet formed, the roots still finding their depth in the looser earth the earth creature had threaded with its passages.
 
 He crouched at the edge and pressed his hand into the mud between the first row of stalks.
 

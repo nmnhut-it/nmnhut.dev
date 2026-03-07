@@ -1,6 +1,6 @@
 [build]
   publish = "public"
-  command = "hugo --minify"
+  command = "sh scripts/add-frontmatter.sh && hugo --minify"
 
 [build.environment]
   HUGO_VERSION = "0.157.0"

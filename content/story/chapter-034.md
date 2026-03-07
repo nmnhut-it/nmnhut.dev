@@ -6,13 +6,13 @@ draft: false
 
 # Chapter 034: Growing
 
-The eastern paddy was dark before dawn, and Thirteen was already in it.
+The eastern paddy was dark before dawn, and William was already in it.
 
 He sat at the water's edge where the bank gave way to soft mud, his boots set aside on the dry ground, bare feet submerged to the ankle in the cold shallows. His hands rested on the roots just below the surface — not pressing, not pulling. Resting. The way you rested a hand on the chest of something sleeping to feel it breathe.
 
 Lumara sat on his left shoulder. She had not spoken since he settled here an hour ago, and through the bond her awareness came to him as warm and precise as a hand placed gently over a wound — present, watchful, calm.
 
-To the north, through the treeline, Amberrex breathed. Thirteen did not see him and could not hear him, but the tiger's presence came through the roots, through the Rootwhisper's extended network, through the faint vitality-signature that the khai linh had taught him to read: deep amber heat, patient and enormous, a fire that did not need to burn openly to be felt. The tiger had not spoken to him directly in days. He did not need to. His presence was its own kind of speech.
+To the north, through the treeline, Amberrex breathed. William did not see him and could not hear him, but the tiger's presence came through the roots, through the Rootwhisper's extended network, through the faint vitality-signature that the Kindling had taught him to read: deep amber heat, patient and enormous, a fire that did not need to burn openly to be felt. The tiger had not spoken to him directly in days. He did not need to. His presence was its own kind of speech.
 
 And below, where the river ran between its banks to the east, the Tidecaller held its position in the deep channel. Cold. Vast. The fish's awareness a current beneath everything — not warm like the tiger's, not rooted like the rice's, but present in the way that moving water was present: always there, always moving, impossible to hold.
 
@@ -80,7 +80,7 @@ Practical care. No sentiment. He was grateful for the absence of sentiment; sent
 
 The cost was accumulating.
 
-He could feel it in the quality of his perception — the Tha Tam Tuc, which had once felt like reaching into a clear pool, now felt like reaching through fog. The wild creatures beyond the farm's boundary were still there; he could still feel them, bird-mind and fox-mind and the slow cold attention of a badger in its set. But they were muffled. As if a gauze had been drawn over his awareness, blurring the precision the training had built.
+He could feel it in the quality of his perception — the Hearthspeak, which had once felt like reaching into a clear pool, now felt like reaching through fog. The wild creatures beyond the farm's boundary were still there; he could still feel them, bird-mind and fox-mind and the slow cold attention of a badger in its set. But they were muffled. As if a gauze had been drawn over his awareness, blurring the precision the training had built.
 
 He was thinner. The sharpening of his face that had begun a week ago continued. His belt had been moved two notches. He was still hungry an hour after eating.
 
@@ -126,15 +126,15 @@ She made a small sound — not a word, just a sound. The sound of something pres
 
 Cade was watching.
 
-The man had a gift for stillness that reminded Thirteen, faintly, of the Steward — but where the Steward's stillness was composed, deliberately cultivated over decades, Cade's was professional. The stillness of someone who had learned that information came to the quiet and passed by the noisy. He positioned himself at the barn step in the mornings, his short sword across his knees as he cleaned it, and watched the expansion with eyes that were precise and calculating and not cold.
+The man had a gift for stillness that reminded William, faintly, of the Steward — but where the Steward's stillness was composed, deliberately cultivated over decades, Cade's was professional. The stillness of someone who had learned that information came to the quiet and passed by the noisy. He positioned himself at the barn step in the mornings, his short sword across his knees as he cleaned it, and watched the expansion with eyes that were precise and calculating and not cold.
 
 He had been on the farm three days now and had learned which tasks needed doing without being told — mending a fence section that had been weakening for a month, carrying water from the well to the kitchen, twice helping Pip shift timber that was too heavy for one person.
 
-Pip. Thirteen had watched the boy gradually emerge from the barn over the past week. Thirteen years old and small for it — the months of confinement had taken something from his growth, the way insufficient light took something from a plant. He moved around the farm now in small increments: from the barn to the well. From the well to the fence. From the fence to the edge of the paddy, where he stood for a few minutes looking at the rice before returning to whatever task he had assigned himself. Mending, carrying, the small physical work that did not require thought. He did not speak much. But he was moving.
+Pip. William had watched the boy gradually emerge from the barn over the past week. William years old and small for it — the months of confinement had taken something from his growth, the way insufficient light took something from a plant. He moved around the farm now in small increments: from the barn to the well. From the well to the fence. From the fence to the edge of the paddy, where he stood for a few minutes looking at the rice before returning to whatever task he had assigned himself. Mending, carrying, the small physical work that did not require thought. He did not speak much. But he was moving.
 
-The open sky still made him flinch, Thirteen had noticed. Not every time. But certain moments — when a bird crossed the sky quickly, or when a cloud moved fast — the boy's shoulders would come up and he would look at the ground until it passed. He hid it well. He was thirteen and he had learned to hide things.
+The open sky still made him flinch, William had noticed. Not every time. But certain moments — when a bird crossed the sky quickly, or when a cloud moved fast — the boy's shoulders would come up and he would look at the ground until it passed. He hid it well. He was thirteen and he had learned to hide things.
 
-Fern was different. Fifteen, and she had found, in the days since her arrival, a particular spot at the paddy's southern edge where she sat for hours. Not doing anything Thirteen could identify. Not working, not watching the rice with any apparent purpose. Just sitting, her hands in her lap, her face turned toward the water.
+Fern was different. Fifteen, and she had found, in the days since her arrival, a particular spot at the paddy's southern edge where she sat for hours. Not doing anything William could identify. Not working, not watching the rice with any apparent purpose. Just sitting, her hands in her lap, her face turned toward the water.
 
 He noticed, on the fourth day, that the roots had curved.
 
@@ -148,11 +148,11 @@ On the fifth day, Cade set down his sword cloth and spoke.
 
 "I've moved through a lot of territory in the last ten years." His voice was dry, unhurried, the voice of someone who had learned to say exactly what he meant and nothing else. "Markets, outposts, merchant caravans, three separate armies. Farms." He paused. "I've never seen anyone farm to fight."
 
-Thirteen was pulling mud from his hands with a rag. He looked at the man.
+William was pulling mud from his hands with a rag. He looked at the man.
 
-"Most people fight to protect what they farm," Cade continued. He was not disapproving. He was, Thirteen recognized, doing what he always did — processing information, placing it in relation to other information, calculating. "You're doing it backwards. You're farming to create the conditions for the fight."
+"Most people fight to protect what they farm," Cade continued. He was not disapproving. He was, William recognized, doing what he always did — processing information, placing it in relation to other information, calculating. "You're doing it backwards. You're farming to create the conditions for the fight."
 
-"I'm farming because the farm is alive," Thirteen said. "The fight is because something wants to kill it."
+"I'm farming because the farm is alive," William said. "The fight is because something wants to kill it."
 
 Cade considered this. "Practically the same thing."
 
@@ -164,7 +164,7 @@ The mercenary's mouth curved slightly. He picked up his sword cloth again. "No,"
 
 "I noticed." Cade resumed his cleaning. "So did she." A slight movement of his chin toward the kitchen, where smoke was rising. "She put extra dried fish in the barrel this morning."
 
-Thirteen looked toward the kitchen. Through the door he could see Wren moving. Her back to him, unaware she was being discussed.
+William looked toward the kitchen. Through the door he could see Wren moving. Her back to him, unaware she was being discussed.
 
 He said nothing. There was nothing useful to say.
 
@@ -180,7 +180,7 @@ He had never had all eighteen of them looking at once. Usually they were mid-mot
 
 They had done this before.
 
-Not him specifically. Not this farm, not this exact constellation of Rootwhisper and khai linh and contract bond and desperate expansion against an approaching threat. But this shape of thing — a person pushing outward against the dark, giving of themselves to the ground, the ground giving something back. They knew this shape.
+Not him specifically. Not this farm, not this exact constellation of Rootwhisper and Kindling and contract bond and desperate expansion against an approaching threat. But this shape of thing — a person pushing outward against the dark, giving of themselves to the ground, the ground giving something back. They knew this shape.
 
 The woman stepped forward. Not one of the eighteen — or perhaps she was, and the others remained where they were. Her face was indistinct in the way that the dream always made faces indistinct, but her voice was clear.
 
@@ -220,7 +220,7 @@ The distinction was not small.
 
 ---
 
-Dawn. The sky went from black to grey to the pale clean blue of early morning, and Thirteen was already in the paddy.
+Dawn. The sky went from black to grey to the pale clean blue of early morning, and William was already in the paddy.
 
 He settled into his position at the water's edge. Bare feet in the shallows. Hands in the roots.
 

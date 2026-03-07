@@ -8,11 +8,11 @@ draft: false
 
 The river arrived in the form of a smell.
 
-Thirteen was cutting drainage channels in the lower terrace — three weeks after the tiger, the fence still not entirely rebuilt to its original integrity — when the wind shifted south and brought with it the particular cold-mineral scent of the Kì Cùng in spate. He paused with the mattock handle resting across his forearms and looked toward the tree line separating the farm's southern boundary from the floodplain below.
+William was cutting drainage channels in the lower terrace — three weeks after the tiger, the fence still not entirely rebuilt to its original integrity — when the wind shifted south and brought with it the particular cold-mineral scent of the Rimbrook in spate. He paused with the mattock handle resting across his forearms and looked toward the tree line separating the farm's southern boundary from the floodplain below.
 
-The Steward was sitting at the edge of the paddy, eating something from a cloth wrap. He had been there for the better part of an hour, not helping, not explaining why he wasn't helping. In three years Thirteen had learned to read the registers of the old man's presence. There was the ordinary inattentiveness of someone lost in his own thoughts, and there was the performance of inattentiveness that was actually close observation. This was the second kind.
+The Steward was sitting at the edge of the paddy, eating something from a cloth wrap. He had been there for the better part of an hour, not helping, not explaining why he wasn't helping. In three years William had learned to read the registers of the old man's presence. There was the ordinary inattentiveness of someone lost in his own thoughts, and there was the performance of inattentiveness that was actually close observation. This was the second kind.
 
-"Where are you sending me this time?" Thirteen said.
+"Where are you sending me this time?" William said.
 
 The Steward swallowed, unhurried. "I'm not sending you anywhere."
 
@@ -22,7 +22,7 @@ The old man folded his cloth wrap with careful attention to the corners. "When y
 
 ---
 
-The Kì Cùng ran wide and brown in early autumn.
+The Rimbrook ran wide and brown in early autumn.
 
 It had flooded three weeks past — the merchant had mentioned it in passing, as one item among many — and the water had come down hard and fast from the northern highlands, carrying snowmelt and mountain silt that now lay in a pale grey crust along the banks where the river had retreated. The floodplain beyond the southern treeline was soft underfoot, each step sinking to the ankle. Stands of sedge and river grass bent in the same direction the flood had laid them, still not fully upright.
 
@@ -40,13 +40,13 @@ And in the still water, something long and silver rested with perfect motionless
 
 ---
 
-Thirteen stopped at a distance that felt instinctively correct — ten strides back from the pool's edge — and looked.
+William stopped at a distance that felt instinctively correct — ten strides back from the pool's edge — and looked.
 
-The fish was extraordinary. That much was apparent even at distance. It was perhaps the length of his arm from wrist to shoulder — longer than any fish he had seen pulled from the Kì Cùng. In the still, shallow water of the pool it was visible: dark along the spine, pale beneath, the color of river sediment, as though it had been made from the river's own materials. The fins moved in the water with the slow pulse of something breathing rather than swimming. The tail was forked, each lobe thinning to a filament.
+The fish was extraordinary. That much was apparent even at distance. It was perhaps the length of his arm from wrist to shoulder — longer than any fish he had seen pulled from the Rimbrook. In the still, shallow water of the pool it was visible: dark along the spine, pale beneath, the color of river sediment, as though it had been made from the river's own materials. The fins moved in the water with the slow pulse of something breathing rather than swimming. The tail was forked, each lobe thinning to a filament.
 
 But more than its appearance was its quality in his awareness.
 
-He had learned to feel living things through the sense that had come with khai linh — vitality was the nearest word, though it was imprecise. The tiger had been heat. Dense, patient, the long warmth of old stone. Lumara was different: a flicker, quick-adapting, always a half-beat ahead of where he expected it. Rootwhisper was something else entirely — not heat or light but growth, the vegetable patience of things that measure time in seasons.
+He had learned to feel living things through the sense that had come with Kindling — vitality was the nearest word, though it was imprecise. The tiger had been heat. Dense, patient, the long warmth of old stone. Lumara was different: a flicker, quick-adapting, always a half-beat ahead of where he expected it. Rootwhisper was something else entirely — not heat or light but growth, the vegetable patience of things that measure time in seasons.
 
 The fish was cold.
 
@@ -66,7 +66,7 @@ A single beat of the forked tail, almost imperceptible, and the silver body rota
 
 Then it turned and moved through the gap in the roots, into the main channel, and was gone.
 
-Thirteen stood at the pool's edge.
+William stood at the pool's edge.
 
 He looked at the river.
 
@@ -76,7 +76,7 @@ He looked at Lumara, who regarded him with the small orange eye of a creature th
 
 ---
 
-The Kì Cùng was cold in a way that took the breath.
+The Rimbrook was cold in a way that took the breath.
 
 Even at the shallows — knee-deep at the bank, the riverbed shifting sand and smooth stone — the temperature was a physical fact that demanded acknowledgment. He could feel it reordering his body's priorities. Heat conservation. The instinctive constriction that made the extremities distant, the core urgent.
 
@@ -122,9 +122,9 @@ The Steward, across the fire, was mending something. He didn't look up. "What di
 
 A pause. The needle and thread continued their work. "And?"
 
-"Made me follow." Thirteen stared at the fire. "I couldn't go where I wanted to go. I could only go where it went."
+"Made me follow." William stared at the fire. "I couldn't go where I wanted to go. I could only go where it went."
 
-The Steward said nothing. Which was, Thirteen had learned, a form of confirmation.
+The Steward said nothing. Which was, William had learned, a form of confirmation.
 
 ---
 
@@ -170,7 +170,7 @@ Lumara made a sound from the bank. The sound she made for things that were corre
 
 The Steward was waiting at the farm gate when he came back.
 
-The light was going. The south wind had turned cold in the late afternoon the way it did in early autumn, and Thirteen was wet from the chest down and the contrast was unpleasant. He was limping slightly from the ankle — still functional, only complaining.
+The light was going. The south wind had turned cold in the late afternoon the way it did in early autumn, and William was wet from the chest down and the contrast was unpleasant. He was limping slightly from the ankle — still functional, only complaining.
 
 "The fish," he said, without preamble. "What is it?"
 
@@ -184,9 +184,9 @@ The Steward looked at him with the expression that meant he was considering whet
 
 "To the fish, yes."
 
-Thirteen processed this. "The tiger came on its own. You said it came because of the contract."
+William processed this. "The tiger came on its own. You said it came because of the contract."
 
-"Both things can be true. I created conditions." A pause. "This one also came because of the contract. But the conditions required more... preparation. The Kì Cùng's creatures do not leave their water for invitation alone."
+"Both things can be true. I created conditions." A pause. "This one also came because of the contract. But the conditions required more... preparation. The Rimbrook's creatures do not leave their water for invitation alone."
 
 He didn't ask what the preparation had involved. He was learning which questions the old man would answer and which he would navigate around. "How long?"
 
@@ -196,7 +196,7 @@ He didn't ask what the preparation had involved. He was learning which questions
 
 The Steward was quiet for a moment. Then: "The tiger tests what holds. The fish teaches what moves. They are different exercises. The fish will return when it has something more to show you."
 
-Thirteen thought about this. About the six passes. About the one he'd held.
+William thought about this. About the six passes. About the one he'd held.
 
 "And when I've learned what it wants to show me?"
 
@@ -210,4 +210,4 @@ He had stopped resenting it some months ago. He wasn't sure when exactly.
 
 "The river will show you," the Steward said. "But yes. Tomorrow."
 
-Thirteen nodded and stepped inside the gate.
+William nodded and stepped inside the gate.

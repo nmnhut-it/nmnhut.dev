@@ -8,7 +8,7 @@ draft: false
 
 The fence post snapped.
 
-No warning. No sound of something approaching. One moment Thirteen was leaning against the weathered timber with his shoulder, watching the Rootwhisper press its slow green advance southward through the morning light — noting the way new shoots had pushed past the old boundary line overnight, reaching toward the rocky ground where the Tremor had passed — and then the post was not there. It was two pieces. The upper half tumbling away in a direction he had not seen, the lower still standing, and a crack in the wood like something had hit it at full force from a height.
+No warning. No sound of something approaching. One moment William was leaning against the weathered timber with his shoulder, watching the Rootwhisper press its slow green advance southward through the morning light — noting the way new shoots had pushed past the old boundary line overnight, reaching toward the rocky ground where the Tremor had passed — and then the post was not there. It was two pieces. The upper half tumbling away in a direction he had not seen, the lower still standing, and a crack in the wood like something had hit it at full force from a height.
 
 He was already moving. Three years of being thrown and struck and having the ground pulled from under him — the body learned faster than the mind. He rolled left, landed on palms and gravel, came up in a low stance without having decided to.
 
@@ -26,7 +26,7 @@ Then the ground beside his left foot exploded.
 
 A column of dust and shattered gravel, the impact of something striking from directly above — and by the time his mind processed the sound, the shape that had caused it was already gone. Gone. Not retreating to a treeline, not pulling back into a river, not sinking through soil. *Gone* — removed from all available perception with a speed that made every lesson from the three previous trials seem as though they had been conducted in standing water.
 
-In his awareness — in the sense the khai linh had taught him to keep open, the deep readiness that felt the vitality of dị thú the way skin felt heat — he caught an afterimage. *Sharp.* The same edge he had felt at the end of chapter darkness: a vitality like a blade drawn fast across a whetstone, present for a fraction of a second and then absent, leaving only the knowledge that it had been there.
+In his awareness — in the sense the Kindling had taught him to keep open, the deep readiness that felt the vitality of beast the way skin felt heat — he caught an afterimage. *Sharp.* The same edge he had felt at the end of chapter darkness: a vitality like a blade drawn fast across a whetstone, present for a fraction of a second and then absent, leaving only the knowledge that it had been there.
 
 *Do not look up,* Lumara said through the bond. Her voice was precise. Not panicked. The voice she used when she had information and needed him to use it immediately. *Feel.*
 
@@ -38,29 +38,29 @@ Below him: the Rootwhisper's steady exhalation through its root network, patient
 
 Pressure. The faintest differentiation in the air, too subtle to call wind, too present to call nothing. Something moving at a height where he could not see it, circling, displacing atmosphere in its passage the way a stone displaced water — the ripple traveling outward and downward until it arrived as almost-nothing against his upturned face.
 
-*Dì thú thứ tư*, Lumara said. *It is already gone before you hear it coming.*
+*The fourth beast*, Lumara said. *It is already gone before you hear it coming.*
 
-Thirteen opened his eyes. He picked up the broken half of the fence post from the grass and looked at the fracture. Clean. No splintering. The wood had not been wrenched or twisted — it had been struck at a single point with precision that left the surrounding grain intact. The vuốt — the talon — had not gripped. It had hit and released in one movement, like a blade edge.
+William opened his eyes. He picked up the broken half of the fence post from the grass and looked at the fracture. Clean. No splintering. The wood had not been wrenched or twisted — it had been struck at a single point with precision that left the surrounding grain intact. The vuốt — the talon — had not gripped. It had hit and released in one movement, like a blade edge.
 
 He set the wood down carefully.
 
 ---
 
-The Steward was standing at the farmhouse threshold when Thirteen turned back.
+The Steward was standing at the farmhouse threshold when William turned back.
 
-This was not unusual. In three years of trials the old man had appeared in doorways and at field edges with the composed stillness of someone who had positioned himself there before the event began — as though he had known, was always watching, had arranged the geometry of arrival. The Steward's calm had been, over all these years, one of the consistent features of Thirteen's world. A fixed point.
+This was not unusual. In three years of trials the old man had appeared in doorways and at field edges with the composed stillness of someone who had positioned himself there before the event began — as though he had known, was always watching, had arranged the geometry of arrival. The Steward's calm had been, over all these years, one of the consistent features of William's world. A fixed point.
 
 Now he was standing in the threshold and his knuckles were white on the doorframe.
 
-Thirteen had seen that particular tension twice before. Both times when the old man was holding something tightly inside that was trying to get out. But those times it had been something contained — something managed. Now the whiteness of his grip was not management. It was reflex.
+William had seen that particular tension twice before. Both times when the old man was holding something tightly inside that was trying to get out. But those times it had been something contained — something managed. Now the whiteness of his grip was not management. It was reflex.
 
 "It has decided to descend," the Steward said.
 
 Not *I believe* or *it appears.* The certainty of it, stated plainly, like a weather report.
 
-"You knew it was nearby," Thirteen said.
+"You knew it was nearby," William said.
 
-"I knew it had been watching. Since before the Tremor left." The Steward released the doorframe. He folded his hands in the habit Thirteen recognized as the gesture that meant *I am choosing my words.* "With the other three — the tiger, the fish, the earth creature — I could create conditions. I could arrange approach, prepare the ground, build a sequence. What I could not ensure I could at least structure."
+"I knew it had been watching. Since before the Tremor left." The Steward released the doorframe. He folded his hands in the habit William recognized as the gesture that meant *I am choosing my words.* "With the other three — the tiger, the fish, the earth creature — I could create conditions. I could arrange approach, prepare the ground, build a sequence. What I could not ensure I could at least structure."
 
 He stopped. The pause that followed was not the usual carefully measured silence. It was the pause of a man arriving at the edge of what he knew.
 
@@ -68,15 +68,15 @@ He stopped. The pause that followed was not the usual carefully measured silence
 
 Lumara descended from the upper air and landed on the fence rail — the intact section, six posts down from the broken one. She folded her wings with the deliberate precision she had developed since the early days, when she had still carried some of the ungainly quality of an ordinary bird in her movements. She was watching the sky.
 
-"The hawk does not come because the conditions are right," the Steward said. "It does not come because the rice calls or because a contract interests it. It comes when it sees something worth descending for. When it saw the same thing twice in one place, it decided." He looked at Thirteen. "That is why you are still standing. Its first pass was not an attack. It was a test. It wanted to see if you would fall."
+"The hawk does not come because the conditions are right," the Steward said. "It does not come because the rice calls or because a contract interests it. It comes when it sees something worth descending for. When it saw the same thing twice in one place, it decided." He looked at William. "That is why you are still standing. Its first pass was not an attack. It was a test. It wanted to see if you would fall."
 
 "I fell the other way."
 
-"Yes." Something crossed the Steward's face that Thirteen could not immediately name. Not quite pride. Something older. "You moved. You did not freeze."
+"Yes." Something crossed the Steward's face that William could not immediately name. Not quite pride. Something older. "You moved. You did not freeze."
 
 ---
 
-Thirteen spent the late morning walking the perimeter of the farm.
+William spent the late morning walking the perimeter of the farm.
 
 He was trying to do what Lumara had told him — *feel, not look* — and using the circuit as a framework for attention. At the northern edge he could sense the distant warmth of Amberrex in the treeline, the tiger's banked presence familiar now as the smell of pine resin. At the eastern boundary the Rootwhisper spread thick and heavy with grain, its vitality dense and patient. At the western fence — now short one post — the disturbed earth where something had struck and departed.
 
@@ -112,7 +112,7 @@ Lumara turned her head on the fence rail.
 
 *Yes*, she said. Simple. Patient. As though she had been waiting for him to say it.
 
-"All four," Thirteen said. Not a question directed at the Steward — the old man was inside. He said it to the empty field and the cold autumn sky. "All four of them have amber eyes."
+"All four," William said. Not a question directed at the Steward — the old man was inside. He said it to the empty field and the cold autumn sky. "All four of them have amber eyes."
 
 He did not ask why. Not yet. The question had arrived, and he set it carefully where he could find it again — in the place where he kept things that were real but not yet understood.
 
@@ -120,11 +120,11 @@ He did not ask why. Not yet. The question had arrived, and he set it carefully w
 
 In the afternoon, Lumara taught him to read the air.
 
-She had been doing this intermittently since the early morning — sending impressions through the Tha Tâm Tức that were not quite words and not quite images, the way she sometimes communicated things that language was insufficient for. But now she was more direct. She flew a circuit above the western field, and as she flew she narrated.
+She had been doing this intermittently since the early morning — sending impressions through the Hearthspeak that were not quite words and not quite images, the way she sometimes communicated things that language was insufficient for. But now she was more direct. She flew a circuit above the western field, and as she flew she narrated.
 
 *When a large wing banks,* she said, *the air moves before it. Not much. Not a wind you can see. But pressure — a pushing. It comes down and outward. Feel it.*
 
-She banked and Thirteen felt, very faintly, the difference. A subtle thickening in the air above him, a slight shift in the atmosphere's weight.
+She banked and William felt, very faintly, the difference. A subtle thickening in the air above him, a slight shift in the atmosphere's weight.
 
 *Good. That is what you felt this morning before the strike. You did not know you felt it. But your body knew.*
 
@@ -142,7 +142,7 @@ She dove, pulling up short of the fence line, and the air in her wake was briefl
 
 Not *if it returns.* Not *I will try.* The certainty in it was the same quality as the Steward's certainty — direct knowledge stated without decoration.
 
-Thirteen looked at her for a long moment. He thought about what she was offering: not a reassurance, not a comfort, but a function. A new kind of partnership that had nothing to do with companionship and everything to do with what each of them was capable of that the other was not.
+William looked at her for a long moment. He thought about what she was offering: not a reassurance, not a comfort, but a function. A new kind of partnership that had nothing to do with companionship and everything to do with what each of them was capable of that the other was not.
 
 She was a bird. She understood the air the way the Tremor had understood stone — not as a medium to move through but as a language to read.
 
@@ -180,7 +180,7 @@ But the dream had shown him: when the flying hero fell, it was the ground that c
 
 Dusk arrived slowly, the light shifting from pale gold to grey without committing to either.
 
-Thirteen was sitting on the farmyard fence rail — the intact section — eating the last of the afternoon rice when Lumara's head snapped up.
+William was sitting on the farmyard fence rail — the intact section — eating the last of the afternoon rice when Lumara's head snapped up.
 
 He set the bowl down.
 
@@ -204,7 +204,7 @@ Lumara stood beside him on the rail. She had not moved during the pass. She had 
 
 One word. The same word she had used at the end of the night when the shadow had cut across the stars. But different now — not a warning. A measurement. The kind of statement a craftsman makes when examining work that surpasses the ordinary: acknowledging quality without sentiment.
 
-Thirteen watched the treeline where the hawk had disappeared. The dark was coming fast now, spreading from the east the way the Rootwhisper spread through the soil — steadily, patiently, without announcing itself.
+William watched the treeline where the hawk had disappeared. The dark was coming fast now, spreading from the east the way the Rootwhisper spread through the soil — steadily, patiently, without announcing itself.
 
 It had come twice. Without invitation. Without arrangement. The Steward had said: *it comes when it sees something worth descending for.*
 

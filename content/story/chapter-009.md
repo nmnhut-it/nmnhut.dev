@@ -8,7 +8,7 @@ draft: false
 
 The tiger came back on the fifth day.
 
-Thirteen had fixed the fence on the evening of the encounter. He'd used the hemp lashing as the Steward instructed, knotted twice at every joint, replaced the splintered bamboo with poles he cut fresh from the east grove. The work took him past nightfall. He'd done it by feel and the faint phosphorescent glow of the Rootwhisper, which breathed its slow light across the paddies when the moon was low.
+William had fixed the fence on the evening of the encounter. He'd used the hemp lashing as the Steward instructed, knotted twice at every joint, replaced the splintered bamboo with poles he cut fresh from the east grove. The work took him past nightfall. He'd done it by feel and the faint phosphorescent glow of the Rootwhisper, which breathed its slow light across the paddies when the moon was low.
 
 He knew the fence would not hold.
 
@@ -28,7 +28,7 @@ He trained harder in those five days than in any five consecutive days he could 
 
 Lumara noticed. She matched him, adapting her own patterns — longer circling sweeps over the paddies, sharper turns when she practiced her dive-and-recover. In the evenings, when he practiced footwork along the bank edges until his calves ached, she landed nearby and watched with the particular attention she brought to things she found worth understanding.
 
-He kept waiting for the Steward to comment. The old man said nothing. But on the third morning, Thirteen came out of the house to find a length of hardwood laid across the bench outside the door — straight-grained, seasoned, the kind of wood used for carrying poles.
+He kept waiting for the Steward to comment. The old man said nothing. But on the third morning, William came out of the house to find a length of hardwood laid across the bench outside the door — straight-grained, seasoned, the kind of wood used for carrying poles.
 
 No note. No instruction.
 
@@ -40,13 +40,13 @@ He was at the northern fence at first light on the fifth day, reinforcing the se
 
 She went rigid in the grass three steps behind him. Not the alert stillness of something uncertain. The still attention of something that already knew.
 
-Thirteen set down the mallet.
+William set down the mallet.
 
 He did not turn. He extended his awareness the way he'd been practicing — outward through the soil, through the grass, into the treeline — and he found the tiger immediately. It was moving differently this time. Not the deliberate survey of the first approach. It had a bearing and it was moving toward the same gap in the fence it had broken before, not because the fence was weak there, but because that was the door it had made.
 
 It knew where it was going.
 
-Thirteen turned to face the treeline, the hardwood pole held loosely in both hands.
+William turned to face the treeline, the hardwood pole held loosely in both hands.
 
 The tiger walked out of the shadows at an unhurried pace and stopped at the fence line.
 
@@ -58,7 +58,7 @@ It moved toward the gap.
 
 ---
 
-Thirteen did not wait for it to come to him.
+William did not wait for it to come to him.
 
 He stepped through the gap first, outside the fence, into the open ground between the farm and the treeline.
 
@@ -70,7 +70,7 @@ The tiger regarded him. Tilted its massive head a degree to the right.
 
 Then it came.
 
-Not the full charge of the first encounter — something more controlled than that, a testing pressure, a rolling movement that closed the distance with deceptive ease. Thirteen read it a heartbeat late and took the shoulder glance across his left arm, spinning with it rather than against it, three fast steps to recover his footing before he was on the ground.
+Not the full charge of the first encounter — something more controlled than that, a testing pressure, a rolling movement that closed the distance with deceptive ease. William read it a heartbeat late and took the shoulder glance across his left arm, spinning with it rather than against it, three fast steps to recover his footing before he was on the ground.
 
 He turned back. The tiger had already repositioned.
 
@@ -98,7 +98,7 @@ This was not the stillness of an animal preparing to attack. It was the stillnes
 
 ---
 
-Thirteen straightened, pulling his hand from the water.
+William straightened, pulling his hand from the water.
 
 He and the tiger stood in the morning light and breathed.
 
@@ -118,11 +118,11 @@ She was warm against his neck, her small weight familiar, and she made the low h
 
 The Steward was in the kitchen when he came in, cutting dried fish into strips. He did not look up.
 
-"The tiger came back," Thirteen said.
+"The tiger came back," William said.
 
 "Yes." The Steward's knife moved in even strokes.
 
-Thirteen set the hardwood pole against the wall and poured water from the pitcher on the shelf. His hands were steady. Two of his knuckles were scraped. The left arm where the tiger's shoulder had caught him would bruise by afternoon.
+William set the hardwood pole against the wall and poured water from the pitcher on the shelf. His hands were steady. Two of his knuckles were scraped. The left arm where the tiger's shoulder had caught him would bruise by afternoon.
 
 "It left again," he said.
 
@@ -132,21 +132,21 @@ Thirteen set the hardwood pole against the wall and poured water from the pitche
 
 The old man said nothing. The knife kept moving.
 
-Thirteen sat down at the table. Lumara had roosted on the windowsill, watching the treeline with the settled patience of a creature that already knew what came next.
+William sat down at the table. Lumara had roosted on the windowsill, watching the treeline with the settled patience of a creature that already knew what came next.
 
 "How many times will it come back?" he asked.
 
-The Steward was quiet for a long moment. Then he set down the knife, turned, and looked at Thirteen with the expression he reserved for questions he considered worth answering.
+The Steward was quiet for a long moment. Then he set down the knife, turned, and looked at William with the expression he reserved for questions he considered worth answering.
 
 "Until you have learned what it knows to teach. Or until you stop being worth teaching." He picked up the knife again. "It will be its own judgment, not mine."
 
-Thirteen turned that over.
+William turned that over.
 
 "And when that's finished?"
 
 "Then something else will come." The Steward's voice was even, the way it was when he stated facts about soil acidity or flood cycles. Not comforting. Not alarming. Simply present. "This world does not leave useful things idle."
 
-Thirteen looked at the treeline through the window above Lumara's head. The forest edge was clear, still, damp with early morning mist.
+William looked at the treeline through the window above Lumara's head. The forest edge was clear, still, damp with early morning mist.
 
 He thought about the five days of training. The hardwood pole that had appeared on the bench without explanation. The way the tiger had looked at his hand against the earth — the hand that had reached for the contract.
 
@@ -162,13 +162,13 @@ What he was beginning to understand was that the hunger was also a door.
 
 He ate the dried fish with rice and went back out to finish the fence.
 
-The Steward followed him after a while, not to help but to watch, and when Thirteen's knotwork on the northeast corner came loose on the second try, the old man crossed the yard without comment, repositioned Thirteen's left hand on the pole, and held it while Thirteen tied the lashing again.
+The Steward followed him after a while, not to help but to watch, and when William's knotwork on the northeast corner came loose on the second try, the old man crossed the yard without comment, repositioned William's left hand on the pole, and held it while William tied the lashing again.
 
 It held.
 
 "The hemp is better when the bamboo is slightly damp," the Steward said. "Swells into the joint." He stepped back, examined the work with a measuring eye. "That section will outlast the others by half a season."
 
-Thirteen looked at it. Then at the old man's hands, which had guided his without ceremony, as though the adjustment had been simply necessary and the teaching incidental to the task.
+William looked at it. Then at the old man's hands, which had guided his without ceremony, as though the adjustment had been simply necessary and the teaching incidental to the task.
 
 "How long have you been doing this?" he asked.
 
@@ -176,15 +176,15 @@ The Steward glanced at him sidelong.
 
 "Fixing fences?"
 
-"Preparing things." Thirteen held the old man's gaze. "Not just me. The fence. The training. The—" He stopped, not quite ready to say: *the tiger.*
+"Preparing things." William held the old man's gaze. "Not just me. The fence. The training. The—" He stopped, not quite ready to say: *the tiger.*
 
-The Steward was quiet for long enough that Thirteen thought he would not answer. Then:
+The Steward was quiet for long enough that William thought he would not answer. Then:
 
 "Long enough."
 
 He turned and walked back toward the house.
 
-Thirteen watched him go. Lumara settled on the fence post beside him, her small head cocked at the angle she held when she was thinking something through.
+William watched him go. Lumara settled on the fence post beside him, her small head cocked at the angle she held when she was thinking something through.
 
 The morning light moved across the paddies in long slow columns, gold on the water, green on the Rootwhisper stalks that breathed their faint breath into the still air. The hunger was present, as always — but lower now, the edge of it softened by the training and the touch of the roots. Manageable.
 

@@ -8,7 +8,7 @@ draft: false
 
 The new awareness was not what he had expected.
 
-He spent the first days after Linh ngu learning what it meant to hear. Not the hearing he had always done — the wind in the bamboo, the Steward's measured footfall — but the other kind. The kind that came through the contract thread and through Tha Tam Tuc, the breath between hearts.
+He spent the first days after Stillmind learning what it meant to hear. Not the hearing he had always done — the wind in the bamboo, the Steward's measured footfall — but the other kind. The kind that came through the contract thread and through Hearthspeak, the breath between hearts.
 
 Lumara was the most immediate change.
 
@@ -62,7 +62,7 @@ The Rootwhisper did not seem alarmed. It seemed like it had been expecting this.
 
 "What did it feel like?"
 
-A pause. He felt her searching for the right shape of meaning through Tha Tam Tuc — turning over impressions the way she might turn over a stone to see what was beneath it. *Nothing,* she said at last. *That is the problem. The tiger burns. The fish flows. This... absorbs. Its vitality does not radiate outward. It pulls inward, like a hole in the ground that swallows sound. I could not feel it directly. Only the absence it left behind.*
+A pause. He felt her searching for the right shape of meaning through Hearthspeak — turning over impressions the way she might turn over a stone to see what was beneath it. *Nothing,* she said at last. *That is the problem. The tiger burns. The fish flows. This... absorbs. Its vitality does not radiate outward. It pulls inward, like a hole in the ground that swallows sound. I could not feel it directly. Only the absence it left behind.*
 
 He looked at the collapsed ground. At the pale roots reaching into the dark. At the farm he had lived on for sixteen years, the ground he had walked and worked and slept on and trusted with the unthinking faith of someone who had never had reason to question it.
 
@@ -72,11 +72,11 @@ The ground had always held.
 
 ---
 
-The Steward was standing at the kitchen door when Thirteen came back.
+The Steward was standing at the kitchen door when William came back.
 
-He had not come to the paddy. He had not come to look. He stood with his hands in his sleeves and his expression carrying the composed attention that Thirteen had learned to read as calculation rather than calm.
+He had not come to the paddy. He had not come to look. He stood with his hands in his sleeves and his expression carrying the composed attention that William had learned to read as calculation rather than calm.
 
-"The south paddy collapsed," Thirteen said.
+"The south paddy collapsed," William said.
 
 "I know."
 
@@ -84,7 +84,7 @@ He had not come to the paddy. He had not come to look. He stood with his hands i
 
 "Yes."
 
-Thirteen stood in the cold, his bare feet numb on the frost-hard earth. The new clarity of Linh ngu let him see what he had always half-sensed in the Steward's face: each response selected from a broader inventory of possible responses, each one calibrated.
+William stood in the cold, his bare feet numb on the frost-hard earth. The new clarity of Stillmind let him see what he had always half-sensed in the Steward's face: each response selected from a broader inventory of possible responses, each one calibrated.
 
 "You knew," he said. Not a question.
 
@@ -106,13 +106,13 @@ The Steward's eyes moved — a flicker toward the southern paddy, then back. "Yo
 
 "Where?"
 
-"The western ridge. The rocky ground past the treeline." A place Thirteen had never been. The farm's western boundary ended at a line of scraggly pines, and beyond them the soil thinned to gravel and stone — land too poor to grow anything, too steep to terrace. He had never had reason to go there.
+"The western ridge. The rocky ground past the treeline." A place William had never been. The farm's western boundary ended at a line of scraggly pines, and beyond them the soil thinned to gravel and stone — land too poor to grow anything, too steep to terrace. He had never had reason to go there.
 
 "Why there?"
 
 The Steward looked at him. "Because the ground there is honest. It does not pretend to be what it is not."
 
-He turned and went inside. Thirteen stood in the cold and felt the contract thread hum and thought about ground that pretended, and ground that didn't, and what the difference might mean.
+He turned and went inside. William stood in the cold and felt the contract thread hum and thought about ground that pretended, and ground that didn't, and what the difference might mean.
 
 ---
 
@@ -128,7 +128,7 @@ He woke before dawn.
 
 She was quiet for a moment. Then: *The ground broke last night.*
 
-*I do not like this one, Thirteen.* The words came with something underneath them — a texture of feeling he had not sensed from her before. Not the sharp alertness of the tiger encounters, not the watchful patience of the river. Something closer to unease.
+*I do not like this one, William.* The words came with something underneath them — a texture of feeling he had not sensed from her before. Not the sharp alertness of the tiger encounters, not the watchful patience of the river. Something closer to unease.
 
 "Why?"
 
@@ -142,17 +142,17 @@ The western ridge was a different country.
 
 He had known the farm's boundaries intimately for three years — every fence post, every terrace wall, every irrigation channel and paddy bank. But the western edge had always been a margin, the place where cultivated ground gave way to something older and less cooperative. The pines were thin and wind-bent, their roots gripping stone rather than soil. Beyond them, the terrain rose in a series of stony shelves — exposed granite and shale, lichen-covered, the earth between the rocks barely deep enough to hold grass.
 
-The Steward led him in silence. Lumara flew ahead, low and careful, her attention a steady pulse in Thirteen's awareness.
+The Steward led him in silence. Lumara flew ahead, low and careful, her attention a steady pulse in William's awareness.
 
 They stopped at a flat expanse of rock perhaps twenty strides across. The stone was pale grey, cracked in places by frost and age, with thin seams of darker mineral running through it. The morning was clear and cold. Their breath made clouds.
 
 "Here," the Steward said. He stood at the edge of the stone and put his hands behind his back. "Stand in the center."
 
-Thirteen walked to the center of the flat rock and stood.
+William walked to the center of the flat rock and stood.
 
 For a long time, nothing happened.
 
-The wind moved through the pines behind them. The sky brightened in the east. Lumara circled once, twice, then settled on a rock outcropping at the clearing's edge, her gold eyes fixed on the ground beneath Thirteen's feet.
+The wind moved through the pines behind them. The sky brightened in the east. Lumara circled once, twice, then settled on a rock outcropping at the clearing's edge, her gold eyes fixed on the ground beneath William's feet.
 
 He closed his eyes and reached his awareness downward.
 
@@ -168,13 +168,13 @@ He opened his eyes. "It's here."
 
 The Steward said nothing.
 
-The ground beneath Thirteen's feet trembled. Not like the tremor that had woken him last night — this was localized, precise, a vibration that came up through the soles of his boots and into his ankles and no further. As though something had tapped the underside of the stone.
+The ground beneath William's feet trembled. Not like the tremor that had woken him last night — this was localized, precise, a vibration that came up through the soles of his boots and into his ankles and no further. As though something had tapped the underside of the stone.
 
 Then the rock twenty strides to his left heaved.
 
 The shelf buckled upward — not shattered, not broken, but displaced, tilted by something enormous passing beneath it — and for a moment he saw it. An arc of dark hide, rising through the rock the way a fish's back breaks the surface of a river. Wider than half his body. The hide was thick and segmented, the color of the granite around it, dark stone-brown, so close in texture to the rock that if it had been still he would have mistaken it for an outcropping. Not skin — plate. Armor that had been shaped by a lifetime of moving through stone.
 
-It was above the surface for perhaps two seconds. Long enough for Thirteen to register the sheer mass of it — the arc he saw was only a fraction of whatever moved beneath. The way a mountain's peak was a fraction of the mountain.
+It was above the surface for perhaps two seconds. Long enough for William to register the sheer mass of it — the arc he saw was only a fraction of whatever moved beneath. The way a mountain's peak was a fraction of the mountain.
 
 Then it sank back into the stone, and the rock closed over it the way water closes over a diving fish. The shelf settled. A new crack ran through it that had not been there before, the only evidence that anything had happened at all.
 
@@ -184,9 +184,9 @@ Lumara had not moved from her perch, but her feathers were raised — the displa
 
 *Did you feel it?*
 
-He had. Not with Tha Tam Tuc — he had reached for the creature with his new ability, the way he reached for Lumara or the Rootwhisper, and found nothing to grip. The Tremor's awareness was not on the surface. It did not think in words or images or the shapes of meaning that passed between him and Lumara. It was too deep, too embedded in its medium. Like trying to speak to the river by shouting at the water.
+He had. Not with Hearthspeak — he had reached for the creature with his new ability, the way he reached for Lumara or the Rootwhisper, and found nothing to grip. The Tremor's awareness was not on the surface. It did not think in words or images or the shapes of meaning that passed between him and Lumara. It was too deep, too embedded in its medium. Like trying to speak to the river by shouting at the water.
 
-But as the creature sank back beneath the stone, the rock under Thirteen's feet pulsed — two short compressions, then a long slow wave that traveled through his boot soles and into his ankles and faded. Not language. Not Tha Tam Tuc. Something older and simpler: a vibration that carried no words but held a quality he could not name. An acknowledgment, perhaps. Or a question. The earth noting his presence and waiting to see what he would do with the knowledge.
+But as the creature sank back beneath the stone, the rock under William's feet pulsed — two short compressions, then a long slow wave that traveled through his boot soles and into his ankles and faded. Not language. Not Hearthspeak. Something older and simpler: a vibration that carried no words but held a quality he could not name. An acknowledgment, perhaps. Or a question. The earth noting his presence and waiting to see what he would do with the knowledge.
 
 What he had felt was its presence in the stone — the weight of it, the slow, enormous mass moving through rock with the ease of something that understood stone the way the Tidecaller understood water.
 
@@ -196,17 +196,17 @@ It was heavy.
 
 Not the heaviness of a thing resting on another thing. The heaviness of the earth itself — the cumulative weight of every layer of stone and clay, concentrated into a living thing. It did not carry the weight. It was the weight.
 
-"I can't speak to it," he said. "Tha Tam Tuc doesn't reach it."
+"I can't speak to it," he said. "Hearthspeak doesn't reach it."
 
 The Steward nodded, as though he had expected this. "Every creature challenges differently. The tiger came so you could see it. The fish came so you could hear it. This one..." He gestured at the new crack. "This one will force you to understand that the ground beneath your feet can betray you."
 
-Thirteen looked at the rock he stood on. Solid. Dense. The same rock that had been here for centuries.
+William looked at the rock he stood on. Solid. Dense. The same rock that had been here for centuries.
 
 "It didn't attack me," he said.
 
 "No." The Steward's voice was careful. "It passed through. Today it only wanted to be seen."
 
-Thirteen thought about the tiger — the way it had come through the fence, direct and undeniable. The fish — the way it had waited in the shallows, patient and inviting. The Tremor had done neither. It had surfaced for two seconds, shown an arc of hide, and disappeared. Not a confrontation. Not an invitation. A demonstration of fact: it was here, it was beneath him, and it had always been beneath him.
+William thought about the tiger — the way it had come through the fence, direct and undeniable. The fish — the way it had waited in the shallows, patient and inviting. The Tremor had done neither. It had surfaced for two seconds, shown an arc of hide, and disappeared. Not a confrontation. Not an invitation. A demonstration of fact: it was here, it was beneath him, and it had always been beneath him.
 
 "What comes next will be different," the Steward said.
 
@@ -214,7 +214,7 @@ Thirteen thought about the tiger — the way it had come through the fence, dire
 
 A pause. "Your Rootwhisper's roots have been growing deeper for three years. They have reached a depth where things live that do not come to the surface. The rice reached where it lives. The creature noticed."
 
-Through the contract thread, far away in the eastern paddy, the Rootwhisper breathed. The pale roots that had been exposed last night in the southern collapse were already reaching deeper. The rice was calm. It had known about the Tremor before Thirteen had. Perhaps before the Steward had.
+Through the contract thread, far away in the eastern paddy, the Rootwhisper breathed. The pale roots that had been exposed last night in the southern collapse were already reaching deeper. The rice was calm. It had known about the Tremor before William had. Perhaps before the Steward had.
 
 ---
 
@@ -230,15 +230,15 @@ She was right. The tiger had charged from the treeline — visible, direct, a fo
 
 They walked back to the farm in the early light. The Rootwhisper in the eastern paddy breathed its slow, even rhythm. The southern collapse was a dark gap in the newer growth, the pale roots still visible.
 
-Lumara rode his shoulder in silence. Through Tha Tam Tuc he could feel the shape of her thought — a turning-over, an assessment that had not yet reached conclusion. She was trying to understand the Tremor the way she understood the tiger and the fish, by placing it in her map of the world. And finding that her map had no location for something that was the ground itself.
+Lumara rode his shoulder in silence. Through Hearthspeak he could feel the shape of her thought — a turning-over, an assessment that had not yet reached conclusion. She was trying to understand the Tremor the way she understood the tiger and the fish, by placing it in her map of the world. And finding that her map had no location for something that was the ground itself.
 
 At the kitchen door, the Steward paused.
 
-"Each creature teaches differently," he said. "The tiger taught you to stand against force. The fish taught you to move without ground." He looked at Thirteen with the composed expression that contained more than it showed. "This one will teach you that the ground beneath your feet is not a certainty. It is a relationship."
+"Each creature teaches differently," he said. "The tiger taught you to stand against force. The fish taught you to move without ground." He looked at William with the composed expression that contained more than it showed. "This one will teach you that the ground beneath your feet is not a certainty. It is a relationship."
 
 He went inside.
 
-Thirteen stood in the cold morning and felt the ground beneath his boots — the ordinary, solid, taken-for-granted ground — and for the first time in his life, he did not trust it.
+William stood in the cold morning and felt the ground beneath his boots — the ordinary, solid, taken-for-granted ground — and for the first time in his life, he did not trust it.
 
 Somewhere below, in the stone and clay that held the farm together, the Tremor moved. He could not feel it. He could not hear it. He could not speak to it.
 
