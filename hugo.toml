@@ -44,6 +44,11 @@ theme = "PaperMod"
     url = "/story/"
     weight = 20
   [[menu.main]]
+    identifier = "transcribe"
+    name = "Transcribe"
+    url = "/transcribe/"
+    weight = 25
+  [[menu.main]]
     identifier = "about"
     name = "About"
     url = "/about/"
