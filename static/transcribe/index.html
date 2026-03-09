@@ -461,12 +461,41 @@
   </div>
 
   <script type="module">
-    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3';
+    // ======== WEB WORKER FOR WHISPER ========
+    const whisperWorker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
 
-    env.allowLocalModels = false;
+    let _msgId = 0;
+    const _pending = new Map();
+
+    whisperWorker.onmessage = (e) => {
+      const { type, payload, id } = e.data;
+      if (type === 'progress') {
+        // Forward progress to the load callback if registered
+        const cb = _pending.get(id);
+        if (cb && cb.onProgress) cb.onProgress(payload);
+        return;
+      }
+      const cb = _pending.get(id);
+      if (!cb) return;
+      _pending.delete(id);
+      if (type === 'error') cb.reject(new Error(payload));
+      else cb.resolve(payload);
+    };
+
+    function workerCall(type, payload, onProgress) {
+      const id = ++_msgId;
+      return new Promise((resolve, reject) => {
+        _pending.set(id, { resolve, reject, onProgress });
+        if (payload && payload.audio instanceof Float32Array) {
+          // Transfer the buffer to avoid copying
+          whisperWorker.postMessage({ type, payload, id }, [payload.audio.buffer]);
+        } else {
+          whisperWorker.postMessage({ type, payload, id });
+        }
+      });
+    }
 
     // ======== STATE ========
-    let transcriber = null;
     let isModelLoaded = false;
     let isRecording = false;
     let mediaStream = null;
@@ -586,19 +615,15 @@
       modelStatus.textContent = 'Downloading and initializing model...';
 
       try {
-        transcriber = await pipeline('automatic-speech-recognition', modelId, {
-          dtype: 'q8',
-          device: 'wasm',
-          progress_callback: (progress) => {
-            if (progress.status === 'progress' && progress.total) {
-              const pct = Math.round((progress.loaded / progress.total) * 100);
-              modelProgressFill.style.width = pct + '%';
-              modelStatus.textContent = `Downloading ${progress.file}: ${pct}%`;
-            } else if (progress.status === 'done') {
-              modelStatus.textContent = `Loaded ${progress.file}`;
-            } else if (progress.status === 'initiate') {
-              modelStatus.textContent = `Fetching ${progress.file}...`;
-            }
+        await workerCall('load', { modelId }, (progress) => {
+          if (progress.status === 'progress' && progress.total) {
+            const pct = Math.round((progress.loaded / progress.total) * 100);
+            modelProgressFill.style.width = pct + '%';
+            modelStatus.textContent = `Downloading ${progress.file}: ${pct}%`;
+          } else if (progress.status === 'done') {
+            modelStatus.textContent = `Loaded ${progress.file}`;
+          } else if (progress.status === 'initiate') {
+            modelStatus.textContent = `Fetching ${progress.file}...`;
           }
         });
 
@@ -665,16 +690,15 @@
     }
 
     transcribeBtn.addEventListener('click', async () => {
-      if (!selectedFile || !transcriber) return;
+      if (!selectedFile || !isModelLoaded) return;
       transcribeBtn.disabled = true;
       transcribeBtn.innerHTML = '<span class="spinner"></span>Transcribing...';
 
       try {
         const audioBuffer = await readFileAsAudioData(selectedFile);
-        const result = await transcriber(audioBuffer, {
-          chunk_length_s: 30,
-          stride_length_s: 5,
-          return_timestamps: true,
+        const result = await workerCall('transcribe', {
+          audio: audioBuffer,
+          options: { chunk_length_s: 30, stride_length_s: 5, return_timestamps: true },
         });
 
         // Parse chunks with timestamps
@@ -798,7 +822,10 @@
         });
         renderTranscript();
 
-        const result = await transcriber(float32, { chunk_length_s: 30, stride_length_s: 5 });
+        const result = await workerCall('transcribe', {
+          audio: float32,
+          options: { chunk_length_s: 30, stride_length_s: 5 },
+        });
         const text = result.text.trim();
 
         if (text) {
