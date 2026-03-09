@@ -44,19 +44,20 @@
       flex: 1;
     }
 
-    /* Model loader */
-    #model-section {
+    /* Shared controls */
+    .section {
       background: var(--surface);
       border-radius: var(--radius);
       padding: 20px;
     }
-    #model-section .row {
+    .section h3 { margin-bottom: 12px; font-size: 1rem; }
+    .row {
       display: flex;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
     }
-    #model-section select {
+    select {
       background: var(--surface2);
       color: var(--text);
       border: none;
@@ -202,12 +203,15 @@
     }
 
     /* Transcript */
-    #transcript-section {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 20px;
+    #transcript-section { position: relative; }
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
     }
-    #transcript-section h3 { margin-bottom: 12px; font-size: 1rem; }
+    .view-toggle .btn { padding: 6px 14px; font-size: 0.8rem; }
+    .view-toggle .btn.active { background: var(--accent2); color: #fff; }
+
     #transcript {
       background: var(--bg);
       border-radius: 8px;
@@ -220,22 +224,98 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
-    #transcript .chunk {
-      display: inline;
-    }
-    #transcript .chunk.pending {
-      color: var(--text2);
-      font-style: italic;
-    }
+    #transcript .chunk { display: inline; }
+    #transcript .chunk.pending { color: var(--text2); font-style: italic; }
     #transcript:empty::before {
       content: 'Transcription will appear here...';
       color: var(--text2);
       font-style: italic;
     }
+
+    /* Timeline view */
+    #transcript.timeline-view {
+      white-space: normal;
+    }
+    #transcript.timeline-view .tl-entry {
+      display: flex;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--surface2);
+      align-items: flex-start;
+    }
+    #transcript.timeline-view .tl-entry:last-child { border-bottom: none; }
+    .tl-time {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--surface2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      min-width: 70px;
+      text-align: center;
+      flex-shrink: 0;
+      cursor: default;
+    }
+    .tl-text { flex: 1; }
+
     .transcript-actions {
       margin-top: 12px;
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* LLM section */
+    #llm-section {
+      border: 2px solid var(--accent2);
+    }
+    #llm-section h3 .badge {
+      font-size: 0.7rem;
+      background: var(--accent2);
+      padding: 2px 8px;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    #llm-prompt {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--surface2);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      margin-top: 10px;
+    }
+    #llm-prompt:focus { outline: none; border-color: var(--accent2); }
+    #llm-output {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 10px;
+      min-height: 80px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      display: none;
+    }
+    #llm-output:empty::before {
+      content: 'LLM output will appear here...';
+      color: var(--text2);
+      font-style: italic;
+    }
+    .llm-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     /* Spinner */
@@ -261,14 +341,14 @@
 <body>
   <header>
     <h1>Audio Transcription</h1>
-    <p>Runs 100% in your browser using Whisper (ONNX) &mdash; no server needed</p>
+    <p>Runs 100% in your browser using Whisper + LLM (ONNX) &mdash; no server needed</p>
   </header>
 
   <div class="container">
-    <!-- Model Loader -->
-    <div id="model-section">
+    <!-- Whisper Model Loader -->
+    <div class="section" id="model-section">
       <div class="row">
-        <label><strong>Model:</strong></label>
+        <label><strong>Whisper:</strong></label>
         <select id="model-select">
           <option value="onnx-community/whisper-tiny.en" selected>whisper-tiny.en (~40 MB, fast)</option>
           <option value="onnx-community/whisper-base.en">whisper-base.en (~75 MB, better)</option>
@@ -312,7 +392,7 @@
         <div class="mic-status" id="mic-status">Load a model first</div>
         <div style="display:flex;gap:10px;align-items:center;">
           <label style="font-size:0.85rem;color:var(--text2);">Chunk interval:</label>
-          <select id="chunk-interval" style="background:var(--surface2);color:var(--text);border:none;padding:4px 8px;border-radius:6px;font-size:0.85rem;">
+          <select id="chunk-interval">
             <option value="5">5s</option>
             <option value="10" selected>10s</option>
             <option value="15">15s</option>
@@ -323,8 +403,12 @@
     </div>
 
     <!-- Transcript -->
-    <div id="transcript-section">
+    <div class="section" id="transcript-section">
       <h3>Transcript</h3>
+      <div class="view-toggle">
+        <button class="btn btn-outline active" id="view-plain">Plain</button>
+        <button class="btn btn-outline" id="view-timeline">Timeline</button>
+      </div>
       <div id="transcript"></div>
       <div class="transcript-actions">
         <button class="btn btn-outline" id="copy-btn">Copy</button>
@@ -332,15 +416,40 @@
         <button class="btn btn-outline" id="download-btn">Download .txt</button>
       </div>
     </div>
+
+    <!-- LLM Edit Section -->
+    <div class="section" id="llm-section">
+      <h3>AI Edit <span class="badge">Optional</span></h3>
+      <p style="font-size:0.8rem;color:var(--text2);margin-bottom:10px;">Load a small LLM to clean up, summarize, or reformat your transcript &mdash; runs in-browser.</p>
+      <div class="row">
+        <label><strong>LLM:</strong></label>
+        <select id="llm-select">
+          <option value="onnx-community/Qwen2.5-0.5B-Instruct" selected>Qwen2.5 0.5B (~350 MB, fast)</option>
+          <option value="onnx-community/SmolLM2-1.7B-Instruct">SmolLM2 1.7B (~1 GB, better)</option>
+          <option value="onnx-community/Phi-3.5-mini-instruct">Phi-3.5 Mini 3.8B (~2 GB, best)</option>
+        </select>
+        <button class="btn btn-purple" id="llm-load-btn">Load LLM</button>
+      </div>
+      <div class="progress-bar" id="llm-progress">
+        <div class="fill" id="llm-progress-fill"></div>
+      </div>
+      <div class="status" id="llm-status"></div>
+      <textarea id="llm-prompt" placeholder="Enter instructions, e.g.: Fix grammar and punctuation. / Summarize this transcript. / Rewrite as bullet points.">Fix grammar, punctuation, and clean up this transcript while keeping the original meaning.</textarea>
+      <div class="llm-actions">
+        <button class="btn btn-purple" id="llm-edit-btn" disabled>Edit Transcript with AI</button>
+        <button class="btn btn-outline" id="llm-apply-btn" style="display:none;">Apply to Transcript</button>
+        <button class="btn btn-outline" id="llm-copy-btn" style="display:none;">Copy Result</button>
+      </div>
+      <div id="llm-output"></div>
+    </div>
   </div>
 
   <script type="module">
     import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3';
 
-    // Allow local model caching in browser
     env.allowLocalModels = false;
 
-    // State
+    // ======== STATE ========
     let transcriber = null;
     let isModelLoaded = false;
     let isRecording = false;
@@ -353,8 +462,18 @@
     let chunkTimer = null;
     let animFrameId = null;
     let selectedFile = null;
+    let micStartTime = 0;
+    let micChunkIndex = 0;
 
-    // DOM
+    // Timeline data: array of { start, end, text }
+    let timelineData = [];
+    let currentView = 'plain'; // 'plain' or 'timeline'
+
+    // LLM
+    let llmGenerator = null;
+    let isLlmLoaded = false;
+
+    // ======== DOM ========
     const modelSelect = document.getElementById('model-select');
     const loadBtn = document.getElementById('load-btn');
     const modelProgress = document.getElementById('model-progress');
@@ -374,8 +493,21 @@
     const copyBtn = document.getElementById('copy-btn');
     const clearBtn = document.getElementById('clear-btn');
     const downloadBtn = document.getElementById('download-btn');
+    const viewPlainBtn = document.getElementById('view-plain');
+    const viewTimelineBtn = document.getElementById('view-timeline');
 
-    // ---- Model Loading ----
+    const llmSelect = document.getElementById('llm-select');
+    const llmLoadBtn = document.getElementById('llm-load-btn');
+    const llmProgress = document.getElementById('llm-progress');
+    const llmProgressFill = document.getElementById('llm-progress-fill');
+    const llmStatusEl = document.getElementById('llm-status');
+    const llmPrompt = document.getElementById('llm-prompt');
+    const llmEditBtn = document.getElementById('llm-edit-btn');
+    const llmApplyBtn = document.getElementById('llm-apply-btn');
+    const llmCopyBtn = document.getElementById('llm-copy-btn');
+    const llmOutput = document.getElementById('llm-output');
+
+    // ======== WHISPER MODEL ========
     loadBtn.addEventListener('click', async () => {
       const modelId = modelSelect.value;
       loadBtn.disabled = true;
@@ -415,7 +547,7 @@
       }
     });
 
-    // ---- Tabs ----
+    // ======== TABS ========
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         tabs.forEach(t => t.classList.remove('active'));
@@ -425,7 +557,21 @@
       });
     });
 
-    // ---- File Upload ----
+    // ======== VIEW TOGGLE ========
+    viewPlainBtn.addEventListener('click', () => {
+      currentView = 'plain';
+      viewPlainBtn.classList.add('active');
+      viewTimelineBtn.classList.remove('active');
+      renderTranscript();
+    });
+    viewTimelineBtn.addEventListener('click', () => {
+      currentView = 'timeline';
+      viewTimelineBtn.classList.add('active');
+      viewPlainBtn.classList.remove('active');
+      renderTranscript();
+    });
+
+    // ======== FILE UPLOAD ========
     dropZone.addEventListener('click', () => fileInput.click());
     dropZone.addEventListener('dragover', e => {
       e.preventDefault();
@@ -461,9 +607,22 @@
           return_timestamps: true,
         });
 
-        appendTranscript(result.text.trim(), false);
+        // Parse chunks with timestamps
+        if (result.chunks && result.chunks.length > 0) {
+          for (const chunk of result.chunks) {
+            timelineData.push({
+              start: chunk.timestamp[0] || 0,
+              end: chunk.timestamp[1] || null,
+              text: chunk.text.trim(),
+            });
+          }
+        } else {
+          timelineData.push({ start: 0, end: null, text: result.text.trim() });
+        }
+        renderTranscript();
       } catch (err) {
-        appendTranscript('[Error: ' + err.message + ']', false);
+        timelineData.push({ start: 0, end: null, text: '[Error: ' + err.message + ']' });
+        renderTranscript();
         console.error(err);
       } finally {
         transcribeBtn.disabled = false;
@@ -475,32 +634,22 @@
       const arrayBuffer = await file.arrayBuffer();
       const ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
       const decoded = await ctx.decodeAudioData(arrayBuffer);
-      // Whisper expects mono 16kHz float32
       const float32 = decoded.getChannelData(0);
       await ctx.close();
       return float32;
     }
 
-    // ---- Real-time Mic ----
+    // ======== REAL-TIME MIC ========
     micBtn.addEventListener('click', () => {
-      if (isRecording) {
-        stopRecording();
-      } else {
-        startRecording();
-      }
+      if (isRecording) stopRecording();
+      else startRecording();
     });
 
     async function startRecording() {
       if (!isModelLoaded) return;
-
       try {
         mediaStream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            sampleRate: 16000,
-            channelCount: 1,
-            echoCancellation: true,
-            noiseSuppression: true,
-          }
+          audio: { sampleRate: 16000, channelCount: 1, echoCancellation: true, noiseSuppression: true }
         });
       } catch (err) {
         micStatus.textContent = 'Microphone access denied: ' + err.message;
@@ -508,11 +657,12 @@
       }
 
       isRecording = true;
+      micStartTime = Date.now();
+      micChunkIndex = 0;
       micBtn.classList.add('recording');
-      micBtn.innerHTML = '&#9209;'; // stop icon
+      micBtn.innerHTML = '&#9209;';
       micStatus.textContent = 'Listening... speak now';
 
-      // Audio context for visualizer
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
       sourceNode = audioContext.createMediaStreamSource(mediaStream);
       analyserNode = audioContext.createAnalyser();
@@ -520,23 +670,18 @@
       sourceNode.connect(analyserNode);
       drawVisualizer();
 
-      // Start recording chunks
       startNewChunk();
-      const intervalSec = parseInt(chunkIntervalSelect.value) * 1000;
-      chunkTimer = setInterval(() => {
-        processCurrentChunk();
-      }, intervalSec);
+      const intervalMs = parseInt(chunkIntervalSelect.value) * 1000;
+      chunkTimer = setInterval(() => processCurrentChunk(), intervalMs);
     }
 
     function startNewChunk() {
       recordedChunks = [];
-      mediaRecorder = new MediaRecorder(mediaStream, {
-        mimeType: getSupportedMimeType()
-      });
+      mediaRecorder = new MediaRecorder(mediaStream, { mimeType: getSupportedMimeType() });
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) recordedChunks.push(e.data);
       };
-      mediaRecorder.start(500); // collect data every 500ms
+      mediaRecorder.start(500);
     }
 
     function getSupportedMimeType() {
@@ -550,18 +695,17 @@
     async function processCurrentChunk() {
       if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
 
-      // Stop current recorder and wait for final data
+      const chunkStartTime = (Date.now() - micStartTime) / 1000;
+      const intervalSec = parseInt(chunkIntervalSelect.value);
+
       const chunks = await new Promise(resolve => {
         mediaRecorder.onstop = () => resolve([...recordedChunks]);
         mediaRecorder.stop();
       });
 
-      // Start a new chunk immediately
       if (isRecording) startNewChunk();
-
       if (chunks.length === 0) return;
 
-      // Decode and transcribe
       try {
         const blob = new Blob(chunks, { type: getSupportedMimeType() });
         const arrayBuffer = await blob.arrayBuffer();
@@ -570,19 +714,30 @@
         const float32 = decoded.getChannelData(0);
         await ctx.close();
 
-        // Skip near-silent chunks
         const rms = Math.sqrt(float32.reduce((sum, v) => sum + v * v, 0) / float32.length);
         if (rms < 0.005) return;
 
-        const pendingId = appendTranscript('...', true);
-
-        const result = await transcriber(float32, {
-          chunk_length_s: 30,
-          stride_length_s: 5,
+        // Add pending entry
+        const pendingIdx = timelineData.length;
+        const startSec = Math.max(0, chunkStartTime - intervalSec);
+        timelineData.push({
+          start: startSec,
+          end: chunkStartTime,
+          text: '...',
+          pending: true,
         });
+        renderTranscript();
 
+        const result = await transcriber(float32, { chunk_length_s: 30, stride_length_s: 5 });
         const text = result.text.trim();
-        finalizePending(pendingId, text);
+
+        if (text) {
+          timelineData[pendingIdx].text = text;
+          timelineData[pendingIdx].pending = false;
+        } else {
+          timelineData.splice(pendingIdx, 1);
+        }
+        renderTranscript();
       } catch (err) {
         console.error('Chunk transcription error:', err);
       }
@@ -592,16 +747,12 @@
       isRecording = false;
       clearInterval(chunkTimer);
 
-      // Process any remaining audio
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        processCurrentChunk();
-      }
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') processCurrentChunk();
 
       micBtn.classList.remove('recording');
       micBtn.innerHTML = '&#127908;';
       micStatus.textContent = 'Stopped. Click mic to start again.';
 
-      // Cleanup
       if (animFrameId) cancelAnimationFrame(animFrameId);
       if (sourceNode) sourceNode.disconnect();
       if (audioContext) audioContext.close();
@@ -609,12 +760,11 @@
       mediaStream = null;
       audioContext = null;
 
-      // Clear visualizer
       const ctx2d = visualizer.getContext('2d');
       ctx2d.clearRect(0, 0, visualizer.width, visualizer.height);
     }
 
-    // ---- Visualizer ----
+    // ======== VISUALIZER ========
     function drawVisualizer() {
       const canvas = visualizer;
       const ctx = canvas.getContext('2d');
@@ -630,17 +780,13 @@
         if (!isRecording) return;
         animFrameId = requestAnimationFrame(draw);
         analyserNode.getByteFrequencyData(dataArray);
-
         ctx.clearRect(0, 0, W, H);
         const barW = (W / bufLen) * 2.5;
         let x = 0;
         for (let i = 0; i < bufLen; i++) {
           const v = dataArray[i] / 255;
           const barH = v * H;
-          const r = 233;
-          const g = 69 + v * 100;
-          const b = 96 + v * 60;
-          ctx.fillStyle = `rgb(${r},${g},${b})`;
+          ctx.fillStyle = `rgb(233,${69 + v * 100},${96 + v * 60})`;
           ctx.fillRect(x, H - barH, barW, barH);
           x += barW + 1;
           if (x > W) break;
@@ -649,52 +795,75 @@
       draw();
     }
 
-    // ---- Transcript helpers ----
-    let pendingCounter = 0;
-
-    function appendTranscript(text, isPending) {
-      const id = 'chunk-' + (++pendingCounter);
-      const span = document.createElement('span');
-      span.className = 'chunk' + (isPending ? ' pending' : '');
-      span.id = id;
-      span.textContent = text;
-      if (transcriptEl.children.length > 0 && text !== '...') {
-        transcriptEl.appendChild(document.createTextNode(' '));
-      }
-      transcriptEl.appendChild(span);
-      transcriptEl.scrollTop = transcriptEl.scrollHeight;
-      return id;
+    // ======== TRANSCRIPT RENDERING ========
+    function formatTime(seconds) {
+      if (seconds == null) return '??:??';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
-    function finalizePending(id, text) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (!text || text === '') {
-        // Remove empty results and any preceding space
-        if (el.previousSibling && el.previousSibling.nodeType === 3) {
-          el.previousSibling.remove();
-        }
-        el.remove();
-        return;
-      }
-      el.classList.remove('pending');
-      el.textContent = text;
+    function renderTranscript() {
+      transcriptEl.innerHTML = '';
 
-      // Add space before if needed
-      if (el.previousSibling === null || (el.previousSibling.nodeType === 3)) {
-        // already fine
+      if (timelineData.length === 0) return;
+
+      if (currentView === 'timeline') {
+        transcriptEl.classList.add('timeline-view');
+        for (const entry of timelineData) {
+          const div = document.createElement('div');
+          div.className = 'tl-entry';
+
+          const timeSpan = document.createElement('span');
+          timeSpan.className = 'tl-time';
+          const startStr = formatTime(entry.start);
+          const endStr = entry.end != null ? formatTime(entry.end) : '';
+          timeSpan.textContent = endStr ? `${startStr} - ${endStr}` : startStr;
+
+          const textSpan = document.createElement('span');
+          textSpan.className = 'tl-text';
+          if (entry.pending) textSpan.style.cssText = 'color:var(--text2);font-style:italic;';
+          textSpan.textContent = entry.text;
+
+          div.appendChild(timeSpan);
+          div.appendChild(textSpan);
+          transcriptEl.appendChild(div);
+        }
       } else {
-        el.parentNode.insertBefore(document.createTextNode(' '), el);
+        transcriptEl.classList.remove('timeline-view');
+        for (let i = 0; i < timelineData.length; i++) {
+          const entry = timelineData[i];
+          if (i > 0) transcriptEl.appendChild(document.createTextNode(' '));
+          const span = document.createElement('span');
+          span.className = 'chunk' + (entry.pending ? ' pending' : '');
+          span.textContent = entry.text;
+          transcriptEl.appendChild(span);
+        }
       }
       transcriptEl.scrollTop = transcriptEl.scrollHeight;
     }
 
     function getFullText() {
-      return transcriptEl.innerText.trim();
+      return timelineData
+        .filter(e => !e.pending)
+        .map(e => e.text)
+        .join(' ')
+        .trim();
+    }
+
+    function getTimelineText() {
+      return timelineData
+        .filter(e => !e.pending)
+        .map(e => {
+          const t = formatTime(e.start);
+          const te = e.end != null ? ` - ${formatTime(e.end)}` : '';
+          return `[${t}${te}] ${e.text}`;
+        })
+        .join('\n');
     }
 
     copyBtn.addEventListener('click', () => {
-      const text = getFullText();
+      const text = currentView === 'timeline' ? getTimelineText() : getFullText();
       if (!text) return;
       navigator.clipboard.writeText(text).then(() => {
         copyBtn.textContent = 'Copied!';
@@ -703,11 +872,12 @@
     });
 
     clearBtn.addEventListener('click', () => {
-      transcriptEl.innerHTML = '';
+      timelineData = [];
+      renderTranscript();
     });
 
     downloadBtn.addEventListener('click', () => {
-      const text = getFullText();
+      const text = currentView === 'timeline' ? getTimelineText() : getFullText();
       if (!text) return;
       const blob = new Blob([text], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
@@ -716,6 +886,134 @@
       a.download = 'transcript.txt';
       a.click();
       URL.revokeObjectURL(url);
+    });
+
+    // ======== LLM ========
+    llmLoadBtn.addEventListener('click', async () => {
+      const modelId = llmSelect.value;
+      llmLoadBtn.disabled = true;
+      llmSelect.disabled = true;
+      llmProgress.style.display = 'block';
+      llmStatusEl.textContent = 'Downloading LLM (this may take a while)...';
+
+      try {
+        llmGenerator = await pipeline('text-generation', modelId, {
+          dtype: 'q4f16',
+          device: 'webgpu',
+          progress_callback: (progress) => {
+            if (progress.status === 'progress' && progress.total) {
+              const pct = Math.round((progress.loaded / progress.total) * 100);
+              llmProgressFill.style.width = pct + '%';
+              llmStatusEl.textContent = `Downloading ${progress.file}: ${pct}%`;
+            } else if (progress.status === 'done') {
+              llmStatusEl.textContent = `Loaded ${progress.file}`;
+            } else if (progress.status === 'initiate') {
+              llmStatusEl.textContent = `Fetching ${progress.file}...`;
+            }
+          }
+        });
+
+        isLlmLoaded = true;
+        llmProgressFill.style.width = '100%';
+        llmStatusEl.textContent = `LLM "${modelId.split('/').pop()}" ready!`;
+        llmEditBtn.disabled = false;
+      } catch (err) {
+        // Fallback to WASM if WebGPU not available
+        if (err.message && (err.message.includes('webgpu') || err.message.includes('WebGPU') || err.message.includes('GPU'))) {
+          llmStatusEl.textContent = 'WebGPU not available, trying WASM (slower)...';
+          try {
+            llmGenerator = await pipeline('text-generation', modelId, {
+              dtype: 'q8',
+              device: 'wasm',
+              progress_callback: (progress) => {
+                if (progress.status === 'progress' && progress.total) {
+                  const pct = Math.round((progress.loaded / progress.total) * 100);
+                  llmProgressFill.style.width = pct + '%';
+                  llmStatusEl.textContent = `Downloading ${progress.file}: ${pct}%`;
+                }
+              }
+            });
+            isLlmLoaded = true;
+            llmProgressFill.style.width = '100%';
+            llmStatusEl.textContent = `LLM "${modelId.split('/').pop()}" ready (WASM mode)!`;
+            llmEditBtn.disabled = false;
+          } catch (err2) {
+            llmStatusEl.textContent = 'Error loading LLM: ' + err2.message;
+            console.error(err2);
+          }
+        } else {
+          llmStatusEl.textContent = 'Error loading LLM: ' + err.message;
+          console.error(err);
+        }
+      } finally {
+        llmLoadBtn.disabled = false;
+        llmSelect.disabled = false;
+      }
+    });
+
+    llmEditBtn.addEventListener('click', async () => {
+      if (!llmGenerator) return;
+
+      const transcript = getFullText();
+      if (!transcript) {
+        llmStatusEl.textContent = 'No transcript to edit. Transcribe some audio first.';
+        return;
+      }
+
+      const instruction = llmPrompt.value.trim() || 'Fix grammar and punctuation.';
+
+      llmEditBtn.disabled = true;
+      llmEditBtn.innerHTML = '<span class="spinner"></span>Generating...';
+      llmOutput.style.display = 'block';
+      llmOutput.textContent = '';
+
+      try {
+        const messages = [
+          {
+            role: 'user',
+            content: `${instruction}\n\nTranscript:\n${transcript}`
+          }
+        ];
+
+        const result = await llmGenerator(messages, {
+          max_new_tokens: 1024,
+          temperature: 0.3,
+          do_sample: true,
+        });
+
+        const generated = result[0].generated_text;
+        // The last message in generated_text is the assistant response
+        const assistantMsg = Array.isArray(generated)
+          ? generated[generated.length - 1].content
+          : generated.slice(messages[0].content.length).trim();
+
+        llmOutput.textContent = assistantMsg;
+        llmApplyBtn.style.display = 'inline-block';
+        llmCopyBtn.style.display = 'inline-block';
+      } catch (err) {
+        llmOutput.textContent = 'Error: ' + err.message;
+        console.error(err);
+      } finally {
+        llmEditBtn.disabled = false;
+        llmEditBtn.textContent = 'Edit Transcript with AI';
+      }
+    });
+
+    llmApplyBtn.addEventListener('click', () => {
+      const newText = llmOutput.textContent.trim();
+      if (!newText) return;
+      timelineData = [{ start: 0, end: null, text: newText }];
+      renderTranscript();
+      llmApplyBtn.style.display = 'none';
+    });
+
+    llmCopyBtn.addEventListener('click', () => {
+      const text = llmOutput.textContent.trim();
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        llmCopyBtn.textContent = 'Copied!';
+        setTimeout(() => llmCopyBtn.textContent = 'Copy Result', 1500);
+      });
     });
   </script>
 </body>
