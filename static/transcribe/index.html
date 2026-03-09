@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Transcription - nmnhut.dev</title>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --surface2: #0f3460;
+      --accent: #e94560;
+      --accent2: #533483;
+      --text: #eee;
+      --text2: #aaa;
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      background: var(--surface);
+      border-bottom: 2px solid var(--surface2);
+    }
+    header h1 { font-size: 1.5rem; }
+    header p { color: var(--text2); font-size: 0.85rem; margin-top: 4px; }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    /* Shared controls */
+    .section {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .section h3 { margin-bottom: 12px; font-size: 1rem; }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    select {
+      background: var(--surface2);
+      color: var(--text);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-purple { background: var(--accent2); color: #fff; }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--surface2);
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      margin-top: 12px;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 3px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+    .status {
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-top: 8px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .tab:hover { background: var(--surface2); }
+    .tab.active { background: var(--accent); }
+
+    /* File upload */
+    .panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: none;
+    }
+    .panel.active { display: block; }
+    .drop-zone {
+      border: 2px dashed var(--surface2);
+      border-radius: var(--radius);
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(233, 69, 96, 0.05);
+    }
+    .drop-zone p { color: var(--text2); margin-top: 8px; font-size: 0.85rem; }
+    .drop-zone .icon { font-size: 2rem; }
+    #file-input { display: none; }
+    #file-name {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--accent);
+      display: none;
+    }
+    .file-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Real-time mic */
+    .mic-area {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .mic-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mic-btn:hover { transform: scale(1.05); }
+    .mic-btn.recording {
+      animation: pulse 1.5s infinite;
+      box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.7);
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(233, 69, 96, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); }
+    }
+    .mic-btn:disabled { opacity: 0.4; cursor: not-allowed; animation: none; }
+    .mic-status { font-size: 0.85rem; color: var(--text2); }
+    #visualizer {
+      width: 100%;
+      height: 60px;
+      border-radius: 8px;
+    }
+
+    /* Transcript */
+    #transcript-section { position: relative; }
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .view-toggle .btn { padding: 6px 14px; font-size: 0.8rem; }
+    .view-toggle .btn.active { background: var(--accent2); color: #fff; }
+
+    #transcript {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 120px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    #transcript .chunk { display: inline; }
+    #transcript .chunk.pending { color: var(--text2); font-style: italic; }
+    #transcript:empty::before {
+      content: 'Transcription will appear here...';
+      color: var(--text2);
+      font-style: italic;
+    }
+
+    /* Timeline view */
+    #transcript.timeline-view {
+      white-space: normal;
+    }
+    #transcript.timeline-view .tl-entry {
+      display: flex;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--surface2);
+      align-items: flex-start;
+    }
+    #transcript.timeline-view .tl-entry:last-child { border-bottom: none; }
+    .tl-time {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--surface2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      min-width: 70px;
+      text-align: center;
+      flex-shrink: 0;
+      cursor: default;
+    }
+    .tl-text { flex: 1; }
+
+    .transcript-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* LLM section */
+    #llm-section {
+      border: 2px solid var(--accent2);
+    }
+    #llm-section h3 .badge {
+      font-size: 0.7rem;
+      background: var(--accent2);
+      padding: 2px 8px;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    #llm-prompt {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--surface2);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      margin-top: 10px;
+    }
+    #llm-prompt:focus { outline: none; border-color: var(--accent2); }
+    #llm-output {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 10px;
+      min-height: 80px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      display: none;
+    }
+    #llm-output:empty::before {
+      content: 'LLM output will appear here...';
+      color: var(--text2);
+      font-style: italic;
+    }
+    .llm-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .llm-desc {
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-bottom: 10px;
+    }
+    .llm-hidden { display: none; }
+    .mic-chunk-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .mic-chunk-row label {
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--text2);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .container { padding: 12px; }
+      .drop-zone { padding: 24px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Audio Transcription</h1>
+    <p>Runs 100% in your browser using Whisper + LLM (ONNX) &mdash; no server needed</p>
+  </header>
+
+  <div class="container">
+    <!-- Whisper Model Loader -->
+    <div class="section" id="model-section">
+      <div class="row">
+        <label><strong>Whisper:</strong></label>
+        <select id="model-select">
+          <option value="onnx-community/whisper-tiny.en" selected>whisper-tiny.en (~40 MB, fast)</option>
+          <option value="onnx-community/whisper-base.en">whisper-base.en (~75 MB, better)</option>
+          <option value="onnx-community/whisper-small.en">whisper-small.en (~250 MB, best)</option>
+        </select>
+        <button type="button" class="btn btn-accent" id="load-btn">Load Model</button>
+      </div>
+      <div class="progress-bar" id="model-progress">
+        <div class="fill" id="model-progress-fill"></div>
+      </div>
+      <div class="status" id="model-status"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="file">Upload File</div>
+      <div class="tab" data-tab="mic">Real-time Mic</div>
+    </div>
+
+    <!-- File Panel -->
+    <div class="panel active" id="panel-file">
+      <div class="drop-zone" id="drop-zone">
+        <div class="icon">&#128190;</div>
+        <div><strong>Drop audio file here</strong></div>
+        <p>or click to browse &mdash; supports mp3, wav, ogg, webm, m4a, flac</p>
+        <input type="file" id="file-input" accept="audio/*">
+      </div>
+      <div id="file-name"></div>
+      <div class="file-actions">
+        <button type="button" class="btn btn-accent" id="transcribe-btn" disabled>Transcribe</button>
+      </div>
+    </div>
+
+    <!-- Mic Panel -->
+    <div class="panel" id="panel-mic">
+      <div class="mic-area">
+        <canvas id="visualizer"></canvas>
+        <button type="button" class="mic-btn" id="mic-btn" disabled title="Start recording">
+          &#127908;
+        </button>
+        <div class="mic-status" id="mic-status">Load a model first</div>
+        <div class="mic-chunk-row">
+          <label>Chunk interval:</label>
+          <select id="chunk-interval">
+            <option value="5">5s</option>
+            <option value="10" selected>10s</option>
+            <option value="15">15s</option>
+            <option value="30">30s</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transcript -->
+    <div class="section" id="transcript-section">
+      <h3>Transcript</h3>
+      <div class="view-toggle">
+        <button type="button" class="btn btn-outline active" id="view-plain">Plain</button>
+        <button type="button" class="btn btn-outline" id="view-timeline">Timeline</button>
+      </div>
+      <div id="transcript"></div>
+      <div class="transcript-actions">
+        <button type="button" class="btn btn-outline" id="copy-btn">Copy</button>
+        <button type="button" class="btn btn-outline" id="clear-btn">Clear</button>
+        <button type="button" class="btn btn-outline" id="download-btn">Download .txt</button>
+      </div>
+    </div>
+
+    <!-- LLM Edit Section -->
+    <div class="section" id="llm-section">
+      <h3>AI Edit <span class="badge">Optional</span></h3>
+      <p class="llm-desc">Load a small LLM to clean up, summarize, or reformat your transcript &mdash; runs in-browser.</p>
+      <div class="row">
+        <label><strong>LLM:</strong></label>
+        <select id="llm-select">
+          <option value="onnx-community/Qwen2.5-0.5B-Instruct" selected>Qwen2.5 0.5B (~350 MB, fast)</option>
+          <option value="onnx-community/SmolLM2-1.7B-Instruct">SmolLM2 1.7B (~1 GB, better)</option>
+          <option value="onnx-community/Phi-3.5-mini-instruct">Phi-3.5 Mini 3.8B (~2 GB, best)</option>
+        </select>
+        <button type="button" class="btn btn-purple" id="llm-load-btn">Load LLM</button>
+      </div>
+      <div class="progress-bar" id="llm-progress">
+        <div class="fill" id="llm-progress-fill"></div>
+      </div>
+      <div class="status" id="llm-status"></div>
+      <textarea id="llm-prompt" placeholder="Enter instructions, e.g.: Fix grammar and punctuation. / Summarize this transcript. / Rewrite as bullet points.">Fix grammar, punctuation, and clean up this transcript while keeping the original meaning.</textarea>
+      <div class="llm-actions">
+        <button type="button" class="btn btn-purple" id="llm-edit-btn" disabled>Edit Transcript with AI</button>
+        <button type="button" class="btn btn-outline llm-hidden" id="llm-apply-btn">Apply to Transcript</button>
+        <button type="button" class="btn btn-outline llm-hidden" id="llm-copy-btn">Copy Result</button>
+      </div>
+      <div id="llm-output"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3';
+
+    env.allowLocalModels = false;
+
+    // ======== STATE ========
+    let transcriber = null;
+    let isModelLoaded = false;
+    let isRecording = false;
+    let mediaStream = null;
+    let audioContext = null;
+    let analyserNode = null;
+    let sourceNode = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let chunkTimer = null;
+    let animFrameId = null;
+    let selectedFile = null;
+    let micStartTime = 0;
+    let micChunkIndex = 0;
+
+    // Timeline data: array of { start, end, text }
+    let timelineData = [];
+    let currentView = 'plain'; // 'plain' or 'timeline'
+
+    // LLM
+    let llmGenerator = null;
+    let isLlmLoaded = false;
+
+    // ======== LOCAL STORAGE ========
+    const LS_KEY = 'transcribe_state';
+
+    function saveState() {
+      try {
+        const state = {
+          timelineData: timelineData.filter(e => !e.pending),
+          currentView,
+          llmPromptText: llmPrompt ? llmPrompt.value : '',
+          llmOutputText: llmOutput ? llmOutput.textContent : '',
+        };
+        localStorage.setItem(LS_KEY, JSON.stringify(state));
+      } catch (_) { /* quota exceeded, ignore */ }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (state.timelineData && state.timelineData.length > 0) {
+          timelineData = state.timelineData;
+        }
+        if (state.currentView) currentView = state.currentView;
+        if (state.llmPromptText) llmPrompt.value = state.llmPromptText;
+        if (state.llmOutputText) {
+          llmOutput.textContent = state.llmOutputText;
+          llmOutput.style.display = 'block';
+          llmApplyBtn.classList.remove('llm-hidden');
+          llmCopyBtn.classList.remove('llm-hidden');
+        }
+      } catch (_) { /* corrupted data, ignore */ }
+    }
+
+    function clearState() {
+      localStorage.removeItem(LS_KEY);
+    }
+
+    // ======== DOM ========
+    const modelSelect = document.getElementById('model-select');
+    const loadBtn = document.getElementById('load-btn');
+    const modelProgress = document.getElementById('model-progress');
+    const modelProgressFill = document.getElementById('model-progress-fill');
+    const modelStatus = document.getElementById('model-status');
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const fileNameEl = document.getElementById('file-name');
+    const transcribeBtn = document.getElementById('transcribe-btn');
+    const micBtn = document.getElementById('mic-btn');
+    const micStatus = document.getElementById('mic-status');
+    const chunkIntervalSelect = document.getElementById('chunk-interval');
+    const visualizer = document.getElementById('visualizer');
+    const transcriptEl = document.getElementById('transcript');
+    const copyBtn = document.getElementById('copy-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const viewPlainBtn = document.getElementById('view-plain');
+    const viewTimelineBtn = document.getElementById('view-timeline');
+
+    const llmSelect = document.getElementById('llm-select');
+    const llmLoadBtn = document.getElementById('llm-load-btn');
+    const llmProgress = document.getElementById('llm-progress');
+    const llmProgressFill = document.getElementById('llm-progress-fill');
+    const llmStatusEl = document.getElementById('llm-status');
+    const llmPrompt = document.getElementById('llm-prompt');
+    const llmEditBtn = document.getElementById('llm-edit-btn');
+    const llmApplyBtn = document.getElementById('llm-apply-btn');
+    const llmCopyBtn = document.getElementById('llm-copy-btn');
+    const llmOutput = document.getElementById('llm-output');
+
+    // Save LLM prompt on change (debounced)
+    let promptSaveTimer = null;
+    llmPrompt.addEventListener('input', () => {
+      clearTimeout(promptSaveTimer);
+      promptSaveTimer = setTimeout(saveState, 500);
+    });
+
+    // ======== RESTORE STATE ========
+    loadState();
+    // Sync view toggle buttons with restored state
+    if (currentView === 'timeline') {
+      viewTimelineBtn.classList.add('active');
+      viewPlainBtn.classList.remove('active');
+    }
+    renderTranscript();
+
+    // ======== WHISPER MODEL ========
+    loadBtn.addEventListener('click', async () => {
+      const modelId = modelSelect.value;
+      loadBtn.disabled = true;
+      modelSelect.disabled = true;
+      modelProgress.style.display = 'block';
+      modelStatus.textContent = 'Downloading and initializing model...';
+
+      try {
+        transcriber = await pipeline('automatic-speech-recognition', modelId, {
+          dtype: 'q8',
+          device: 'wasm',
+          progress_callback: (progress) => {
+            if (progress.status === 'progress' && progress.total) {
+              const pct = Math.round((progress.loaded / progress.total) * 100);
+              modelProgressFill.style.width = pct + '%';
+              modelStatus.textContent = `Downloading ${progress.file}: ${pct}%`;
+            } else if (progress.status === 'done') {
+              modelStatus.textContent = `Loaded ${progress.file}`;
+            } else if (progress.status === 'initiate') {
+              modelStatus.textContent = `Fetching ${progress.file}...`;
+            }
+          }
+        });
+
+        isModelLoaded = true;
+        modelProgressFill.style.width = '100%';
+        modelStatus.textContent = `Model "${modelId.split('/').pop()}" ready!`;
+        transcribeBtn.disabled = !selectedFile;
+        micBtn.disabled = false;
+        micStatus.textContent = 'Click the mic to start real-time transcription';
+      } catch (err) {
+        modelStatus.textContent = 'Error loading model: ' + err.message;
+        console.error(err);
+      } finally {
+        loadBtn.disabled = false;
+        modelSelect.disabled = false;
+      }
+    });
+
+    // ======== TABS ========
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        panels.forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ======== VIEW TOGGLE ========
+    viewPlainBtn.addEventListener('click', () => {
+      currentView = 'plain';
+      viewPlainBtn.classList.add('active');
+      viewTimelineBtn.classList.remove('active');
+      renderTranscript();
+    });
+    viewTimelineBtn.addEventListener('click', () => {
+      currentView = 'timeline';
+      viewTimelineBtn.classList.add('active');
+      viewPlainBtn.classList.remove('active');
+      renderTranscript();
+    });
+
+    // ======== FILE UPLOAD ========
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file) {
+      selectedFile = file;
+      fileNameEl.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
+      fileNameEl.style.display = 'block';
+      if (isModelLoaded) transcribeBtn.disabled = false;
+    }
+
+    transcribeBtn.addEventListener('click', async () => {
+      if (!selectedFile || !transcriber) return;
+      transcribeBtn.disabled = true;
+      transcribeBtn.innerHTML = '<span class="spinner"></span>Transcribing...';
+
+      try {
+        const audioBuffer = await readFileAsAudioData(selectedFile);
+        const result = await transcriber(audioBuffer, {
+          chunk_length_s: 30,
+          stride_length_s: 5,
+          return_timestamps: true,
+        });
+
+        // Parse chunks with timestamps
+        if (result.chunks && result.chunks.length > 0) {
+          for (const chunk of result.chunks) {
+            timelineData.push({
+              start: chunk.timestamp[0] || 0,
+              end: chunk.timestamp[1] || null,
+              text: chunk.text.trim(),
+            });
+          }
+        } else {
+          timelineData.push({ start: 0, end: null, text: result.text.trim() });
+        }
+        renderTranscript();
+      } catch (err) {
+        timelineData.push({ start: 0, end: null, text: '[Error: ' + err.message + ']' });
+        renderTranscript();
+        console.error(err);
+      } finally {
+        transcribeBtn.disabled = false;
+        transcribeBtn.textContent = 'Transcribe';
+      }
+    });
+
+    async function readFileAsAudioData(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+      const decoded = await ctx.decodeAudioData(arrayBuffer);
+      const float32 = decoded.getChannelData(0);
+      await ctx.close();
+      return float32;
+    }
+
+    // ======== REAL-TIME MIC ========
+    micBtn.addEventListener('click', () => {
+      if (isRecording) stopRecording();
+      else startRecording();
+    });
+
+    async function startRecording() {
+      if (!isModelLoaded) return;
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          audio: { sampleRate: 16000, channelCount: 1, echoCancellation: true, noiseSuppression: true }
+        });
+      } catch (err) {
+        micStatus.textContent = 'Microphone access denied: ' + err.message;
+        return;
+      }
+
+      isRecording = true;
+      micStartTime = Date.now();
+      micChunkIndex = 0;
+      micBtn.classList.add('recording');
+      micBtn.innerHTML = '&#9209;';
+      micStatus.textContent = 'Listening... speak now';
+
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      sourceNode = audioContext.createMediaStreamSource(mediaStream);
+      analyserNode = audioContext.createAnalyser();
+      analyserNode.fftSize = 256;
+      sourceNode.connect(analyserNode);
+      drawVisualizer();
+
+      startNewChunk();
+      const intervalMs = parseInt(chunkIntervalSelect.value) * 1000;
+      chunkTimer = setInterval(() => processCurrentChunk(), intervalMs);
+    }
+
+    function startNewChunk() {
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(mediaStream, { mimeType: getSupportedMimeType() });
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+      mediaRecorder.start(500);
+    }
+
+    function getSupportedMimeType() {
+      const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+      for (const t of types) {
+        if (MediaRecorder.isTypeSupported(t)) return t;
+      }
+      return '';
+    }
+
+    async function processCurrentChunk() {
+      if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+
+      const chunkStartTime = (Date.now() - micStartTime) / 1000;
+      const intervalSec = parseInt(chunkIntervalSelect.value);
+
+      const chunks = await new Promise(resolve => {
+        mediaRecorder.onstop = () => resolve([...recordedChunks]);
+        mediaRecorder.stop();
+      });
+
+      if (isRecording) startNewChunk();
+      if (chunks.length === 0) return;
+
+      try {
+        const blob = new Blob(chunks, { type: getSupportedMimeType() });
+        const arrayBuffer = await blob.arrayBuffer();
+        const ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+        const decoded = await ctx.decodeAudioData(arrayBuffer);
+        const float32 = decoded.getChannelData(0);
+        await ctx.close();
+
+        const rms = Math.sqrt(float32.reduce((sum, v) => sum + v * v, 0) / float32.length);
+        if (rms < 0.005) return;
+
+        // Add pending entry
+        const pendingIdx = timelineData.length;
+        const startSec = Math.max(0, chunkStartTime - intervalSec);
+        timelineData.push({
+          start: startSec,
+          end: chunkStartTime,
+          text: '...',
+          pending: true,
+        });
+        renderTranscript();
+
+        const result = await transcriber(float32, { chunk_length_s: 30, stride_length_s: 5 });
+        const text = result.text.trim();
+
+        if (text) {
+          timelineData[pendingIdx].text = text;
+          timelineData[pendingIdx].pending = false;
+        } else {
+          timelineData.splice(pendingIdx, 1);
+        }
+        renderTranscript();
+      } catch (err) {
+        console.error('Chunk transcription error:', err);
+      }
+    }
+
+    function stopRecording() {
+      isRecording = false;
+      clearInterval(chunkTimer);
+
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') processCurrentChunk();
+
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '&#127908;';
+      micStatus.textContent = 'Stopped. Click mic to start again.';
+
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      if (sourceNode) sourceNode.disconnect();
+      if (audioContext) audioContext.close();
+      if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+      mediaStream = null;
+      audioContext = null;
+
+      const ctx2d = visualizer.getContext('2d');
+      ctx2d.clearRect(0, 0, visualizer.width, visualizer.height);
+    }
+
+    // ======== VISUALIZER ========
+    function drawVisualizer() {
+      const canvas = visualizer;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      const bufLen = analyserNode.frequencyBinCount;
+      const dataArray = new Uint8Array(bufLen);
+
+      function draw() {
+        if (!isRecording) return;
+        animFrameId = requestAnimationFrame(draw);
+        analyserNode.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, W, H);
+        const barW = (W / bufLen) * 2.5;
+        let x = 0;
+        for (let i = 0; i < bufLen; i++) {
+          const v = dataArray[i] / 255;
+          const barH = v * H;
+          ctx.fillStyle = `rgb(233,${69 + v * 100},${96 + v * 60})`;
+          ctx.fillRect(x, H - barH, barW, barH);
+          x += barW + 1;
+          if (x > W) break;
+        }
+      }
+      draw();
+    }
+
+    // ======== TRANSCRIPT RENDERING ========
+    function formatTime(seconds) {
+      if (seconds == null) return '??:??';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function renderTranscript() {
+      transcriptEl.innerHTML = '';
+
+      if (timelineData.length === 0) return;
+
+      if (currentView === 'timeline') {
+        transcriptEl.classList.add('timeline-view');
+        for (const entry of timelineData) {
+          const div = document.createElement('div');
+          div.className = 'tl-entry';
+
+          const timeSpan = document.createElement('span');
+          timeSpan.className = 'tl-time';
+          const startStr = formatTime(entry.start);
+          const endStr = entry.end != null ? formatTime(entry.end) : '';
+          timeSpan.textContent = endStr ? `${startStr} - ${endStr}` : startStr;
+
+          const textSpan = document.createElement('span');
+          textSpan.className = 'tl-text';
+          if (entry.pending) textSpan.style.cssText = 'color:var(--text2);font-style:italic;';
+          textSpan.textContent = entry.text;
+
+          div.appendChild(timeSpan);
+          div.appendChild(textSpan);
+          transcriptEl.appendChild(div);
+        }
+      } else {
+        transcriptEl.classList.remove('timeline-view');
+        for (let i = 0; i < timelineData.length; i++) {
+          const entry = timelineData[i];
+          if (i > 0) transcriptEl.appendChild(document.createTextNode(' '));
+          const span = document.createElement('span');
+          span.className = 'chunk' + (entry.pending ? ' pending' : '');
+          span.textContent = entry.text;
+          transcriptEl.appendChild(span);
+        }
+      }
+      transcriptEl.scrollTop = transcriptEl.scrollHeight;
+      saveState();
+    }
+
+    function getFullText() {
+      return timelineData
+        .filter(e => !e.pending)
+        .map(e => e.text)
+        .join(' ')
+        .trim();
+    }
+
+    function getTimelineText() {
+      return timelineData
+        .filter(e => !e.pending)
+        .map(e => {
+          const t = formatTime(e.start);
+          const te = e.end != null ? ` - ${formatTime(e.end)}` : '';
+          return `[${t}${te}] ${e.text}`;
+        })
+        .join('\n');
+    }
+
+    copyBtn.addEventListener('click', () => {
+      const text = currentView === 'timeline' ? getTimelineText() : getFullText();
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy', 1500);
+      });
+    });
+
+    clearBtn.addEventListener('click', () => {
+      timelineData = [];
+      renderTranscript();
+      clearState();
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const text = currentView === 'timeline' ? getTimelineText() : getFullText();
+      if (!text) return;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'transcript.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // ======== LLM ========
+    llmLoadBtn.addEventListener('click', async () => {
+      const modelId = llmSelect.value;
+      llmLoadBtn.disabled = true;
+      llmSelect.disabled = true;
+      llmProgress.style.display = 'block';
+      llmStatusEl.textContent = 'Downloading LLM (this may take a while)...';
+
+      try {
+        llmGenerator = await pipeline('text-generation', modelId, {
+          dtype: 'q4f16',
+          device: 'webgpu',
+          progress_callback: (progress) => {
+            if (progress.status === 'progress' && progress.total) {
+              const pct = Math.round((progress.loaded / progress.total) * 100);
+              llmProgressFill.style.width = pct + '%';
+              llmStatusEl.textContent = `Downloading ${progress.file}: ${pct}%`;
+            } else if (progress.status === 'done') {
+              llmStatusEl.textContent = `Loaded ${progress.file}`;
+            } else if (progress.status === 'initiate') {
+              llmStatusEl.textContent = `Fetching ${progress.file}...`;
+            }
+          }
+        });
+
+        isLlmLoaded = true;
+        llmProgressFill.style.width = '100%';
+        llmStatusEl.textContent = `LLM "${modelId.split('/').pop()}" ready!`;
+        llmEditBtn.disabled = false;
+      } catch (err) {
+        // Fallback to WASM if WebGPU not available
+        if (err.message && (err.message.includes('webgpu') || err.message.includes('WebGPU') || err.message.includes('GPU'))) {
+          llmStatusEl.textContent = 'WebGPU not available, trying WASM (slower)...';
+          try {
+            llmGenerator = await pipeline('text-generation', modelId, {
+              dtype: 'q8',
+              device: 'wasm',
+              progress_callback: (progress) => {
+                if (progress.status === 'progress' && progress.total) {
+                  const pct = Math.round((progress.loaded / progress.total) * 100);
+                  llmProgressFill.style.width = pct + '%';
+                  llmStatusEl.textContent = `Downloading ${progress.file}: ${pct}%`;
+                }
+              }
+            });
+            isLlmLoaded = true;
+            llmProgressFill.style.width = '100%';
+            llmStatusEl.textContent = `LLM "${modelId.split('/').pop()}" ready (WASM mode)!`;
+            llmEditBtn.disabled = false;
+          } catch (err2) {
+            llmStatusEl.textContent = 'Error loading LLM: ' + err2.message;
+            console.error(err2);
+          }
+        } else {
+          llmStatusEl.textContent = 'Error loading LLM: ' + err.message;
+          console.error(err);
+        }
+      } finally {
+        llmLoadBtn.disabled = false;
+        llmSelect.disabled = false;
+      }
+    });
+
+    llmEditBtn.addEventListener('click', async () => {
+      if (!llmGenerator) return;
+
+      const transcript = getFullText();
+      if (!transcript) {
+        llmStatusEl.textContent = 'No transcript to edit. Transcribe some audio first.';
+        return;
+      }
+
+      const instruction = llmPrompt.value.trim() || 'Fix grammar and punctuation.';
+
+      llmEditBtn.disabled = true;
+      llmEditBtn.innerHTML = '<span class="spinner"></span>Generating...';
+      llmOutput.style.display = 'block';
+      llmOutput.textContent = '';
+
+      try {
+        const messages = [
+          {
+            role: 'user',
+            content: `${instruction}\n\nTranscript:\n${transcript}`
+          }
+        ];
+
+        const result = await llmGenerator(messages, {
+          max_new_tokens: 1024,
+          temperature: 0.3,
+          do_sample: true,
+        });
+
+        const generated = result[0].generated_text;
+        // The last message in generated_text is the assistant response
+        const assistantMsg = Array.isArray(generated)
+          ? generated[generated.length - 1].content
+          : generated.slice(messages[0].content.length).trim();
+
+        llmOutput.textContent = assistantMsg;
+        llmApplyBtn.classList.remove('llm-hidden');
+        llmCopyBtn.classList.remove('llm-hidden');
+        saveState();
+      } catch (err) {
+        llmOutput.textContent = 'Error: ' + err.message;
+        console.error(err);
+      } finally {
+        llmEditBtn.disabled = false;
+        llmEditBtn.textContent = 'Edit Transcript with AI';
+      }
+    });
+
+    llmApplyBtn.addEventListener('click', () => {
+      const newText = llmOutput.textContent.trim();
+      if (!newText) return;
+      timelineData = [{ start: 0, end: null, text: newText }];
+      renderTranscript();
+      llmApplyBtn.classList.add('llm-hidden');
+    });
+
+    llmCopyBtn.addEventListener('click', () => {
+      const text = llmOutput.textContent.trim();
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        llmCopyBtn.textContent = 'Copied!';
+        setTimeout(() => llmCopyBtn.textContent = 'Copy Result', 1500);
+      });
+    });
+  </script>
+</body>
+</html>
