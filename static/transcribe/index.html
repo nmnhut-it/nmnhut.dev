@@ -318,6 +318,22 @@
       flex-wrap: wrap;
     }
 
+    .llm-desc {
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-bottom: 10px;
+    }
+    .llm-hidden { display: none; }
+    .mic-chunk-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .mic-chunk-row label {
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
     /* Spinner */
     .spinner {
       display: inline-block;
@@ -354,7 +370,7 @@
           <option value="onnx-community/whisper-base.en">whisper-base.en (~75 MB, better)</option>
           <option value="onnx-community/whisper-small.en">whisper-small.en (~250 MB, best)</option>
         </select>
-        <button class="btn btn-accent" id="load-btn">Load Model</button>
+        <button type="button" class="btn btn-accent" id="load-btn">Load Model</button>
       </div>
       <div class="progress-bar" id="model-progress">
         <div class="fill" id="model-progress-fill"></div>
@@ -378,7 +394,7 @@
       </div>
       <div id="file-name"></div>
       <div class="file-actions">
-        <button class="btn btn-accent" id="transcribe-btn" disabled>Transcribe</button>
+        <button type="button" class="btn btn-accent" id="transcribe-btn" disabled>Transcribe</button>
       </div>
     </div>
 
@@ -386,12 +402,12 @@
     <div class="panel" id="panel-mic">
       <div class="mic-area">
         <canvas id="visualizer"></canvas>
-        <button class="mic-btn" id="mic-btn" disabled title="Start recording">
+        <button type="button" class="mic-btn" id="mic-btn" disabled title="Start recording">
           &#127908;
         </button>
         <div class="mic-status" id="mic-status">Load a model first</div>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <label style="font-size:0.85rem;color:var(--text2);">Chunk interval:</label>
+        <div class="mic-chunk-row">
+          <label>Chunk interval:</label>
           <select id="chunk-interval">
             <option value="5">5s</option>
             <option value="10" selected>10s</option>
@@ -406,21 +422,21 @@
     <div class="section" id="transcript-section">
       <h3>Transcript</h3>
       <div class="view-toggle">
-        <button class="btn btn-outline active" id="view-plain">Plain</button>
-        <button class="btn btn-outline" id="view-timeline">Timeline</button>
+        <button type="button" class="btn btn-outline active" id="view-plain">Plain</button>
+        <button type="button" class="btn btn-outline" id="view-timeline">Timeline</button>
       </div>
       <div id="transcript"></div>
       <div class="transcript-actions">
-        <button class="btn btn-outline" id="copy-btn">Copy</button>
-        <button class="btn btn-outline" id="clear-btn">Clear</button>
-        <button class="btn btn-outline" id="download-btn">Download .txt</button>
+        <button type="button" class="btn btn-outline" id="copy-btn">Copy</button>
+        <button type="button" class="btn btn-outline" id="clear-btn">Clear</button>
+        <button type="button" class="btn btn-outline" id="download-btn">Download .txt</button>
       </div>
     </div>
 
     <!-- LLM Edit Section -->
     <div class="section" id="llm-section">
       <h3>AI Edit <span class="badge">Optional</span></h3>
-      <p style="font-size:0.8rem;color:var(--text2);margin-bottom:10px;">Load a small LLM to clean up, summarize, or reformat your transcript &mdash; runs in-browser.</p>
+      <p class="llm-desc">Load a small LLM to clean up, summarize, or reformat your transcript &mdash; runs in-browser.</p>
       <div class="row">
         <label><strong>LLM:</strong></label>
         <select id="llm-select">
@@ -428,7 +444,7 @@
           <option value="onnx-community/SmolLM2-1.7B-Instruct">SmolLM2 1.7B (~1 GB, better)</option>
           <option value="onnx-community/Phi-3.5-mini-instruct">Phi-3.5 Mini 3.8B (~2 GB, best)</option>
         </select>
-        <button class="btn btn-purple" id="llm-load-btn">Load LLM</button>
+        <button type="button" class="btn btn-purple" id="llm-load-btn">Load LLM</button>
       </div>
       <div class="progress-bar" id="llm-progress">
         <div class="fill" id="llm-progress-fill"></div>
@@ -436,9 +452,9 @@
       <div class="status" id="llm-status"></div>
       <textarea id="llm-prompt" placeholder="Enter instructions, e.g.: Fix grammar and punctuation. / Summarize this transcript. / Rewrite as bullet points.">Fix grammar, punctuation, and clean up this transcript while keeping the original meaning.</textarea>
       <div class="llm-actions">
-        <button class="btn btn-purple" id="llm-edit-btn" disabled>Edit Transcript with AI</button>
-        <button class="btn btn-outline" id="llm-apply-btn" style="display:none;">Apply to Transcript</button>
-        <button class="btn btn-outline" id="llm-copy-btn" style="display:none;">Copy Result</button>
+        <button type="button" class="btn btn-purple" id="llm-edit-btn" disabled>Edit Transcript with AI</button>
+        <button type="button" class="btn btn-outline llm-hidden" id="llm-apply-btn">Apply to Transcript</button>
+        <button type="button" class="btn btn-outline llm-hidden" id="llm-copy-btn">Copy Result</button>
       </div>
       <div id="llm-output"></div>
     </div>
@@ -473,6 +489,44 @@
     let llmGenerator = null;
     let isLlmLoaded = false;
 
+    // ======== LOCAL STORAGE ========
+    const LS_KEY = 'transcribe_state';
+
+    function saveState() {
+      try {
+        const state = {
+          timelineData: timelineData.filter(e => !e.pending),
+          currentView,
+          llmPromptText: llmPrompt ? llmPrompt.value : '',
+          llmOutputText: llmOutput ? llmOutput.textContent : '',
+        };
+        localStorage.setItem(LS_KEY, JSON.stringify(state));
+      } catch (_) { /* quota exceeded, ignore */ }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (state.timelineData && state.timelineData.length > 0) {
+          timelineData = state.timelineData;
+        }
+        if (state.currentView) currentView = state.currentView;
+        if (state.llmPromptText) llmPrompt.value = state.llmPromptText;
+        if (state.llmOutputText) {
+          llmOutput.textContent = state.llmOutputText;
+          llmOutput.style.display = 'block';
+          llmApplyBtn.classList.remove('llm-hidden');
+          llmCopyBtn.classList.remove('llm-hidden');
+        }
+      } catch (_) { /* corrupted data, ignore */ }
+    }
+
+    function clearState() {
+      localStorage.removeItem(LS_KEY);
+    }
+
     // ======== DOM ========
     const modelSelect = document.getElementById('model-select');
     const loadBtn = document.getElementById('load-btn');
@@ -506,6 +560,22 @@
     const llmApplyBtn = document.getElementById('llm-apply-btn');
     const llmCopyBtn = document.getElementById('llm-copy-btn');
     const llmOutput = document.getElementById('llm-output');
+
+    // Save LLM prompt on change (debounced)
+    let promptSaveTimer = null;
+    llmPrompt.addEventListener('input', () => {
+      clearTimeout(promptSaveTimer);
+      promptSaveTimer = setTimeout(saveState, 500);
+    });
+
+    // ======== RESTORE STATE ========
+    loadState();
+    // Sync view toggle buttons with restored state
+    if (currentView === 'timeline') {
+      viewTimelineBtn.classList.add('active');
+      viewPlainBtn.classList.remove('active');
+    }
+    renderTranscript();
 
     // ======== WHISPER MODEL ========
     loadBtn.addEventListener('click', async () => {
@@ -841,6 +911,7 @@
         }
       }
       transcriptEl.scrollTop = transcriptEl.scrollHeight;
+      saveState();
     }
 
     function getFullText() {
@@ -874,6 +945,7 @@
     clearBtn.addEventListener('click', () => {
       timelineData = [];
       renderTranscript();
+      clearState();
     });
 
     downloadBtn.addEventListener('click', () => {
@@ -988,8 +1060,9 @@
           : generated.slice(messages[0].content.length).trim();
 
         llmOutput.textContent = assistantMsg;
-        llmApplyBtn.style.display = 'inline-block';
-        llmCopyBtn.style.display = 'inline-block';
+        llmApplyBtn.classList.remove('llm-hidden');
+        llmCopyBtn.classList.remove('llm-hidden');
+        saveState();
       } catch (err) {
         llmOutput.textContent = 'Error: ' + err.message;
         console.error(err);
@@ -1004,7 +1077,7 @@
       if (!newText) return;
       timelineData = [{ start: 0, end: null, text: newText }];
       renderTranscript();
-      llmApplyBtn.style.display = 'none';
+      llmApplyBtn.classList.add('llm-hidden');
     });
 
     llmCopyBtn.addEventListener('click', () => {
