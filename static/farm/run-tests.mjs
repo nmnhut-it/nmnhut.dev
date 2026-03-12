@@ -460,15 +460,212 @@ server.listen(0, async () => {
     else console.log(t);
   }
 
-  const total = results.passed + results.failed;
+  let totalPassed = results.passed;
+  let totalFailed = results.failed;
+
+  console.log(`\n\x1b[36m--- Unit tests: ${results.passed} passed, ${results.failed} failed ---\x1b[0m\n`);
+
+  // ============================================================
+  // MOBILE / RESPONSIVE VIEWPORT TESTS
+  // ============================================================
+  console.log(`\x1b[36m=== Mobile & Responsive Tests ===\x1b[0m`);
+
+  const viewports = [
+    { name: 'iPhone SE (375x667)', w: 375, h: 667 },
+    { name: 'iPhone 14 (393x852)', w: 393, h: 852 },
+    { name: 'iPad Mini (768x1024)', w: 768, h: 1024 },
+    { name: 'Desktop (1280x800)', w: 1280, h: 800 },
+  ];
+
+  for (const vp of viewports) {
+    console.log(`\x1b[36m\n> ${vp.name}\x1b[0m`);
+
+    const mPage = await browser.newPage({ viewport: { width: vp.w, height: vp.h } });
+    await mPage.goto(`http://localhost:${port}/index.html`);
+
+    // Mock LLM and start game
+    const mobileResults = await mPage.evaluate(async (vpWidth) => {
+      const log = [];
+      let passed = 0, failed = 0;
+      function assert(cond, label) {
+        if (cond) { passed++; log.push({ s: 'pass', t: '  OK: ' + label }); }
+        else { failed++; log.push({ s: 'fail', t: '  FAIL: ' + label }); }
+      }
+
+      window.sendToLLM = async (msg) => {
+        conversationHistory.push({ role: 'user', content: msg });
+        const r = {
+          narrative: 'Welcome to your farm! The golden sun shines.',
+          suggestedActions: ['Clear weeds', 'Check mailbox', 'Explore farmhouse', 'Visit shop', 'Go fishing'],
+          stateChanges: {
+            events: ['Arrived at farm'],
+            inventory: { 'wheat seeds': 5, 'carrot seeds': 3 },
+            animals: [{ type: 'chicken', name: 'Clucky', happiness: 80, daysOwned: 2 }],
+            grid: Array.from({length: 25}, (_, i) =>
+              i < 3 ? { crop: 'wheat', growth: 75, watered: true } :
+              i < 5 ? { crop: 'tilled', growth: 0, watered: false } :
+              { crop: 'empty', growth: 0, watered: false }
+            )
+          }
+        };
+        conversationHistory.push({ role: 'assistant', content: JSON.stringify(r) });
+        return r;
+      };
+
+      // Setup screen check
+      const setupBox = document.querySelector('.setup-box');
+      const setupRect = setupBox.getBoundingClientRect();
+      assert(setupRect.right <= vpWidth + 2, 'Setup box fits within viewport width');
+      assert(setupRect.left >= -2, 'Setup box not clipped on left');
+
+      // Start game
+      document.getElementById('api-url').value = 'https://mock/api';
+      document.getElementById('api-key').value = 'k';
+      document.getElementById('model-name').value = 'm';
+      document.getElementById('farmer-name').value = 'Test';
+      document.getElementById('btn-start').click();
+
+      await new Promise(resolve => {
+        (function check() { if (!window.sending) resolve(); else setTimeout(check, 20); })();
+      });
+      await new Promise(r => setTimeout(r, 200));
+
+      const isMobile = vpWidth <= 800;
+      const isSmallMobile = vpWidth <= 500;
+
+      // Top bar: all stats visible (not clipped)
+      const stats = document.querySelectorAll('.stat');
+      let allStatsVisible = true;
+      stats.forEach(stat => {
+        const r = stat.getBoundingClientRect();
+        if (r.right > vpWidth + 5 || r.left < -5) allStatsVisible = false;
+      });
+      assert(allStatsVisible, 'All stat badges visible within viewport');
+
+      // Top bar title visible
+      const title = document.querySelector('.top-bar .title');
+      const titleRect = title.getBoundingClientRect();
+      assert(titleRect.width > 0 && titleRect.left >= -2, 'Title visible');
+
+      // Farm grid visible and contained
+      const grid = document.getElementById('farm-grid');
+      const gridRect = grid.getBoundingClientRect();
+      assert(gridRect.right <= vpWidth + 2, 'Farm grid fits within viewport');
+      assert(gridRect.width > 50, 'Farm grid has reasonable width');
+
+      // Farm cells rendered
+      const cells = document.querySelectorAll('.farm-cell');
+      assert(cells.length === 25, 'All 25 farm cells rendered');
+
+      // Chat messages visible
+      const chatMsgs = document.getElementById('chat-messages');
+      const chatRect = chatMsgs.getBoundingClientRect();
+      assert(chatRect.height > 0, 'Chat messages area has height');
+
+      // Narrator message visible
+      const narrators = document.querySelectorAll('.msg.narrator');
+      assert(narrators.length > 0, 'Narrator message exists');
+
+      // Suggestions visible
+      const sugBtns = document.querySelectorAll('#suggestions .suggest-btn');
+      assert(sugBtns.length > 0, 'Suggestion buttons rendered');
+      let allSugsVisible = true;
+      sugBtns.forEach(btn => {
+        const r = btn.getBoundingClientRect();
+        if (r.right > vpWidth + 5) allSugsVisible = false;
+      });
+      assert(allSugsVisible, 'Suggestion buttons fit within viewport');
+
+      // Chat input visible and usable
+      const input = document.getElementById('chat-input');
+      const inputRect = input.getBoundingClientRect();
+      assert(inputRect.width > 50, 'Chat input has reasonable width');
+      assert(inputRect.right <= vpWidth + 2, 'Chat input fits within viewport');
+
+      // Send button visible
+      const sendBtn = document.getElementById('btn-send');
+      const sendRect = sendBtn.getBoundingClientRect();
+      assert(sendRect.right <= vpWidth + 2, 'Send button fits within viewport');
+
+      // Mobile-specific: farm toggle visible
+      if (isMobile) {
+        const toggle = document.getElementById('farm-toggle');
+        const toggleRect = toggle.getBoundingClientRect();
+        const toggleStyle = window.getComputedStyle(toggle);
+        assert(toggleStyle.display !== 'none', 'Farm toggle visible on mobile');
+
+        // Inventory/Animals/Events hidden by default
+        const invSection = document.querySelectorAll('.farm-panel .panel-section')[1];
+        if (invSection) {
+          const invStyle = window.getComputedStyle(invSection);
+          assert(invStyle.display === 'none', 'Inventory hidden by default on mobile');
+        }
+
+        // Click toggle to expand
+        toggle.click();
+        await new Promise(r => setTimeout(r, 50));
+        const invAfter = document.querySelectorAll('.farm-panel .panel-section')[1];
+        if (invAfter) {
+          const invStyleAfter = window.getComputedStyle(invAfter);
+          assert(invStyleAfter.display !== 'none', 'Inventory shown after toggle click');
+        }
+
+        // Click toggle to collapse
+        toggle.click();
+        await new Promise(r => setTimeout(r, 50));
+        const invCollapsed = document.querySelectorAll('.farm-panel .panel-section')[1];
+        if (invCollapsed) {
+          const invStyleCol = window.getComputedStyle(invCollapsed);
+          assert(invStyleCol.display === 'none', 'Inventory hidden after second toggle');
+        }
+      }
+
+      // Desktop-specific: farm toggle hidden, all sections visible
+      if (!isMobile) {
+        const toggle = document.getElementById('farm-toggle');
+        const toggleStyle = window.getComputedStyle(toggle);
+        assert(toggleStyle.display === 'none', 'Farm toggle hidden on desktop');
+
+        // All panel sections visible
+        const sections = document.querySelectorAll('.farm-panel .panel-section');
+        let allVisible = true;
+        sections.forEach(s => {
+          if (window.getComputedStyle(s).display === 'none') allVisible = false;
+        });
+        assert(allVisible, 'All panel sections visible on desktop');
+
+        // Side-by-side layout
+        const farmPanel = document.querySelector('.farm-panel');
+        const chatPanel = document.querySelector('.chat-panel');
+        const farmRect = farmPanel.getBoundingClientRect();
+        const chatPanelRect = chatPanel.getBoundingClientRect();
+        assert(farmRect.right <= chatPanelRect.left + 5, 'Farm and chat panels side-by-side');
+      }
+
+      // No horizontal scroll (nothing overflows viewport)
+      assert(document.body.scrollWidth <= vpWidth + 5, 'No horizontal scrollbar');
+
+      return { log, passed, failed };
+    }, vp.w);
+
+    for (const { s, t } of mobileResults.log) {
+      if (s === 'pass') console.log(`\x1b[32m${t}\x1b[0m`);
+      else console.log(`\x1b[31m${t}\x1b[0m`);
+    }
+    totalPassed += mobileResults.passed;
+    totalFailed += mobileResults.failed;
+    await mPage.close();
+  }
+
   console.log('');
-  if (results.failed === 0) {
-    console.log(`\x1b[32m${total} tests: ${results.passed} passed, 0 failed\x1b[0m`);
+  const total = totalPassed + totalFailed;
+  if (totalFailed === 0) {
+    console.log(`\x1b[32m${total} tests: ${totalPassed} passed, 0 failed\x1b[0m`);
   } else {
-    console.log(`\x1b[31m${total} tests: ${results.passed} passed, ${results.failed} failed\x1b[0m`);
+    console.log(`\x1b[31m${total} tests: ${totalPassed} passed, ${totalFailed} failed\x1b[0m`);
   }
 
   await browser.close();
   server.close();
-  process.exit(results.failed === 0 ? 0 : 1);
+  process.exit(totalFailed === 0 ? 0 : 1);
 });

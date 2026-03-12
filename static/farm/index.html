@@ -140,6 +140,7 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 4px;
+      max-width: 400px;
     }
     .farm-cell {
       aspect-ratio: 1;
@@ -346,21 +347,89 @@
     #btn-send:hover { opacity: .85; }
     #btn-send:disabled { opacity: .5; cursor: not-allowed; }
 
+    /* Farm toggle — hidden by default, shown via media queries */
+    .farm-toggle { display: none; }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #ffffff20; border-radius: 3px; }
 
-    /* Responsive */
+    /* Responsive — tablet */
     @media (max-width: 800px) {
       .main-layout { flex-direction: column; }
       .farm-panel {
         width: 100%;
-        max-height: 40vh;
+        max-height: none;
         border-right: none;
         border-bottom: 2px solid var(--surface2);
+        overflow-y: visible;
+        flex-shrink: 0;
       }
+      .farm-grid { max-width: 320px; }
+      /* Collapsible farm panel: show grid only, hide details until toggled */
+      .farm-panel .panel-section { display: none; }
+      .farm-panel .panel-section:first-child { display: block; padding: 10px 16px; }
+      .farm-panel .panel-section.show-mobile { display: block; }
+      .farm-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px;
+        background: var(--surface2);
+        border: none;
+        color: var(--text2);
+        font-size: 0.78rem;
+        cursor: pointer;
+        width: 100%;
+        font-family: inherit;
+      }
+      .farm-toggle:hover { color: var(--text); }
+      .chat-panel { min-height: 0; flex: 1; }
     }
+
+    /* Responsive — mobile */
+    @media (max-width: 500px) {
+      .top-bar {
+        gap: 6px;
+        padding: 8px 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .top-bar .title {
+        width: 100%;
+        text-align: center;
+        font-size: 0.95rem;
+        margin-right: 0;
+      }
+      .stat {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+        gap: 3px;
+      }
+      .stat .icon { font-size: 0.85rem; }
+
+      .farm-grid { grid-template-columns: repeat(5, 1fr); gap: 3px; max-width: 260px; }
+      .farm-cell { font-size: 1rem; }
+
+      .panel-section { padding: 10px 12px; }
+      .panel-section h3 { font-size: 0.7rem; margin-bottom: 6px; }
+
+      .chat-messages { padding: 10px 12px; }
+      .msg { font-size: 0.85rem; padding: 8px 10px; max-width: 92%; }
+
+      .suggestions { padding: 6px 12px 0; gap: 5px; }
+      .suggest-btn { padding: 5px 10px; font-size: 0.78rem; }
+
+      .chat-input-area { padding: 8px 12px; gap: 6px; }
+      #chat-input { padding: 8px 10px; font-size: 0.85rem; min-height: 38px; }
+      #btn-send { padding: 8px 14px; font-size: 0.85rem; }
+
+      #setup-screen h1 { font-size: 1.5rem; }
+      .setup-box { padding: 20px; gap: 12px; }
+    }
+
   </style>
 </head>
 <body>
@@ -428,6 +497,7 @@
         <h3>Event Log</h3>
         <div class="event-log" id="event-log"></div>
       </div>
+      <button class="farm-toggle" id="farm-toggle">Show inventory &amp; details ▾</button>
     </div>
 
     <!-- Chat Panel -->
@@ -911,6 +981,14 @@ document.getElementById('chat-input').addEventListener('keydown', (e) => {
 document.getElementById('chat-input').addEventListener('input', function() {
   this.style.height = 'auto';
   this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// Farm panel toggle (mobile)
+document.getElementById('farm-toggle').addEventListener('click', function() {
+  const sections = document.querySelectorAll('.farm-panel .panel-section:not(:first-child)');
+  const expanded = sections[0]?.classList.contains('show-mobile');
+  sections.forEach(s => s.classList.toggle('show-mobile', !expanded));
+  this.textContent = expanded ? 'Show inventory & details \u25BE' : 'Hide details \u25B4';
 });
 
 // Allow Enter on setup fields to start game
