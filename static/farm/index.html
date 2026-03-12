@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Farm - nmnhut.dev</title>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --surface2: #0f3460;
+      --accent: #e94560;
+      --accent2: #533483;
+      --green: #4ade80;
+      --yellow: #fbbf24;
+      --blue: #60a5fa;
+      --text: #eee;
+      --text2: #aaa;
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Setup screen */
+    #setup-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    #setup-screen h1 { font-size: 2rem; margin-bottom: 8px; }
+    #setup-screen .subtitle { color: var(--text2); margin-bottom: 32px; font-size: 0.95rem; }
+    .setup-box {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      max-width: 480px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .setup-box label { font-size: 0.85rem; color: var(--text2); }
+    .setup-box input, .setup-box select {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid #ffffff15;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .setup-box input:focus, .setup-box select:focus { border-color: var(--accent); }
+    .setup-box .field { display: flex; flex-direction: column; gap: 6px; }
+    .setup-box .hint { font-size: 0.75rem; color: var(--text2); }
+    #btn-start {
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 8px;
+      transition: opacity .15s;
+    }
+    #btn-start:hover { opacity: .85; }
+    #btn-start:disabled { opacity: .5; cursor: not-allowed; }
+    .setup-error { color: var(--accent); font-size: 0.85rem; display: none; }
+
+    /* Game screen */
+    #game-screen { display: none; height: 100vh; flex-direction: column; }
+    #game-screen.active { display: flex; }
+    #setup-screen.hidden { display: none; }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-bottom: 2px solid var(--surface2);
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+    .top-bar .title { font-weight: 700; font-size: 1.05rem; margin-right: auto; white-space: nowrap; }
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      padding: 4px 10px;
+      background: var(--surface2);
+      border-radius: 20px;
+    }
+    .stat .icon { font-size: 1rem; }
+
+    /* Main layout */
+    .main-layout {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Farm panel */
+    .farm-panel {
+      width: 380px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid var(--surface2);
+      overflow-y: auto;
+    }
+    .panel-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--surface2);
+    }
+    .panel-section h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text2);
+      margin-bottom: 10px;
+    }
+
+    /* Farm grid */
+    .farm-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
+    .farm-cell {
+      aspect-ratio: 1;
+      background: var(--surface2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      position: relative;
+      transition: background .2s;
+    }
+    .farm-cell.tilled { background: #3d2b1f; }
+    .farm-cell.planted { background: #2d4a1f; }
+    .farm-cell.grown { background: #1f6a1f; }
+    .farm-cell.watered { box-shadow: inset 0 0 0 2px var(--blue); }
+    .farm-cell .growth-bar {
+      position: absolute;
+      bottom: 2px;
+      left: 2px;
+      right: 2px;
+      height: 3px;
+      background: #ffffff20;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .farm-cell .growth-bar .fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      transition: width .3s;
+    }
+
+    /* Inventory */
+    .inventory-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .inv-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--surface2);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .inv-item .qty { color: var(--yellow); font-weight: 600; }
+
+    /* Animals */
+    .animal-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .animal-tag {
+      padding: 4px 10px;
+      background: var(--surface2);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    /* Event log */
+    .event-log {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .event-entry {
+      font-size: 0.8rem;
+      color: var(--text2);
+      padding: 3px 0;
+      border-bottom: 1px solid #ffffff08;
+    }
+    .event-entry .event-day { color: var(--yellow); font-weight: 600; }
+
+    /* Chat panel */
+    .chat-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .msg.narrator {
+      background: var(--surface);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .msg.player {
+      background: var(--accent2);
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.system {
+      align-self: center;
+      background: var(--surface2);
+      font-size: 0.82rem;
+      color: var(--text2);
+      text-align: center;
+      border-radius: 8px;
+    }
+    .msg .sender {
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      padding: 10px 16px;
+      background: var(--surface);
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+    .typing-indicator.visible { display: block; }
+    .typing-indicator span {
+      animation: blink 1.4s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: .2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: .4s; }
+    @keyframes blink { 0%,60%,100%{opacity:.2} 30%{opacity:1} }
+
+    /* Chat input */
+    .chat-input-area {
+      padding: 12px 20px;
+      border-top: 2px solid var(--surface2);
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+    #chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid #ffffff15;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.92rem;
+      outline: none;
+      font-family: inherit;
+      resize: none;
+      min-height: 42px;
+      max-height: 120px;
+    }
+    #chat-input:focus { border-color: var(--accent); }
+    #btn-send {
+      padding: 10px 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: opacity .15s;
+      align-self: flex-end;
+    }
+    #btn-send:hover { opacity: .85; }
+    #btn-send:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ffffff20; border-radius: 3px; }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .main-layout { flex-direction: column; }
+      .farm-panel {
+        width: 100%;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 2px solid var(--surface2);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Setup Screen -->
+<div id="setup-screen">
+  <h1>LLM Farm</h1>
+  <p class="subtitle">A narrative farm sim powered by AI — every playthrough is unique</p>
+  <div class="setup-box">
+    <div class="field">
+      <label>API Endpoint</label>
+      <input type="text" id="api-url" value="https://api.openai.com/v1/chat/completions" placeholder="https://api.openai.com/v1/chat/completions">
+      <span class="hint">Any OpenAI-compatible endpoint (OpenAI, Ollama, LM Studio, etc.)</span>
+    </div>
+    <div class="field">
+      <label>API Key</label>
+      <input type="password" id="api-key" placeholder="sk-...">
+      <span class="hint">Stored only in your browser session — never sent anywhere else</span>
+    </div>
+    <div class="field">
+      <label>Model</label>
+      <input type="text" id="model-name" value="gpt-4o-mini" placeholder="gpt-4o-mini">
+      <span class="hint">Model identifier (e.g. gpt-4o-mini, llama3, mistral)</span>
+    </div>
+    <div class="field">
+      <label>Your farmer name</label>
+      <input type="text" id="farmer-name" value="" placeholder="What should we call you?">
+    </div>
+    <p class="setup-error" id="setup-error"></p>
+    <button id="btn-start">Start Farming</button>
+  </div>
+</div>
+
+<!-- Game Screen -->
+<div id="game-screen">
+  <div class="top-bar">
+    <span class="title">LLM Farm</span>
+    <div class="stat"><span class="icon">📅</span> <span id="stat-day">Day 1</span> · <span id="stat-season">Spring</span></div>
+    <div class="stat"><span class="icon">🌤</span> <span id="stat-weather">Sunny</span></div>
+    <div class="stat"><span class="icon">💰</span> <span id="stat-gold">50</span>g</div>
+    <div class="stat"><span class="icon">❤️</span> <span id="stat-energy">10/10</span></div>
+    <div class="stat"><span class="icon">⭐</span> <span id="stat-reputation">0</span></div>
+  </div>
+
+  <div class="main-layout">
+    <!-- Farm Panel -->
+    <div class="farm-panel">
+      <div class="panel-section">
+        <h3>Your Farm</h3>
+        <div class="farm-grid" id="farm-grid"></div>
+      </div>
+      <div class="panel-section">
+        <h3>Inventory</h3>
+        <div class="inventory-list" id="inventory-list">
+          <span class="inv-item" style="color:var(--text2)">Empty</span>
+        </div>
+      </div>
+      <div class="panel-section">
+        <h3>Animals</h3>
+        <div class="animal-list" id="animal-list">
+          <span class="animal-tag" style="color:var(--text2)">None yet</span>
+        </div>
+      </div>
+      <div class="panel-section">
+        <h3>Event Log</h3>
+        <div class="event-log" id="event-log"></div>
+      </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel">
+      <div class="chat-messages" id="chat-messages">
+        <div class="typing-indicator" id="typing">
+          <span>.</span><span>.</span><span>.</span> Narrator is thinking
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea id="chat-input" placeholder="Talk to the narrator... (What do you want to do?)" rows="1"></textarea>
+        <button id="btn-send">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// GAME STATE
+// ============================================================
+const GRID_SIZE = 5;
+const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter'];
+const WEATHER_OPTIONS = ['Sunny', 'Cloudy', 'Rainy', 'Stormy', 'Windy', 'Foggy', 'Heatwave', 'Snowy'];
+const CROP_ICONS = {
+  empty: '', tilled: '🟫', wheat: '🌾', corn: '🌽', carrot: '🥕', potato: '🥔',
+  tomato: '🍅', pumpkin: '🎃', strawberry: '🍓', sunflower: '🌻', melon: '🍈',
+  cabbage: '🥬', rice: '🌾', flower: '🌸', herb: '🌿', berry: '🫐',
+};
+const ANIMAL_ICONS = {
+  chicken: '🐔', cow: '🐄', sheep: '🐑', pig: '🐷', horse: '🐴',
+  cat: '🐱', dog: '🐶', duck: '🦆', goat: '🐐', rabbit: '🐇',
+};
+
+let gameState = {};
+let conversationHistory = [];
+let apiConfig = {};
+let sending = false;
+
+function createInitialState(farmerName) {
+  const grid = [];
+  for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+    grid.push({ crop: 'empty', growth: 0, watered: false });
+  }
+  return {
+    farmerName: farmerName || 'Farmer',
+    day: 1,
+    season: 'Spring',
+    weather: 'Sunny',
+    gold: 50,
+    energy: 10,
+    maxEnergy: 10,
+    reputation: 0,
+    grid: grid,
+    inventory: {},
+    animals: [],
+    events: [],
+    relationships: {},
+    skills: { farming: 1, foraging: 1, fishing: 1, cooking: 1 },
+    flags: {},
+  };
+}
+
+// ============================================================
+// SYSTEM PROMPT
+// ============================================================
+function buildSystemPrompt() {
+  return `You are the narrator of "LLM Farm", an immersive narrative farm simulation game. You are warm, descriptive, sometimes humorous, and create a rich living world.
+
+## YOUR ROLE
+- Narrate the world vividly — describe sights, sounds, smells, weather, characters
+- Respond to the player's actions with consequences and story progression
+- Introduce random events, visiting characters, mysteries, and seasonal festivals
+- Track the passage of time (each player action advances part of the day)
+- Make the world feel alive with NPCs who have their own personalities and schedules
+
+## CURRENT GAME STATE
+\`\`\`json
+${JSON.stringify(gameState, null, 2)}
+\`\`\`
+
+## RESPONSE FORMAT
+You MUST respond with valid JSON in this exact format (no markdown, no code fences):
+{
+  "narrative": "Your vivid narrative text describing what happens. Use multiple paragraphs for rich storytelling. This is what the player reads.",
+  "stateChanges": {
+    "day": null,
+    "season": null,
+    "weather": null,
+    "gold": null,
+    "energy": null,
+    "maxEnergy": null,
+    "reputation": null,
+    "grid": null,
+    "inventory": null,
+    "animals": null,
+    "events": null,
+    "relationships": null,
+    "skills": null,
+    "flags": null
+  }
+}
+
+## STATE CHANGE RULES
+- Only include fields in stateChanges that actually change. Use null for unchanged fields.
+- **day**: Increment by 1 when the player does something that takes significant time (working the farm, exploring, sleeping). Some quick actions (talking, checking inventory) don't advance the day.
+- **season**: Changes every 7 days. Spring->Summer->Autumn->Winter->Spring. Update when day crosses 7/14/21/28 etc.
+- **weather**: Set a new weather each day from: Sunny, Cloudy, Rainy, Stormy, Windy, Foggy, Heatwave (summer), Snowy (winter).
+- **gold**: Changes from selling crops, buying items, doing jobs. Starting: 50.
+- **energy**: Costs 1-3 per physical action (farming, mining, foraging). Resets on sleep. If 0, the player is exhausted.
+- **grid**: Array of 25 cells. Each cell: {crop, growth, watered}. Crops grow when watered. Growth 0-100. At 100, crop is harvestable. Harvesting resets to empty. Growth advances 15-25 per watered day (vary it). Rain waters all crops automatically.
+- **inventory**: Object of item_name: quantity. Harvested crops, foraged items, purchased goods, cooked dishes, animal products.
+- **animals**: Array of {type, name, happiness, daysOwned}. Animals produce items when happy.
+- **events**: Array of recent event strings (keep last 5).
+- **relationships**: Object of npc_name: {friendship: 0-100, met: true/false}.
+- **skills**: Object of skill: level (1-10). Level up after repeated use.
+- **flags**: Object for tracking story progress, quests, unlocks.
+
+## GAMEPLAY GUIDELINES
+- The player starts with an overgrown farm with 50 gold. Guide them naturally.
+- Energy matters — don't let them do infinite work in one day.
+- Create interesting NPCs: a shopkeeper, a mysterious traveler, a rival farmer, a kind elderly neighbor, etc.
+- Introduce small mysteries and story arcs that unfold over many days.
+- Seasonal events: Spring planting festival, Summer fishing contest, Autumn harvest fair, Winter solstice celebration.
+- Crops and weather should interact — rain waters crops, storms can damage them, heatwaves dry them out.
+- The player can do ANYTHING — farm, explore, cook, fish, befriend NPCs, investigate mysteries, build, trade, etc.
+- If a player tries something creative or unexpected, make it work narratively. Say yes, and add consequences.
+- Keep gold economy balanced. Seeds: 5-15g. Crops sell for 10-40g. Animals cost 50-200g.
+
+## IMPORTANT
+- ALWAYS respond with valid JSON only. No markdown formatting, no \`\`\` fences.
+- The narrative should be 2-5 paragraphs, rich and engaging.
+- Always reflect the current weather and season in your descriptions.
+- If the player is out of energy, narrate exhaustion and suggest sleeping.`;
+}
+
+// ============================================================
+// LLM INTERACTION
+// ============================================================
+async function sendToLLM(userMessage) {
+  conversationHistory.push({ role: 'user', content: userMessage });
+
+  // Keep conversation manageable — last 20 messages + system
+  const messages = [
+    { role: 'system', content: buildSystemPrompt() },
+    ...conversationHistory.slice(-20),
+  ];
+
+  const res = await fetch(apiConfig.url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(apiConfig.key ? { 'Authorization': `Bearer ${apiConfig.key}` } : {}),
+    },
+    body: JSON.stringify({
+      model: apiConfig.model,
+      messages: messages,
+      temperature: 0.85,
+      max_tokens: 1500,
+    }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`API error ${res.status}: ${errText.slice(0, 200)}`);
+  }
+
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('Empty response from API');
+
+  conversationHistory.push({ role: 'assistant', content });
+
+  // Parse JSON response — try to extract JSON if wrapped in markdown
+  let parsed;
+  try {
+    parsed = JSON.parse(content);
+  } catch {
+    // Try to extract JSON from markdown code fences
+    const match = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (match) {
+      parsed = JSON.parse(match[1].trim());
+    } else {
+      // Try to find JSON object in the text
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsed = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('Could not parse JSON from response');
+      }
+    }
+  }
+
+  return parsed;
+}
+
+// ============================================================
+// STATE MANAGEMENT
+// ============================================================
+function applyStateChanges(changes) {
+  if (!changes) return;
+  for (const [key, value] of Object.entries(changes)) {
+    if (value === null || value === undefined) continue;
+    if (key === 'inventory' && typeof value === 'object') {
+      // Merge inventory
+      for (const [item, qty] of Object.entries(value)) {
+        if (qty <= 0) {
+          delete gameState.inventory[item];
+        } else {
+          gameState.inventory[item] = qty;
+        }
+      }
+    } else if (key === 'relationships' && typeof value === 'object') {
+      gameState.relationships = { ...gameState.relationships, ...value };
+    } else if (key === 'skills' && typeof value === 'object') {
+      gameState.skills = { ...gameState.skills, ...value };
+    } else if (key === 'flags' && typeof value === 'object') {
+      gameState.flags = { ...gameState.flags, ...value };
+    } else if (key === 'events' && Array.isArray(value)) {
+      gameState.events = value.slice(-5);
+    } else {
+      gameState[key] = value;
+    }
+  }
+}
+
+// ============================================================
+// UI RENDERING
+// ============================================================
+function renderStats() {
+  document.getElementById('stat-day').textContent = `Day ${gameState.day}`;
+  document.getElementById('stat-season').textContent = gameState.season;
+  document.getElementById('stat-weather').textContent = gameState.weather;
+  document.getElementById('stat-gold').textContent = gameState.gold;
+  document.getElementById('stat-energy').textContent = `${gameState.energy}/${gameState.maxEnergy}`;
+  document.getElementById('stat-reputation').textContent = gameState.reputation;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('farm-grid');
+  grid.innerHTML = '';
+  for (const cell of gameState.grid) {
+    const div = document.createElement('div');
+    div.className = 'farm-cell';
+    if (cell.crop === 'tilled') div.classList.add('tilled');
+    else if (cell.crop !== 'empty' && cell.growth < 100) div.classList.add('planted');
+    else if (cell.crop !== 'empty' && cell.growth >= 100) div.classList.add('grown');
+    if (cell.watered) div.classList.add('watered');
+
+    const icon = CROP_ICONS[cell.crop] || (cell.crop !== 'empty' ? '🌱' : '');
+    div.textContent = icon;
+
+    if (cell.crop !== 'empty' && cell.crop !== 'tilled') {
+      const bar = document.createElement('div');
+      bar.className = 'growth-bar';
+      bar.innerHTML = `<div class="fill" style="width:${cell.growth}%"></div>`;
+      div.appendChild(bar);
+    }
+    grid.appendChild(div);
+  }
+}
+
+function renderInventory() {
+  const list = document.getElementById('inventory-list');
+  const items = Object.entries(gameState.inventory);
+  if (items.length === 0) {
+    list.innerHTML = '<span class="inv-item" style="color:var(--text2)">Empty</span>';
+    return;
+  }
+  list.innerHTML = items.map(([name, qty]) =>
+    `<span class="inv-item">${CROP_ICONS[name] || '📦'} ${name} <span class="qty">x${qty}</span></span>`
+  ).join('');
+}
+
+function renderAnimals() {
+  const list = document.getElementById('animal-list');
+  if (gameState.animals.length === 0) {
+    list.innerHTML = '<span class="animal-tag" style="color:var(--text2)">None yet</span>';
+    return;
+  }
+  list.innerHTML = gameState.animals.map(a =>
+    `<span class="animal-tag">${ANIMAL_ICONS[a.type] || '🐾'} ${a.name}</span>`
+  ).join('');
+}
+
+function renderEvents() {
+  const log = document.getElementById('event-log');
+  if (gameState.events.length === 0) {
+    log.innerHTML = '<span class="event-entry" style="color:var(--text2)">No events yet</span>';
+    return;
+  }
+  log.innerHTML = gameState.events.map(e =>
+    `<div class="event-entry">${e}</div>`
+  ).join('');
+}
+
+function renderAll() {
+  renderStats();
+  renderGrid();
+  renderInventory();
+  renderAnimals();
+  renderEvents();
+}
+
+function addMessage(text, type = 'narrator') {
+  const container = document.getElementById('chat-messages');
+  const typing = document.getElementById('typing');
+  const div = document.createElement('div');
+  div.className = `msg ${type}`;
+  if (type === 'narrator') {
+    div.innerHTML = `<div class="sender">Narrator</div>${escapeHtml(text)}`;
+  } else if (type === 'player') {
+    div.innerHTML = `<div class="sender">You</div>${escapeHtml(text)}`;
+  } else {
+    div.textContent = text;
+  }
+  container.insertBefore(div, typing);
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function setTyping(visible) {
+  document.getElementById('typing').classList.toggle('visible', visible);
+  const container = document.getElementById('chat-messages');
+  container.scrollTop = container.scrollHeight;
+}
+
+// ============================================================
+// GAME FLOW
+// ============================================================
+async function handlePlayerMessage(text) {
+  if (sending) return;
+  sending = true;
+
+  const sendBtn = document.getElementById('btn-send');
+  const input = document.getElementById('chat-input');
+  sendBtn.disabled = true;
+  input.disabled = true;
+
+  addMessage(text, 'player');
+  setTyping(true);
+
+  try {
+    const response = await sendToLLM(text);
+    setTyping(false);
+
+    if (response.narrative) {
+      addMessage(response.narrative, 'narrator');
+    }
+    if (response.stateChanges) {
+      applyStateChanges(response.stateChanges);
+      renderAll();
+    }
+  } catch (err) {
+    setTyping(false);
+    addMessage(`Something went wrong: ${err.message}`, 'system');
+    console.error(err);
+  } finally {
+    sending = false;
+    sendBtn.disabled = false;
+    input.disabled = false;
+    input.focus();
+  }
+}
+
+async function startGame() {
+  const url = document.getElementById('api-url').value.trim();
+  const key = document.getElementById('api-key').value.trim();
+  const model = document.getElementById('model-name').value.trim();
+  const name = document.getElementById('farmer-name').value.trim() || 'Farmer';
+  const errorEl = document.getElementById('setup-error');
+
+  if (!url) {
+    errorEl.textContent = 'Please enter an API endpoint.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (!model) {
+    errorEl.textContent = 'Please enter a model name.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  apiConfig = { url, key, model };
+  gameState = createInitialState(name);
+
+  document.getElementById('setup-screen').classList.add('hidden');
+  document.getElementById('game-screen').classList.add('active');
+
+  renderAll();
+
+  // Opening narration
+  setTyping(true);
+  try {
+    const response = await sendToLLM(
+      `[GAME START] The player "${name}" has just arrived at their new farm. It's Day 1 of Spring. The farm is overgrown and rundown but full of potential. Give a vivid opening narration welcoming them, describe what they see, and gently guide them on what they might do first. Make it feel magical and exciting.`
+    );
+    setTyping(false);
+    if (response.narrative) {
+      addMessage(response.narrative, 'narrator');
+    }
+    if (response.stateChanges) {
+      applyStateChanges(response.stateChanges);
+      renderAll();
+    }
+  } catch (err) {
+    setTyping(false);
+    addMessage(`Failed to connect: ${err.message}. Check your API settings and reload.`, 'system');
+    console.error(err);
+  }
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+document.getElementById('btn-start').addEventListener('click', startGame);
+
+document.getElementById('btn-send').addEventListener('click', () => {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+  handlePlayerMessage(text);
+});
+
+document.getElementById('chat-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    document.getElementById('btn-send').click();
+  }
+});
+
+// Auto-resize textarea
+document.getElementById('chat-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// Allow Enter on setup fields to start game
+document.querySelectorAll('#setup-screen input').forEach(input => {
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') startGame();
+  });
+});
+</script>
+</body>
+</html>
