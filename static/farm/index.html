@@ -545,6 +545,9 @@ let apiConfig = {};
 let sending = false;
 let messageQueue = []; // for sequential display
 let displayingMessages = false;
+// Test mode flags — tests set these to false to skip delays and NPC reactions
+window.sequentialDisplayEnabled = window.sequentialDisplayEnabled !== undefined ? window.sequentialDisplayEnabled : true;
+window.npcReactionsEnabled = window.npcReactionsEnabled !== undefined ? window.npcReactionsEnabled : true;
 
 function createInitialState(farmerName) {
   const grid = [];
@@ -1114,6 +1117,7 @@ function checkQuestProgress() {
 // ============================================================
 function setupEventListeners() {
   gameEvents.on('plantGrown', (data) => {
+    if (!window.npcReactionsEnabled) return;
     const reactions = NPC_REACTIONS.plantGrown;
     const reaction = reactions[Math.floor(Math.random() * reactions.length)];
     if (!displayingMessages && !sending) {
@@ -1122,12 +1126,14 @@ function setupEventListeners() {
   });
 
   gameEvents.on('seasonChange', (data) => {
+    if (!window.npcReactionsEnabled) return;
     const reactions = NPC_REACTIONS.seasonChange;
     const reaction = reactions[Math.floor(Math.random() * reactions.length)];
     addBubble(reaction.speaker, reaction.text);
   });
 
   gameEvents.on('lowEnergy', (data) => {
+    if (!window.npcReactionsEnabled) return;
     const reactions = NPC_REACTIONS.lowEnergy;
     const reaction = reactions[Math.floor(Math.random() * reactions.length)];
     addBubble(reaction.speaker, reaction.text);
@@ -1158,9 +1164,15 @@ async function handlePlayerMessage(text) {
     const response = await sendToLLM(text);
     setTyping(false);
 
-    // Display messages sequentially (one at a time with delays)
+    // Display messages sequentially (one at a time with delays) or instantly in test mode
     if (response.messages && Array.isArray(response.messages)) {
-      await displayMessagesSequentially(response.messages);
+      if (window.sequentialDisplayEnabled) {
+        await displayMessagesSequentially(response.messages);
+      } else {
+        for (const msg of response.messages) {
+          addBubble(msg.speaker || 'narrator', msg.text);
+        }
+      }
     } else if (response.narrative) {
       addBubble('narrator', response.narrative);
     }
@@ -1213,22 +1225,28 @@ async function startGame() {
     );
     setTyping(false);
     if (response.messages && Array.isArray(response.messages)) {
-      await displayMessagesSequentially(response.messages);
+      if (window.sequentialDisplayEnabled) {
+        await displayMessagesSequentially(response.messages);
+      } else {
+        for (const msg of response.messages) addBubble(msg.speaker || 'narrator', msg.text);
+      }
     } else if (response.narrative) {
       addBubble('narrator', response.narrative);
     }
     if (response.stateChanges) { applyStateChanges(response.stateChanges); renderAll(); }
     renderSuggestions(response.suggestedActions);
 
-    // Offer first quests after a short delay
-    setTimeout(() => {
-      const available = getAvailableQuests();
-      // Offer the first 2 quests that have no prereqs
-      const starters = available.filter(q => q.prereqs.length === 0).slice(0, 2);
-      starters.forEach((q, i) => {
-        setTimeout(() => offerQuest(q.id), i * 2500);
-      });
-    }, 3000);
+    // Offer first quests after a short delay (skip in test mode)
+    if (window.npcReactionsEnabled) {
+      setTimeout(() => {
+        const available = getAvailableQuests();
+        // Offer the first 2 quests that have no prereqs
+        const starters = available.filter(q => q.prereqs.length === 0).slice(0, 2);
+        starters.forEach((q, i) => {
+          setTimeout(() => offerQuest(q.id), i * 2500);
+        });
+      }, 3000);
+    }
   } catch (err) {
     setTyping(false);
     addBubble('system', `Failed to connect: ${err.message}. Check your API settings and reload.`);
