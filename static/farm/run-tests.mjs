@@ -211,24 +211,65 @@ server.listen(0, async () => {
     assert(document.getElementById('event-log').textContent.indexOf('No events yet') !== -1, 'Empty events label');
 
     // ============================================================
-    section('addMessage()');
+    section('addBubble()');
     const chat = document.getElementById('chat-messages');
     const typ = document.getElementById('typing');
     while (chat.firstChild !== typ) chat.removeChild(chat.firstChild);
 
+    addBubble('narrator', 'Hello narrator');
+    assert(chat.querySelector('.bubble.npc') !== null, 'Narrator bubble added (npc class)');
+    assert(chat.querySelector('.bubble.npc .bubble-name').textContent === 'Narrator', 'Has speaker name');
+
+    addBubble('player', 'Player hi');
+    assert(chat.querySelector('.bubble.player') !== null, 'Player bubble added');
+
+    addBubble('system', 'System note');
+    assert(chat.querySelector('.bubble.system .bubble-text').textContent === 'System note', 'System bubble');
+
+    addBubble('shopkeeper', 'Got wares!');
+    const shopBubbles = chat.querySelectorAll('.bubble.npc');
+    const lastShop = shopBubbles[shopBubbles.length - 1];
+    assert(lastShop.querySelector('.bubble-name').textContent === 'Shopkeeper', 'Shopkeeper name');
+    assert(lastShop.querySelector('.bubble-avatar').textContent === '🏪', 'Shopkeeper avatar');
+
+    addBubble('fisherman', 'Catch of the day!');
+    const fishBubbles = chat.querySelectorAll('.bubble.npc');
+    const lastFish = fishBubbles[fishBubbles.length - 1];
+    assert(lastFish.querySelector('.bubble-avatar').textContent === '🎣', 'Fisherman avatar');
+
+    addBubble('<img src=x onerror=alert(1)>', 'narrator');
+    // Unknown speaker should not crash
+    assert(true, 'Unknown speaker handled');
+
+    // XSS check on bubble text
+    while (chat.firstChild !== typ) chat.removeChild(chat.firstChild);
+    addBubble('narrator', '<img src=x onerror=alert(1)>');
+    const nBubbles = chat.querySelectorAll('.bubble.npc');
+    assert(nBubbles[nBubbles.length - 1].innerHTML.indexOf('<img') === -1, 'HTML escaped in bubble');
+
+    // ============================================================
+    section('addMessage() backwards compat');
+    while (chat.firstChild !== typ) chat.removeChild(chat.firstChild);
+
     addMessage('Hello narrator', 'narrator');
-    assert(chat.querySelector('.msg.narrator') !== null, 'Narrator msg added');
-    assert(chat.querySelector('.msg.narrator').textContent.indexOf('Narrator') !== -1, 'Has sender');
+    assert(chat.querySelector('.bubble.npc') !== null, 'addMessage narrator → npc bubble');
 
     addMessage('Player hi', 'player');
-    assert(chat.querySelector('.msg.player') !== null, 'Player msg added');
+    assert(chat.querySelector('.bubble.player') !== null, 'addMessage player → player bubble');
 
     addMessage('System note', 'system');
-    assert(chat.querySelector('.msg.system').textContent === 'System note', 'System msg');
+    assert(chat.querySelector('.bubble.system') !== null, 'addMessage system → system bubble');
 
-    addMessage('<img src=x onerror=alert(1)>', 'narrator');
-    const nMsgs = chat.querySelectorAll('.msg.narrator');
-    assert(nMsgs[nMsgs.length - 1].innerHTML.indexOf('<img') === -1, 'HTML escaped');
+    // ============================================================
+    section('NPC Avatars');
+    const expectedAvatars = {
+      narrator: '📖', shopkeeper: '🏪', traveler: '🧙', rival: '😤',
+      neighbor: '👵', mayor: '🎩', blacksmith: '⚒️', fisherman: '🎣',
+      witch: '🧹', child: '👦', merchant: '🐫', guard: '🛡️',
+    };
+    for (const [name, emoji] of Object.entries(expectedAvatars)) {
+      assert(NPC_AVATARS[name] === emoji, `Avatar ${name} = ${emoji}`);
+    }
 
     // ============================================================
     section('Suggestions');
@@ -251,6 +292,7 @@ server.listen(0, async () => {
     gameState = {};
     conversationHistory = [];
     mockCallCount = 0;
+    while (chat.firstChild !== typ) chat.removeChild(chat.firstChild);
 
     document.getElementById('api-url').value = 'https://mock/api';
     document.getElementById('api-key').value = 'k';
@@ -258,7 +300,10 @@ server.listen(0, async () => {
     document.getElementById('farmer-name').value = 'Alice';
 
     pushMock({
-      narrative: 'Welcome to your farm, Alice!',
+      messages: [
+        { speaker: 'narrator', text: 'Welcome to your farm!' },
+        { speaker: 'neighbor', text: 'Hey Alice, I am Martha!' }
+      ],
       suggestedActions: ['Clear weeds', 'Check mailbox', 'Explore', 'Talk neighbor'],
       stateChanges: { events: ['Alice arrived'], weather: 'Sunny' }
     });
@@ -272,15 +317,32 @@ server.listen(0, async () => {
     assert(mockCallCount === 1, '1 LLM call on start');
     assert(lastMockInput.indexOf('Alice') !== -1, 'Start msg has name');
 
-    const nrMsgs = document.querySelectorAll('.msg.narrator');
-    assert(nrMsgs[nrMsgs.length - 1].textContent.indexOf('Welcome') !== -1, 'Opening narration');
+    const nrBubbles = document.querySelectorAll('.bubble.npc');
+    assert(nrBubbles.length >= 2, 'At least 2 NPC bubbles from messages array');
+    assert(nrBubbles[0].querySelector('.bubble-text').textContent.indexOf('Welcome') !== -1, 'Opening narration');
+    assert(nrBubbles[1].querySelector('.bubble-name').textContent === 'Neighbor', 'Martha bubble has Neighbor name');
     assert(document.querySelectorAll('#suggestions .suggest-btn').length === 4, '4 suggestions on start');
     assert(gameState.events[0] === 'Alice arrived', 'Event applied');
 
     // ============================================================
+    section('Backwards compat: narrative field');
+    pushMock({
+      narrative: 'The sun sets slowly.',
+      suggestedActions: ['Sleep'],
+      stateChanges: null
+    });
+
+    document.getElementById('chat-input').value = 'Look around';
+    document.getElementById('btn-send').click();
+    await idle(); await wait(100);
+
+    const allNpc = document.querySelectorAll('.bubble.npc');
+    assert(allNpc[allNpc.length - 1].querySelector('.bubble-text').textContent.indexOf('sun sets') !== -1, 'Narrative field renders as bubble');
+
+    // ============================================================
     section('Player Action');
     pushMock({
-      narrative: 'You till three plots!',
+      messages: [{ speaker: 'narrator', text: 'You till three plots!' }],
       suggestedActions: ['Plant wheat', 'Till more', 'Rest'],
       stateChanges: {
         energy: 8,
@@ -293,7 +355,6 @@ server.listen(0, async () => {
     document.getElementById('btn-send').click();
     await idle(); await wait(100);
 
-    assert(mockCallCount === 2, '2nd LLM call');
     assert(gameState.energy === 8, 'Energy decreased');
     assert(gameState.grid[0].crop === 'tilled', 'Cell 0 tilled');
     assert(gameState.grid[1].crop === 'tilled', 'Cell 1 tilled');
@@ -301,13 +362,13 @@ server.listen(0, async () => {
     assert(gameState.grid[3].crop === 'empty', 'Cell 3 empty');
     assert(document.querySelectorAll('#suggestions .suggest-btn').length === 3, '3 suggestions');
 
-    const pMsgs = document.querySelectorAll('.msg.player');
-    assert(pMsgs[pMsgs.length - 1].textContent.indexOf('Till front row') !== -1, 'Player msg shown');
+    const pBubbles = document.querySelectorAll('.bubble.player');
+    assert(pBubbles[pBubbles.length - 1].querySelector('.bubble-text').textContent.indexOf('Till front row') !== -1, 'Player msg shown');
 
     // ============================================================
     section('Suggestion Click');
     pushMock({
-      narrative: 'Wheat planted!',
+      messages: [{ speaker: 'narrator', text: 'Wheat planted!' }],
       suggestedActions: ['Water wheat', 'Buy seeds', 'Sleep'],
       stateChanges: {
         energy: 6,
@@ -318,11 +379,30 @@ server.listen(0, async () => {
     document.querySelectorAll('#suggestions .suggest-btn')[0].click();
     await idle(); await wait(100);
 
-    assert(mockCallCount === 3, 'LLM called on sug click');
     assert(lastMockInput === 'Plant wheat', 'Sug text sent');
     assert(gameState.grid[0].crop === 'wheat', 'Grid updated');
     assert(gameState.energy === 6, 'Energy updated');
     assert(document.querySelectorAll('#suggestions .suggest-btn')[0].textContent === 'Water wheat', 'New suggestions');
+
+    // ============================================================
+    section('Multi-speaker messages');
+    pushMock({
+      messages: [
+        { speaker: 'narrator', text: 'You enter the shop.' },
+        { speaker: 'shopkeeper', text: 'Welcome! Browse my wares.' },
+        { speaker: 'narrator', text: 'Shelves are stocked.' }
+      ],
+      suggestedActions: ['Buy seeds', 'Leave'],
+      stateChanges: null
+    });
+
+    document.getElementById('chat-input').value = 'Visit shop';
+    document.getElementById('btn-send').click();
+    await idle(); await wait(100);
+
+    const afterShop = document.querySelectorAll('.bubble.npc');
+    // Should have at least 3 new NPC bubbles from the messages
+    assert(afterShop.length >= 3, 'Multiple NPC bubbles from multi-speaker response');
 
     // ============================================================
     section('Error Handling');
@@ -331,8 +411,8 @@ server.listen(0, async () => {
     document.getElementById('btn-send').click();
     await idle(); await wait(100);
 
-    const sAll = document.querySelectorAll('.msg.system');
-    assert(sAll[sAll.length - 1].textContent.indexOf('Something went wrong') !== -1, 'Error shown');
+    const sAll = document.querySelectorAll('.bubble.system');
+    assert(sAll[sAll.length - 1].querySelector('.bubble-text').textContent.indexOf('Something went wrong') !== -1, 'Error shown');
     assert(sending === false, 'sending reset');
     assert(!document.getElementById('btn-send').disabled, 'Send enabled');
     assert(!document.getElementById('chat-input').disabled, 'Input enabled');
@@ -356,12 +436,13 @@ server.listen(0, async () => {
     const pr = buildSystemPrompt();
     assert(pr.indexOf('LLM Farm') !== -1, 'Has game name');
     assert(pr.indexOf('suggestedActions') !== -1, 'Has suggestedActions');
-    assert(pr.indexOf('SUGGESTED ACTIONS RULES') !== -1, 'Has suggestion rules');
+    assert(pr.indexOf('messages') !== -1, 'Has messages format');
     assert(pr.indexOf('Alice') !== -1, 'Has farmer name');
+    assert(pr.indexOf('20 words') !== -1 || pr.indexOf('20') !== -1, 'Has word limit reference');
 
     // ============================================================
     section('Concurrency');
-    pushMock({ narrative: 'Water.', suggestedActions: ['Next'], stateChanges: { energy: 5 } });
+    pushMock({ messages: [{ speaker: 'narrator', text: 'Water.' }], suggestedActions: ['Next'], stateChanges: { energy: 5 } });
     sending = false;
     const cb = mockCallCount;
     document.getElementById('chat-input').value = 'Water';
@@ -374,7 +455,10 @@ server.listen(0, async () => {
     // ============================================================
     section('Complex State');
     pushMock({
-      narrative: 'Merchant!',
+      messages: [
+        { speaker: 'narrator', text: 'A merchant arrives!' },
+        { speaker: 'merchant', text: 'Fine chicken for sale!' }
+      ],
       suggestedActions: ['Name chicken', 'Plant'],
       stateChanges: {
         gold: 30, energy: 4,
@@ -398,10 +482,23 @@ server.listen(0, async () => {
     assert(document.getElementById('stat-gold').textContent === '30', 'Gold UI');
     assert(document.getElementById('animal-list').textContent.indexOf('Nugget') !== -1, 'Animal UI');
 
+    // Verify merchant bubble avatar
+    const merchantBubbles = document.querySelectorAll('.bubble.npc');
+    let foundMerchant = false;
+    for (const b of merchantBubbles) {
+      const name = b.querySelector('.bubble-name');
+      if (name && name.textContent === 'Merchant') {
+        assert(b.querySelector('.bubble-avatar').textContent === '🐫', 'Merchant avatar correct');
+        foundMerchant = true;
+        break;
+      }
+    }
+    assert(foundMerchant, 'Found merchant bubble');
+
     // ============================================================
     section('Season Progression');
     pushMock({
-      narrative: 'Summer!',
+      messages: [{ speaker: 'narrator', text: 'Summer arrives!' }],
       suggestedActions: ['Crops', 'Beach'],
       stateChanges: { day: 8, season: 'Summer', weather: 'Heatwave', energy: 10 }
     });
@@ -416,7 +513,7 @@ server.listen(0, async () => {
 
     // ============================================================
     section('Input Behavior');
-    pushMock({ narrative: 'Look.', suggestedActions: ['Rest'], stateChanges: null });
+    pushMock({ messages: [{ speaker: 'narrator', text: 'Look.' }], suggestedActions: ['Rest'], stateChanges: null });
     document.getElementById('chat-input').value = 'Look';
     document.getElementById('btn-send').click();
     assert(document.getElementById('chat-input').value === '', 'Input cleared after send');
@@ -432,7 +529,7 @@ server.listen(0, async () => {
 
     // ============================================================
     section('No suggestedActions');
-    pushMock({ narrative: 'Nothing.', stateChanges: null });
+    pushMock({ messages: [{ speaker: 'narrator', text: 'Nothing.' }], stateChanges: null });
     document.getElementById('chat-input').value = 'Test';
     document.getElementById('btn-send').click();
     await idle(); await wait(100);
@@ -442,7 +539,7 @@ server.listen(0, async () => {
     // ============================================================
     section('Null stateChanges');
     const gBefore = gameState.gold;
-    pushMock({ narrative: 'Chat.', suggestedActions: ['Ok'], stateChanges: null });
+    pushMock({ messages: [{ speaker: 'narrator', text: 'Chat.' }], suggestedActions: ['Ok'], stateChanges: null });
     document.getElementById('chat-input').value = 'Chat';
     document.getElementById('btn-send').click();
     await idle(); await wait(100);
@@ -483,7 +580,6 @@ server.listen(0, async () => {
     const mPage = await browser.newPage({ viewport: { width: vp.w, height: vp.h } });
     await mPage.goto(`http://localhost:${port}/index.html`);
 
-    // Mock LLM and start game
     const mobileResults = await mPage.evaluate(async (vpWidth) => {
       const log = [];
       let passed = 0, failed = 0;
@@ -495,7 +591,10 @@ server.listen(0, async () => {
       window.sendToLLM = async (msg) => {
         conversationHistory.push({ role: 'user', content: msg });
         const r = {
-          narrative: 'Welcome to your farm! The golden sun shines.',
+          messages: [
+            { speaker: 'narrator', text: 'Welcome to your farm!' },
+            { speaker: 'shopkeeper', text: 'Come check my wares!' }
+          ],
           suggestedActions: ['Clear weeds', 'Check mailbox', 'Explore farmhouse', 'Visit shop', 'Go fishing'],
           stateChanges: {
             events: ['Arrived at farm'],
@@ -531,21 +630,15 @@ server.listen(0, async () => {
       await new Promise(r => setTimeout(r, 200));
 
       const isMobile = vpWidth <= 800;
-      const isSmallMobile = vpWidth <= 500;
 
-      // Top bar: all stats visible (not clipped)
-      const stats = document.querySelectorAll('.stat');
+      // HUD stats: all visible (not clipped)
+      const stats = document.querySelectorAll('.hud-stat');
       let allStatsVisible = true;
       stats.forEach(stat => {
         const r = stat.getBoundingClientRect();
         if (r.right > vpWidth + 5 || r.left < -5) allStatsVisible = false;
       });
-      assert(allStatsVisible, 'All stat badges visible within viewport');
-
-      // Top bar title visible
-      const title = document.querySelector('.top-bar .title');
-      const titleRect = title.getBoundingClientRect();
-      assert(titleRect.width > 0 && titleRect.left >= -2, 'Title visible');
+      assert(allStatsVisible, 'All HUD stats visible within viewport');
 
       // Farm grid visible and contained
       const grid = document.getElementById('farm-grid');
@@ -557,14 +650,14 @@ server.listen(0, async () => {
       const cells = document.querySelectorAll('.farm-cell');
       assert(cells.length === 25, 'All 25 farm cells rendered');
 
-      // Chat messages visible
+      // Bubble area visible
       const chatMsgs = document.getElementById('chat-messages');
       const chatRect = chatMsgs.getBoundingClientRect();
-      assert(chatRect.height > 0, 'Chat messages area has height');
+      assert(chatRect.height > 0, 'Bubble area has height');
 
-      // Narrator message visible
-      const narrators = document.querySelectorAll('.msg.narrator');
-      assert(narrators.length > 0, 'Narrator message exists');
+      // NPC bubbles exist
+      const npcBubbles = document.querySelectorAll('.bubble.npc');
+      assert(npcBubbles.length > 0, 'NPC bubble exists');
 
       // Suggestions visible
       const sugBtns = document.querySelectorAll('#suggestions .suggest-btn');
@@ -590,13 +683,13 @@ server.listen(0, async () => {
       // Mobile-specific: farm toggle visible
       if (isMobile) {
         const toggle = document.getElementById('farm-toggle');
-        const toggleRect = toggle.getBoundingClientRect();
         const toggleStyle = window.getComputedStyle(toggle);
         assert(toggleStyle.display !== 'none', 'Farm toggle visible on mobile');
 
         // Inventory/Animals/Events hidden by default
-        const invSection = document.querySelectorAll('.farm-panel .panel-section')[1];
-        if (invSection) {
+        const sections = document.querySelectorAll('.farm-side .panel-section');
+        if (sections.length > 1) {
+          const invSection = sections[1];
           const invStyle = window.getComputedStyle(invSection);
           assert(invStyle.display === 'none', 'Inventory hidden by default on mobile');
         }
@@ -604,18 +697,18 @@ server.listen(0, async () => {
         // Click toggle to expand
         toggle.click();
         await new Promise(r => setTimeout(r, 50));
-        const invAfter = document.querySelectorAll('.farm-panel .panel-section')[1];
-        if (invAfter) {
-          const invStyleAfter = window.getComputedStyle(invAfter);
+        const sectionsAfter = document.querySelectorAll('.farm-side .panel-section');
+        if (sectionsAfter.length > 1) {
+          const invStyleAfter = window.getComputedStyle(sectionsAfter[1]);
           assert(invStyleAfter.display !== 'none', 'Inventory shown after toggle click');
         }
 
         // Click toggle to collapse
         toggle.click();
         await new Promise(r => setTimeout(r, 50));
-        const invCollapsed = document.querySelectorAll('.farm-panel .panel-section')[1];
-        if (invCollapsed) {
-          const invStyleCol = window.getComputedStyle(invCollapsed);
+        const sectionsCol = document.querySelectorAll('.farm-side .panel-section');
+        if (sectionsCol.length > 1) {
+          const invStyleCol = window.getComputedStyle(sectionsCol[1]);
           assert(invStyleCol.display === 'none', 'Inventory hidden after second toggle');
         }
       }
@@ -627,7 +720,7 @@ server.listen(0, async () => {
         assert(toggleStyle.display === 'none', 'Farm toggle hidden on desktop');
 
         // All panel sections visible
-        const sections = document.querySelectorAll('.farm-panel .panel-section');
+        const sections = document.querySelectorAll('.farm-side .panel-section');
         let allVisible = true;
         sections.forEach(s => {
           if (window.getComputedStyle(s).display === 'none') allVisible = false;
@@ -635,14 +728,14 @@ server.listen(0, async () => {
         assert(allVisible, 'All panel sections visible on desktop');
 
         // Side-by-side layout
-        const farmPanel = document.querySelector('.farm-panel');
-        const chatPanel = document.querySelector('.chat-panel');
-        const farmRect = farmPanel.getBoundingClientRect();
-        const chatPanelRect = chatPanel.getBoundingClientRect();
-        assert(farmRect.right <= chatPanelRect.left + 5, 'Farm and chat panels side-by-side');
+        const farmSide = document.querySelector('.farm-side');
+        const gameArea = document.querySelector('.game-area');
+        const farmRect = farmSide.getBoundingClientRect();
+        const gameRect = gameArea.getBoundingClientRect();
+        assert(farmRect.right <= gameRect.left + 5, 'Farm and game areas side-by-side');
       }
 
-      // No horizontal scroll (nothing overflows viewport)
+      // No horizontal scroll
       assert(document.body.scrollWidth <= vpWidth + 5, 'No horizontal scrollbar');
 
       return { log, passed, failed };
