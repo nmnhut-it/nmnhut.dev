@@ -42,6 +42,10 @@ server.listen(0, async () => {
     let mockCallCount = 0;
     let lastMockInput = null;
 
+    // Disable sequential display and NPC reactions for tests
+    window.sequentialDisplayEnabled = false;
+    window.npcReactionsEnabled = false;
+
     window.sendToLLM = async function(userMessage) {
       mockCallCount++;
       lastMockInput = userMessage;

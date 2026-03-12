@@ -114,6 +114,40 @@
       background: #ffffff15; border-radius: 1px; overflow: hidden;
     }
     .farm-cell .growth-bar .fill { height: 100%; background: var(--green); border-radius: 1px; }
+    .farm-cell .growth-text {
+      position: absolute; top: 1px; left: 0; right: 0; text-align: center;
+      font-size: 0.55rem; color: #ffffffaa; font-weight: 600; pointer-events: none;
+    }
+    .farm-cell.ready { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 6px #4ade8040; }
+      50% { box-shadow: 0 0 14px #4ade80aa, 0 0 20px #4ade8040; }
+    }
+
+    /* Quest log */
+    .quest-log { display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto; }
+    .quest-item {
+      padding: 6px 8px; background: #00000030; border-radius: 6px;
+      font-size: 0.76rem; border-left: 3px solid var(--accent);
+    }
+    .quest-item.completed { border-left-color: var(--green); opacity: 0.6; }
+    .quest-title { font-weight: 600; color: var(--text); margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
+    .quest-desc { color: var(--text2); font-size: 0.7rem; margin-bottom: 4px; }
+    .quest-objective { font-size: 0.68rem; color: var(--text2); }
+    .quest-progress-bar {
+      height: 3px; background: #ffffff15; border-radius: 2px; margin-top: 3px; overflow: hidden;
+    }
+    .quest-progress-bar .fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+    .quest-reward-text { font-size: 0.65rem; color: var(--yellow); margin-top: 2px; }
+    .quest-badge {
+      display: inline-block; background: var(--red); color: #fff; font-size: 0.6rem;
+      padding: 0 5px; border-radius: 8px; margin-left: 4px; font-weight: 700;
+    }
+
+    /* NPC reaction bubble */
+    .bubble.reaction .bubble-content {
+      background: #2a4a5e90; border: 1px dashed #ffffff20;
+    }
 
     /* Inventory */
     .inv-list { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -335,6 +369,12 @@
         </div>
       </div>
       <div class="panel-section">
+        <h3>Quests <span class="quest-badge" id="quest-badge" style="display:none">0</span></h3>
+        <div class="quest-log" id="quest-log">
+          <span class="quest-item" style="color:var(--text2);border-left-color:var(--text2)">No quests yet</span>
+        </div>
+      </div>
+      <div class="panel-section">
         <h3>Events</h3>
         <div class="event-log" id="event-log"></div>
       </div>
@@ -380,10 +420,134 @@ const NPC_AVATARS = {
   witch: '🧹', child: '👦', merchant: '🐫', guard: '🛡️',
 };
 
+// ============================================================
+// EVENT SYSTEM (Pub/Sub)
+// ============================================================
+class GameEvents {
+  constructor() { this._listeners = {}; }
+  on(event, cb) {
+    if (!this._listeners[event]) this._listeners[event] = [];
+    this._listeners[event].push(cb);
+  }
+  off(event, cb) {
+    if (!this._listeners[event]) return;
+    this._listeners[event] = this._listeners[event].filter(fn => fn !== cb);
+  }
+  emit(event, data) {
+    if (!this._listeners[event]) return;
+    for (const cb of this._listeners[event]) cb(data);
+  }
+}
+const gameEvents = new GameEvents();
+
+// ============================================================
+// NPC REACTIONS (pre-scripted, no LLM call needed)
+// ============================================================
+const NPC_REACTIONS = {
+  plantGrown: [
+    { speaker: 'neighbor', text: "Your crops are ready to harvest, dear!" },
+    { speaker: 'narrator', text: "A crop ripens, ready for the picking." },
+    { speaker: 'shopkeeper', text: "I see a harvest coming! Bring it to my shop!" },
+  ],
+  seasonChange: [
+    { speaker: 'narrator', text: "The season shifts. The air feels different." },
+    { speaker: 'neighbor', text: "New season, new possibilities!" },
+    { speaker: 'mayor', text: "A new season dawns upon our village!" },
+  ],
+  lowEnergy: [
+    { speaker: 'neighbor', text: "You look exhausted, dear. Get some rest!" },
+    { speaker: 'narrator', text: "Exhaustion weighs heavy. Time to sleep." },
+  ],
+  questComplete: [
+    { speaker: 'narrator', text: "Quest complete! Well done, farmer." },
+  ],
+  dayChange: [
+    { speaker: 'narrator', text: "A new day begins on the farm." },
+  ],
+};
+
+// ============================================================
+// QUEST DEFINITIONS
+// ============================================================
+const AVAILABLE_QUESTS = [
+  {
+    id: 'first_harvest', title: 'First Harvest',
+    description: 'Grow and harvest your first crop.',
+    giver: 'neighbor',
+    objectives: [{ type: 'harvest', target: 'any', current: 0, required: 1 }],
+    rewards: { gold: 25, reputation: 5 },
+    prereqs: [],
+    giverDialogue: "Why don't you try growing something, dear? I'll reward you!",
+    completeDialogue: "Wonderful harvest! Here's a little something.",
+  },
+  {
+    id: 'meet_shopkeeper', title: 'Meet the Merchant',
+    description: 'Visit the shop and talk to the shopkeeper.',
+    giver: 'mayor',
+    objectives: [{ type: 'talk', target: 'shopkeeper', current: 0, required: 1 }],
+    rewards: { gold: 10, reputation: 3 },
+    prereqs: [],
+    giverDialogue: "You should meet our shopkeeper. Fine fellow, that one!",
+    completeDialogue: "Good, good! Getting to know the townsfolk!",
+  },
+  {
+    id: 'animal_friend', title: 'Animal Friend',
+    description: 'Buy your first animal.',
+    giver: 'neighbor',
+    objectives: [{ type: 'animal', target: 'any', current: 0, required: 1 }],
+    rewards: { gold: 30, reputation: 5 },
+    prereqs: [],
+    giverDialogue: "A farm needs animals! Try getting one from the shop.",
+    completeDialogue: "What a cute little critter! Take good care of it.",
+  },
+  {
+    id: 'green_thumb', title: 'Green Thumb',
+    description: 'Grow 3 different types of crops.',
+    giver: 'traveler',
+    objectives: [{ type: 'grow_types', target: 3, current: 0, required: 3 }],
+    rewards: { gold: 50, reputation: 10 },
+    prereqs: ['first_harvest'],
+    giverDialogue: "A true farmer grows variety. Show me three different crops!",
+    completeDialogue: "Impressive diversity! The land favors you.",
+  },
+  {
+    id: 'social_butterfly', title: 'Social Butterfly',
+    description: 'Meet 3 different NPCs.',
+    giver: 'mayor',
+    objectives: [{ type: 'meet_npcs', target: 3, current: 0, required: 3 }],
+    rewards: { gold: 20, reputation: 15 },
+    prereqs: [],
+    giverDialogue: "A village thrives on connections. Meet 3 townsfolk!",
+    completeDialogue: "You're becoming a true member of our community!",
+  },
+  {
+    id: 'big_sale', title: 'Big Sale',
+    description: 'Earn 100 gold total from your farm.',
+    giver: 'shopkeeper',
+    objectives: [{ type: 'earn_gold', target: 100, current: 0, required: 100 }],
+    rewards: { gold: 40, reputation: 10 },
+    prereqs: ['first_harvest'],
+    giverDialogue: "Think you can earn 100 gold? I'll add a bonus if you do!",
+    completeDialogue: "A hundred gold! You're a natural merchant!",
+  },
+];
+
+// ============================================================
+// GROWTH TIMER CONSTANTS
+// ============================================================
+const GROWTH_TICK_INTERVAL = 5000; // 5 seconds
+const GROWTH_PER_TICK = 5; // 5% per tick
+let growthTimerId = null;
+
 let gameState = {};
 let conversationHistory = [];
 let apiConfig = {};
 let sending = false;
+let messageQueue = []; // for sequential display
+let displayingMessages = false;
+// Test mode flags — tests set these to false to skip delays and NPC reactions
+window.sequentialDisplayEnabled = window.sequentialDisplayEnabled !== undefined ? window.sequentialDisplayEnabled : true;
+window.npcReactionsEnabled = window.npcReactionsEnabled !== undefined ? window.npcReactionsEnabled : true;
 
 function createInitialState(farmerName) {
   const grid = [];
@@ -406,6 +570,9 @@ function createInitialState(farmerName) {
     relationships: {},
     skills: { farming: 1, foraging: 1, fishing: 1, cooking: 1 },
     flags: {},
+    quests: { active: [], completed: [] },
+    grownCropTypes: [], // tracks unique crop types grown (for green_thumb quest)
+    totalGoldEarned: 0, // tracks gold earned from selling (for big_sale quest)
   };
 }
 
@@ -427,7 +594,8 @@ Valid JSON only (no markdown, no fences):
     "day": null, "season": null, "weather": null, "gold": null,
     "energy": null, "maxEnergy": null, "reputation": null, "grid": null,
     "inventory": null, "animals": null, "events": null,
-    "relationships": null, "skills": null, "flags": null
+    "relationships": null, "skills": null, "flags": null,
+    "questProgress": null
   }
 }
 
@@ -462,13 +630,20 @@ Valid JSON only (no markdown, no fences):
 - weather: New each day. Sunny/Cloudy/Rainy/Stormy/Windy/Foggy/Heatwave(summer)/Snowy(winter).
 - gold: Seeds 5-15g, crops sell 10-40g, animals 50-200g.
 - energy: -1 to -3 per physical action. Resets on sleep.
-- grid: 25 cells [{crop, growth, watered}]. Growth 0-100, +15-25/watered day. Rain waters all.
+- grid: 25 cells [{crop, growth, watered}]. Growth 0-100. Plants grow automatically in real-time when watered. Rain waters all.
 - inventory: {item: qty}. qty<=0 removes it.
 - animals: [{type, name, happiness, daysOwned}].
 - events: Last 5 strings.
-- relationships: {npc: {friendship: 0-100, met: bool}}.
+- relationships: {npc: {friendship: 0-100, met: bool}}. IMPORTANT: Set met=true when the player talks to or encounters an NPC.
 - skills: {skill: 1-10}. Level up with use.
 - flags: Story progress tracking.
+- questProgress: {quest_id: {objective_index: increment}}. Advance quest objectives when the player does something relevant (e.g. harvesting, selling, meeting NPCs).
+
+## ACTIVE QUESTS
+${JSON.stringify(gameState.quests?.active || [], null, 2)}
+
+## COMPLETED QUESTS
+${(gameState.quests?.completed || []).map(q => q.title).join(', ') || 'None yet'}
 
 ## CURRENT GAME STATE
 \`\`\`json
@@ -537,6 +712,13 @@ async function sendToLLM(userMessage) {
 // ============================================================
 function applyStateChanges(changes) {
   if (!changes) return;
+  const oldDay = gameState.day;
+  const oldSeason = gameState.season;
+  const oldEnergy = gameState.energy;
+  const oldGold = gameState.gold;
+  const oldAnimals = gameState.animals ? gameState.animals.length : 0;
+  const oldRelationships = { ...gameState.relationships };
+
   for (const [key, value] of Object.entries(changes)) {
     if (value === null || value === undefined) continue;
     if (key === 'inventory' && typeof value === 'object') {
@@ -552,10 +734,53 @@ function applyStateChanges(changes) {
       gameState.flags = { ...gameState.flags, ...value };
     } else if (key === 'events' && Array.isArray(value)) {
       gameState.events = value.slice(-5);
+    } else if (key === 'questProgress' && typeof value === 'object') {
+      // LLM can advance quest objectives
+      for (const [questId, progress] of Object.entries(value)) {
+        const quest = gameState.quests.active.find(q => q.id === questId);
+        if (quest) {
+          for (const [objIdx, increment] of Object.entries(progress)) {
+            const idx = parseInt(objIdx);
+            if (quest.objectives[idx]) {
+              quest.objectives[idx].current = Math.min(
+                quest.objectives[idx].current + increment,
+                quest.objectives[idx].required
+              );
+            }
+          }
+        }
+      }
     } else {
       gameState[key] = value;
     }
   }
+
+  // Emit events based on state changes
+  if (gameState.day !== oldDay) gameEvents.emit('dayChange', { day: gameState.day });
+  if (gameState.season !== oldSeason) gameEvents.emit('seasonChange', { season: gameState.season });
+  if (gameState.energy <= 1 && oldEnergy > 1) gameEvents.emit('lowEnergy', { energy: gameState.energy });
+
+  // Track gold earned (if gold increased, it was a sale)
+  if (gameState.gold > oldGold) {
+    gameState.totalGoldEarned = (gameState.totalGoldEarned || 0) + (gameState.gold - oldGold);
+  }
+
+  // Track new animals for quest
+  if (gameState.animals && gameState.animals.length > oldAnimals) {
+    gameEvents.emit('animalBought', { count: gameState.animals.length });
+  }
+
+  // Track NPC meetings for quest
+  if (gameState.relationships) {
+    for (const [npc, rel] of Object.entries(gameState.relationships)) {
+      if (rel.met && (!oldRelationships[npc] || !oldRelationships[npc].met)) {
+        gameEvents.emit('npcMet', { npc });
+      }
+    }
+  }
+
+  // Check quest progress after state changes
+  checkQuestProgress();
 }
 
 // ============================================================
@@ -577,15 +802,21 @@ function renderGrid() {
     const div = document.createElement('div');
     div.className = 'farm-cell';
     if (cell.crop === 'tilled') div.classList.add('tilled');
-    else if (cell.crop !== 'empty' && cell.growth < 100) div.classList.add('planted');
-    else if (cell.crop !== 'empty' && cell.growth >= 100) div.classList.add('grown');
+    else if (cell.crop !== 'empty' && cell.growth >= 100) { div.classList.add('grown'); div.classList.add('ready'); }
+    else if (cell.crop !== 'empty') div.classList.add('planted');
     if (cell.watered) div.classList.add('watered');
     const icon = CROP_ICONS[cell.crop] || (cell.crop !== 'empty' ? '🌱' : '');
     div.textContent = icon;
     if (cell.crop !== 'empty' && cell.crop !== 'tilled') {
+      // Growth percentage overlay
+      const pctText = document.createElement('div');
+      pctText.className = 'growth-text';
+      pctText.textContent = cell.growth >= 100 ? '✓' : `${Math.round(cell.growth)}%`;
+      div.appendChild(pctText);
+      // Growth bar
       const bar = document.createElement('div');
       bar.className = 'growth-bar';
-      bar.innerHTML = `<div class="fill" style="width:${cell.growth}%"></div>`;
+      bar.innerHTML = `<div class="fill" style="width:${Math.min(cell.growth, 100)}%"></div>`;
       div.appendChild(bar);
     }
     grid.appendChild(div);
@@ -626,8 +857,48 @@ function renderEvents() {
   ).join('');
 }
 
+function renderQuests() {
+  const log = document.getElementById('quest-log');
+  const badge = document.getElementById('quest-badge');
+  if (!gameState.quests) return;
+
+  const active = gameState.quests.active || [];
+  const completed = gameState.quests.completed || [];
+
+  if (active.length === 0 && completed.length === 0) {
+    log.innerHTML = '<span class="quest-item" style="color:var(--text2);border-left-color:var(--text2)">No quests yet</span>';
+    badge.style.display = 'none';
+    return;
+  }
+
+  let html = '';
+  for (const quest of active) {
+    const totalRequired = quest.objectives.reduce((s, o) => s + o.required, 0);
+    const totalCurrent = quest.objectives.reduce((s, o) => s + Math.min(o.current, o.required), 0);
+    const pct = Math.round((totalCurrent / totalRequired) * 100);
+    const objText = quest.objectives.map(o =>
+      `${o.current}/${o.required}`
+    ).join(', ');
+    html += `<div class="quest-item">
+      <div class="quest-title">📋 ${escapeHtml(quest.title)}</div>
+      <div class="quest-desc">${escapeHtml(quest.description)}</div>
+      <div class="quest-objective">Progress: ${objText}</div>
+      <div class="quest-progress-bar"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="quest-reward-text">Reward: ${quest.rewards.gold ? quest.rewards.gold + 'g' : ''}${quest.rewards.reputation ? ' +' + quest.rewards.reputation + ' rep' : ''}</div>
+    </div>`;
+  }
+  for (const quest of completed.slice(-3)) {
+    html += `<div class="quest-item completed">
+      <div class="quest-title">✅ ${escapeHtml(quest.title)}</div>
+    </div>`;
+  }
+  log.innerHTML = html;
+  badge.style.display = active.length > 0 ? 'inline-block' : 'none';
+  badge.textContent = active.length;
+}
+
 function renderAll() {
-  renderStats(); renderGrid(); renderInventory(); renderAnimals(); renderEvents();
+  renderStats(); renderGrid(); renderInventory(); renderAnimals(); renderQuests(); renderEvents();
 }
 
 function addBubble(speaker, text) {
@@ -697,6 +968,183 @@ function setTyping(visible) {
 }
 
 // ============================================================
+// SEQUENTIAL MESSAGE DISPLAY
+// ============================================================
+function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+async function displayMessagesSequentially(messages) {
+  if (!messages || !messages.length) return;
+  displayingMessages = true;
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i];
+    if (i > 0) {
+      // Show typing indicator between messages
+      setTyping(true);
+      const waitTime = msg.speaker === 'narrator' ? 800 : 1200 + Math.random() * 600;
+      await delay(waitTime);
+      setTyping(false);
+    }
+    addBubble(msg.speaker || 'narrator', msg.text);
+  }
+  displayingMessages = false;
+}
+
+// ============================================================
+// REAL-TIME PLANT GROWTH TIMER
+// ============================================================
+function startGrowthTimer() {
+  if (growthTimerId) clearInterval(growthTimerId);
+  growthTimerId = setInterval(() => {
+    if (!gameState.grid) return;
+    let anyGrew = false;
+    for (let i = 0; i < gameState.grid.length; i++) {
+      const cell = gameState.grid[i];
+      if (cell.crop !== 'empty' && cell.crop !== 'tilled' && cell.watered && cell.growth < 100) {
+        cell.growth = Math.min(cell.growth + GROWTH_PER_TICK, 100);
+        anyGrew = true;
+        if (cell.growth >= 100) {
+          // Track crop type for green_thumb quest
+          if (!gameState.grownCropTypes) gameState.grownCropTypes = [];
+          if (!gameState.grownCropTypes.includes(cell.crop)) {
+            gameState.grownCropTypes.push(cell.crop);
+          }
+          gameState.events = (gameState.events || []).concat(`${CROP_ICONS[cell.crop] || '🌱'} ${cell.crop} is ready to harvest!`).slice(-5);
+          gameEvents.emit('plantGrown', { cellIndex: i, crop: cell.crop });
+        }
+      }
+    }
+    if (anyGrew) {
+      renderGrid();
+      renderEvents();
+    }
+  }, GROWTH_TICK_INTERVAL);
+}
+
+function stopGrowthTimer() {
+  if (growthTimerId) { clearInterval(growthTimerId); growthTimerId = null; }
+}
+
+// ============================================================
+// QUEST SYSTEM
+// ============================================================
+function getAvailableQuests() {
+  // Quests that haven't been started or completed, and whose prereqs are met
+  const completedIds = (gameState.quests?.completed || []).map(q => q.id);
+  const activeIds = (gameState.quests?.active || []).map(q => q.id);
+  return AVAILABLE_QUESTS.filter(q =>
+    !completedIds.includes(q.id) &&
+    !activeIds.includes(q.id) &&
+    q.prereqs.every(p => completedIds.includes(p))
+  );
+}
+
+function offerQuest(questId) {
+  const template = AVAILABLE_QUESTS.find(q => q.id === questId);
+  if (!template) return;
+  // Deep clone the quest so objectives are independent
+  const quest = JSON.parse(JSON.stringify(template));
+  gameState.quests.active.push(quest);
+  // NPC gives the quest via speech
+  addBubble(quest.giver, quest.giverDialogue);
+  addBubble('system', `New quest: ${quest.title}`);
+  renderQuests();
+}
+
+function completeQuest(questId) {
+  const idx = gameState.quests.active.findIndex(q => q.id === questId);
+  if (idx === -1) return;
+  const quest = gameState.quests.active.splice(idx, 1)[0];
+  gameState.quests.completed.push({ id: quest.id, title: quest.title });
+
+  // Apply rewards
+  if (quest.rewards.gold) gameState.gold += quest.rewards.gold;
+  if (quest.rewards.reputation) gameState.reputation += quest.rewards.reputation;
+
+  // NPC completion dialogue
+  const template = AVAILABLE_QUESTS.find(q => q.id === quest.id);
+  if (template) {
+    addBubble(template.giver, template.completeDialogue);
+  }
+  addBubble('system', `Quest complete: ${quest.title}! +${quest.rewards.gold || 0}g, +${quest.rewards.reputation || 0} rep`);
+
+  gameEvents.emit('questComplete', { quest });
+  renderAll();
+
+  // Check if new quests are now available
+  setTimeout(() => {
+    const available = getAvailableQuests();
+    if (available.length > 0) {
+      offerQuest(available[0].id);
+    }
+  }, 2000);
+}
+
+function checkQuestProgress() {
+  if (!gameState.quests) return;
+  for (const quest of gameState.quests.active) {
+    let allComplete = true;
+    for (const obj of quest.objectives) {
+      // Auto-update certain objective types based on game state
+      if (obj.type === 'animal' && obj.target === 'any') {
+        obj.current = Math.min(gameState.animals ? gameState.animals.length : 0, obj.required);
+      } else if (obj.type === 'meet_npcs') {
+        const metCount = Object.values(gameState.relationships || {}).filter(r => r.met).length;
+        obj.current = Math.min(metCount, obj.required);
+      } else if (obj.type === 'earn_gold') {
+        obj.current = Math.min(gameState.totalGoldEarned || 0, obj.required);
+      } else if (obj.type === 'grow_types') {
+        obj.current = Math.min((gameState.grownCropTypes || []).length, obj.required);
+      } else if (obj.type === 'talk' && obj.target) {
+        const rel = gameState.relationships?.[obj.target];
+        if (rel && rel.met) obj.current = Math.min(1, obj.required);
+      } else if (obj.type === 'harvest' && obj.target === 'any') {
+        // Track via grid: if any cell had a grown crop and is now empty, count as harvest
+        // This is tracked by the LLM via questProgress stateChanges
+      }
+
+      if (obj.current < obj.required) allComplete = false;
+    }
+    if (allComplete) {
+      completeQuest(quest.id);
+      return; // complete one at a time
+    }
+  }
+  renderQuests();
+}
+
+// ============================================================
+// EVENT LISTENERS (NPC Reactions)
+// ============================================================
+function setupEventListeners() {
+  gameEvents.on('plantGrown', (data) => {
+    if (!window.npcReactionsEnabled) return;
+    const reactions = NPC_REACTIONS.plantGrown;
+    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+    if (!displayingMessages && !sending) {
+      addBubble(reaction.speaker, reaction.text);
+    }
+  });
+
+  gameEvents.on('seasonChange', (data) => {
+    if (!window.npcReactionsEnabled) return;
+    const reactions = NPC_REACTIONS.seasonChange;
+    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+    addBubble(reaction.speaker, reaction.text);
+  });
+
+  gameEvents.on('lowEnergy', (data) => {
+    if (!window.npcReactionsEnabled) return;
+    const reactions = NPC_REACTIONS.lowEnergy;
+    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+    addBubble(reaction.speaker, reaction.text);
+  });
+
+  gameEvents.on('questComplete', (data) => {
+    // Check for newly available quests
+  });
+}
+
+// ============================================================
 // GAME FLOW
 // ============================================================
 async function handlePlayerMessage(text) {
@@ -716,9 +1164,14 @@ async function handlePlayerMessage(text) {
     const response = await sendToLLM(text);
     setTyping(false);
 
+    // Display messages sequentially (one at a time with delays) or instantly in test mode
     if (response.messages && Array.isArray(response.messages)) {
-      for (const msg of response.messages) {
-        addBubble(msg.speaker || 'narrator', msg.text);
+      if (window.sequentialDisplayEnabled) {
+        await displayMessagesSequentially(response.messages);
+      } else {
+        for (const msg of response.messages) {
+          addBubble(msg.speaker || 'narrator', msg.text);
+        }
       }
     } else if (response.narrative) {
       addBubble('narrator', response.narrative);
@@ -761,6 +1214,10 @@ async function startGame() {
   document.getElementById('game-screen').classList.add('active');
   renderAll();
 
+  // Start game systems
+  setupEventListeners();
+  startGrowthTimer();
+
   setTyping(true);
   try {
     const response = await sendToLLM(
@@ -768,12 +1225,28 @@ async function startGame() {
     );
     setTyping(false);
     if (response.messages && Array.isArray(response.messages)) {
-      for (const msg of response.messages) addBubble(msg.speaker || 'narrator', msg.text);
+      if (window.sequentialDisplayEnabled) {
+        await displayMessagesSequentially(response.messages);
+      } else {
+        for (const msg of response.messages) addBubble(msg.speaker || 'narrator', msg.text);
+      }
     } else if (response.narrative) {
       addBubble('narrator', response.narrative);
     }
     if (response.stateChanges) { applyStateChanges(response.stateChanges); renderAll(); }
     renderSuggestions(response.suggestedActions);
+
+    // Offer first quests after a short delay (skip in test mode)
+    if (window.npcReactionsEnabled) {
+      setTimeout(() => {
+        const available = getAvailableQuests();
+        // Offer the first 2 quests that have no prereqs
+        const starters = available.filter(q => q.prereqs.length === 0).slice(0, 2);
+        starters.forEach((q, i) => {
+          setTimeout(() => offerQuest(q.id), i * 2500);
+        });
+      }, 3000);
+    }
   } catch (err) {
     setTyping(false);
     addBubble('system', `Failed to connect: ${err.message}. Check your API settings and reload.`);
