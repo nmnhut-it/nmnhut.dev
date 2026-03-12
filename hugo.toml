@@ -44,6 +44,11 @@ theme = "PaperMod"
     url = "/story/"
     weight = 20
   [[menu.main]]
+    identifier = "farm"
+    name = "LLM Farm"
+    url = "/farm/"
+    weight = 23
+  [[menu.main]]
     identifier = "transcribe"
     name = "Transcribe"
     url = "/transcribe/"
