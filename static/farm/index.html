@@ -751,6 +751,10 @@ async function startGame() {
   if (!model) { errorEl.textContent = 'Please enter a model name.'; errorEl.style.display = 'block'; return; }
 
   apiConfig = { url, key, model };
+  localStorage.setItem('llmfarm_api_url', url);
+  localStorage.setItem('llmfarm_api_key', key);
+  localStorage.setItem('llmfarm_model', model);
+  localStorage.setItem('llmfarm_farmer', name);
   gameState = createInitialState(name);
 
   document.getElementById('setup-screen').classList.add('hidden');
@@ -776,6 +780,15 @@ async function startGame() {
     console.error(err);
   }
 }
+
+// Restore saved settings from localStorage
+(function() {
+  const s = (k, id) => { const v = localStorage.getItem(k); if (v) document.getElementById(id).value = v; };
+  s('llmfarm_api_url', 'api-url');
+  s('llmfarm_api_key', 'api-key');
+  s('llmfarm_model', 'model-name');
+  s('llmfarm_farmer', 'farmer-name');
+})();
 
 // ============================================================
 // EVENT LISTENERS
