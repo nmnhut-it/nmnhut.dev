@@ -280,6 +280,33 @@
     .typing-indicator span:nth-child(3) { animation-delay: .4s; }
     @keyframes blink { 0%,60%,100%{opacity:.2} 30%{opacity:1} }
 
+    /* Suggested actions */
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 20px 0;
+      flex-shrink: 0;
+    }
+    .suggestions:empty { display: none; }
+    .suggest-btn {
+      padding: 6px 14px;
+      background: var(--surface2);
+      border: 1px solid #ffffff15;
+      border-radius: 20px;
+      color: var(--text);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .suggest-btn:hover {
+      background: var(--accent2);
+      border-color: var(--accent2);
+    }
+    .suggest-btn:disabled { opacity: .5; cursor: not-allowed; }
+
     /* Chat input */
     .chat-input-area {
       padding: 12px 20px;
@@ -410,6 +437,7 @@
           <span>.</span><span>.</span><span>.</span> Narrator is thinking
         </div>
       </div>
+      <div class="suggestions" id="suggestions"></div>
       <div class="chat-input-area">
         <textarea id="chat-input" placeholder="Talk to the narrator... (What do you want to do?)" rows="1"></textarea>
         <button id="btn-send">Send</button>
@@ -486,6 +514,11 @@ ${JSON.stringify(gameState, null, 2)}
 You MUST respond with valid JSON in this exact format (no markdown, no code fences):
 {
   "narrative": "Your vivid narrative text describing what happens. Use multiple paragraphs for rich storytelling. This is what the player reads.",
+  "suggestedActions": [
+    "Short action the player could take next",
+    "Another possible action",
+    "A third option"
+  ],
   "stateChanges": {
     "day": null,
     "season": null,
@@ -503,6 +536,16 @@ You MUST respond with valid JSON in this exact format (no markdown, no code fenc
     "flags": null
   }
 }
+
+## SUGGESTED ACTIONS RULES
+- ALWAYS include 3-5 suggested actions the player could take next.
+- Make them context-aware: reflect current time of day, season, weather, energy level, what just happened.
+- Mix action types: one farming action, one social/exploration action, one creative/unexpected option.
+- Keep them short and punchy (3-8 words each), written as imperative verbs: "Till the front row", "Visit the village shop", "Go fishing at the river".
+- Include quest-related suggestions when there are active storylines.
+- If energy is low, suggest resting or low-energy options.
+- If it's a new day, suggest morning routines. If evening, suggest winding-down activities.
+- Occasionally include a quirky/surprising option to spark creativity ("Investigate that strange noise", "Try talking to the scarecrow").
 
 ## STATE CHANGE RULES
 - Only include fields in stateChanges that actually change. Use null for unchanged fields.
@@ -727,6 +770,27 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+function renderSuggestions(actions) {
+  const container = document.getElementById('suggestions');
+  container.innerHTML = '';
+  if (!actions || !actions.length) return;
+  for (const action of actions) {
+    const btn = document.createElement('button');
+    btn.className = 'suggest-btn';
+    btn.textContent = action;
+    btn.addEventListener('click', () => {
+      if (sending) return;
+      clearSuggestions();
+      handlePlayerMessage(action);
+    });
+    container.appendChild(btn);
+  }
+}
+
+function clearSuggestions() {
+  document.getElementById('suggestions').innerHTML = '';
+}
+
 function setTyping(visible) {
   document.getElementById('typing').classList.toggle('visible', visible);
   const container = document.getElementById('chat-messages');
@@ -746,6 +810,7 @@ async function handlePlayerMessage(text) {
   input.disabled = true;
 
   addMessage(text, 'player');
+  clearSuggestions();
   setTyping(true);
 
   try {
@@ -759,6 +824,7 @@ async function handlePlayerMessage(text) {
       applyStateChanges(response.stateChanges);
       renderAll();
     }
+    renderSuggestions(response.suggestedActions);
   } catch (err) {
     setTyping(false);
     addMessage(`Something went wrong: ${err.message}`, 'system');
@@ -811,6 +877,7 @@ async function startGame() {
       applyStateChanges(response.stateChanges);
       renderAll();
     }
+    renderSuggestions(response.suggestedActions);
   } catch (err) {
     setTyping(false);
     addMessage(`Failed to connect: ${err.message}. Check your API settings and reload.`, 'system');
@@ -829,6 +896,7 @@ document.getElementById('btn-send').addEventListener('click', () => {
   if (!text) return;
   input.value = '';
   input.style.height = 'auto';
+  clearSuggestions();
   handlePlayerMessage(text);
 });
 
