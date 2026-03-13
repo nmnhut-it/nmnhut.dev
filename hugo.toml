@@ -49,6 +49,11 @@ theme = "PaperMod"
     url = "/farm/"
     weight = 23
   [[menu.main]]
+    identifier = "rag"
+    name = "RAG Demo"
+    url = "/rag/"
+    weight = 24
+  [[menu.main]]
     identifier = "transcribe"
     name = "Transcribe"
     url = "/transcribe/"
