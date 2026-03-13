@@ -803,6 +803,7 @@ function addToKB(content, sourceType, sourceLabel) {
 function rebuildKB() {
   kb = loadedSources.map(s => s.content).join("\n\n---\n\n");
   if (!loadedSources.length) kb = SAMPLE_KB;
+  oramaDb = null;
   updateKBPreview();
 }
 
@@ -815,6 +816,7 @@ function removeSource(idx) {
 function clearKB() {
   loadedSources = [];
   kb = SAMPLE_KB;
+  oramaDb = null;
   updateKBPreview();
   renderSourceBadges();
 }
@@ -844,9 +846,10 @@ function toggleKB() {
     preview.classList.add("hidden");
     toggle.classList.add("active");
     toggle.textContent = "DONE";
-    editor.oninput = () => { kb = editor.value; };
+    editor.oninput = () => { kb = editor.value; oramaDb = null; };
   } else {
     kb = editor.value;
+    oramaDb = null;
     editor.classList.add("hidden");
     preview.classList.remove("hidden");
     toggle.classList.remove("active");
@@ -1270,17 +1273,18 @@ function renderChips() {
   });
 }
 
-// ── Stopwords for scoring ──
-const STOP = new Set(["the","a","an","is","are","was","were","be","been","being","have","has","had",
-  "do","does","did","will","would","shall","should","may","might","must","can","could",
-  "i","me","my","we","our","you","your","he","him","his","she","her","it","its","they","them","their",
-  "this","that","these","those","what","which","who","whom","how","when","where","why",
-  "in","on","at","to","for","of","with","by","from","up","about","into","through","during",
-  "and","or","but","if","then","so","than","too","very","just","not","no","nor","also"]);
-
-// ── Tokenize for scoring ──
-function tokenize(text) {
-  return text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(w => w.length > 1 && !STOP.has(w));
+// ── Orama search engine (lazy-loaded) ──
+let oramaDb = null;
+let _orama = null;
+async function loadOrama() {
+  if (!_orama) _orama = await import("https://cdn.jsdelivr.net/npm/@orama/orama@latest/+esm");
+  return _orama;
+}
+async function rebuildIndex() {
+  const { create, insertMultiple } = await loadOrama();
+  const chunks = chunkText(kb);
+  oramaDb = create({ schema: { text: "string" } });
+  await insertMultiple(oramaDb, chunks.map(c => ({ text: c })));
 }
 
 // ── Chunk text into paragraphs with overlap ──
@@ -1313,50 +1317,21 @@ function chunkText(text, maxLen = 600, overlap = 80) {
   return chunks.length ? chunks : [text.trim()];
 }
 
-// ── BM25-like scoring ──
-function scoreChunks(text, q) {
-  const chunks = chunkText(text);
-  const queryTokens = tokenize(q);
-  if (!queryTokens.length) return chunks.slice(0, 3).map(c => ({ text: c, score: 0 }));
-
-  // IDF: how rare is each query term across chunks?
-  const N = chunks.length;
-  const df = {};
-  for (const t of queryTokens) df[t] = 0;
-  const chunkTokenSets = chunks.map(c => new Set(tokenize(c)));
-  for (const ts of chunkTokenSets) {
-    for (const t of queryTokens) {
-      if (ts.has(t)) df[t]++;
-    }
+// ── Search via Orama ──
+async function scoreChunks(text, q) {
+  if (!oramaDb) await rebuildIndex();
+  const { search } = await loadOrama();
+  const results = await search(oramaDb, { term: q, limit: 5 });
+  if (!results.hits.length) {
+    const chunks = chunkText(text);
+    return chunks.slice(0, 3).map(c => ({ text: c, score: 0 }));
   }
-  const idf = {};
-  for (const t of queryTokens) {
-    idf[t] = Math.log((N - df[t] + 0.5) / (df[t] + 0.5) + 1);
-  }
-
-  // Score each chunk: BM25-inspired TF-IDF
-  const k1 = 1.5, b = 0.75;
-  const avgLen = chunkTokenSets.reduce((s, ts) => s + ts.size, 0) / N;
-
-  const scored = chunks.map((chunk, i) => {
-    const tokens = tokenize(chunk);
-    const tf = {};
-    for (const t of tokens) tf[t] = (tf[t] || 0) + 1;
-    const len = tokens.length;
-
-    let score = 0;
-    for (const t of queryTokens) {
-      const freq = tf[t] || 0;
-      score += (idf[t] || 0) * (freq * (k1 + 1)) / (freq + k1 * (1 - b + b * len / avgLen));
-    }
-    return { text: chunk, score };
-  });
-
   // Normalize scores to 0-1 range
-  const maxScore = Math.max(...scored.map(s => s.score), 0.001);
-  scored.forEach(s => s.score = Math.round(s.score / maxScore * 100) / 100);
-
-  return scored.sort((a, b) => b.score - a.score).slice(0, 5);
+  const maxScore = Math.max(...results.hits.map(h => h.score), 0.001);
+  return results.hits.map(h => ({
+    text: h.document.text,
+    score: Math.round(h.score / maxScore * 100) / 100
+  }));
 }
 
 // ── RAG query ──
@@ -1379,7 +1354,7 @@ async function runRAG() {
   document.getElementById("metrics-row").classList.add("hidden");
   document.getElementById("chunks-area").classList.add("hidden");
 
-  const retrieved = scoreChunks(kb, query);
+  const retrieved = await scoreChunks(kb, query);
   const t0 = Date.now();
 
   try {
