@@ -722,8 +722,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (savedKey) document.getElementById("api-key").value = savedKey;
   if (savedModel) document.getElementById("api-model").value = savedModel;
 
-  // Restore saved source credentials
-  const fields = ["jira-domain","jira-email","jira-token","conf-domain","conf-email","conf-token","gdrive-key"];
+  // Restore all saved source fields
+  const fields = ["gh-input","jira-domain","jira-email","jira-token","jira-jql","conf-domain","conf-email","conf-token","conf-cql","gdrive-key","gdrive-id","url-input"];
   fields.forEach(f => { const v = localStorage.getItem("rag_" + f); if (v) document.getElementById(f).value = v; });
 
   renderChips();
@@ -867,6 +867,8 @@ async function fetchGitHub() {
   const status = document.getElementById("gh-status");
   if (!input) { status.className = "src-status error"; status.textContent = "Enter a repo (e.g. owner/repo)"; return; }
 
+  localStorage.setItem("rag_gh-input", input);
+
   let apiUrl;
   if (input.startsWith("http")) {
     const match = input.match(/github\.com\/([^/]+)\/([^/]+)(?:\/(?:blob|tree)\/[^/]+\/(.+))?/);
@@ -936,6 +938,7 @@ async function fetchJira() {
   localStorage.setItem("rag_jira-domain", domain);
   localStorage.setItem("rag_jira-email", email);
   localStorage.setItem("rag_jira-token", token);
+  localStorage.setItem("rag_jira-jql", jql);
 
   setFetching("jira", true);
   status.className = "src-status"; status.textContent = "Fetching Jira issues...";
@@ -1000,6 +1003,7 @@ async function fetchConfluence() {
   localStorage.setItem("rag_conf-domain", domain);
   localStorage.setItem("rag_conf-email", email);
   localStorage.setItem("rag_conf-token", token);
+  localStorage.setItem("rag_conf-cql", cql);
 
   setFetching("conf", true);
   status.className = "src-status"; status.textContent = "Fetching Confluence pages...";
@@ -1046,6 +1050,7 @@ async function fetchGDrive() {
   }
 
   localStorage.setItem("rag_gdrive-key", apiKey);
+  localStorage.setItem("rag_gdrive-id", rawId);
 
   // Extract file ID from URL if needed
   let fileId = rawId;
@@ -1121,6 +1126,8 @@ async function fetchURL() {
 
   if (!url) { status.className = "src-status error"; status.textContent = "Enter a URL"; return; }
   if (!/^https?:\/\/.+/.test(url)) { status.className = "src-status error"; status.textContent = "Enter a valid URL starting with http(s)://"; return; }
+
+  localStorage.setItem("rag_url-input", url);
 
   setFetching("url", true);
   status.className = "src-status"; status.textContent = "Fetching page...";
