@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>RAG Demo - nmnhut.dev</title>
+  <title>TinyRAG - nmnhut.dev</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -341,8 +341,8 @@
 <div id="setup-screen">
   <div class="setup-header">
     <span class="dot-inline"></span>
-    <h1>OpenRAG</h1>
-    <p>Configure your LLM endpoint to power the RAG demo</p>
+    <h1>TinyRAG</h1>
+    <p>A minimal in-browser RAG demo &mdash; bring your own LLM</p>
   </div>
   <div class="setup-box">
     <div class="field">
@@ -370,9 +370,9 @@
   <div class="top-bar">
     <div class="top-bar-left">
       <span class="dot pulse"></span>
-      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.02em">OpenRAG</span>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.02em">TinyRAG</span>
     </div>
-    <div class="version">v0.9.3</div>
+    <div class="version">v1.0.0</div>
   </div>
 
   <div class="content">
@@ -382,7 +382,7 @@
       <div class="hero">
         <div class="hero-label">Live Demo</div>
         <h2>Ask anything about<br><span>your documents</span></h2>
-        <p>RAG powered by your LLM &middot; 6 source connectors &middot; real answers</p>
+        <p>In-browser RAG &middot; your LLM &middot; 6 source connectors</p>
       </div>
 
       <div style="padding:1.2rem">
@@ -628,21 +628,23 @@
 
 <script>
 // ── Data ──
-const SAMPLE_KB = `OpenRAG is an open-source Retrieval-Augmented Generation framework built for production use. It supports multiple vector databases including Pinecone, Weaviate, Chroma, and FAISS. Documents are chunked using semantic boundaries with configurable overlap. Embeddings can be generated via OpenAI, Cohere, or local models like sentence-transformers.
+const SAMPLE_KB = `Retrieval-Augmented Generation (RAG) is a technique that enhances LLM responses by grounding them in external knowledge. Instead of relying solely on the model's training data, RAG retrieves relevant documents at query time and includes them as context. This reduces hallucinations and allows the model to answer questions about private or up-to-date information.
 
-The ingestion pipeline handles PDF, Markdown, HTML, and plain text. Chunking strategies include fixed-size, sentence-aware, and recursive splitting. Each chunk is stored with metadata including source, page number, and timestamp.
+A RAG pipeline has three main stages: ingestion, retrieval, and generation. During ingestion, documents are split into chunks and converted into vector embeddings. These embeddings are stored in a vector database for fast similarity search. Common vector stores include FAISS, Chroma, Pinecone, and Weaviate.
 
-Retrieval uses cosine similarity by default but supports dot product and Euclidean distance. Reranking is available via Cohere Rerank or a cross-encoder model. Hybrid search combines dense and sparse BM25 retrieval for improved recall.
+During retrieval, the user's query is also converted into an embedding. The system finds the most similar document chunks using cosine similarity or dot product distance. The top-k matching chunks are selected as context. Reranking with a cross-encoder model can improve precision by re-scoring the initial results.
 
-The query pipeline takes a user question, retrieves the top-k chunks, and passes them to any LLM including OpenAI, Anthropic, Mistral, or local via Ollama. Context window management ensures chunks fit within token limits. Citations are automatically extracted from chunk metadata.
+During generation, the retrieved chunks are inserted into the LLM prompt alongside the user's question. The model produces an answer grounded in the provided context. Good RAG systems include source citations so users can verify the answer against the original documents.
 
-Installation requires Python 3.9 or higher and can be done via pip install openrag. Configuration is YAML-based and supports environment variable injection for API keys. A Docker image is available at docker pull openrag/server:latest.`;
+Chunking strategy significantly affects RAG quality. Fixed-size chunking is simple but may split sentences. Sentence-aware chunking preserves meaning but creates uneven sizes. Recursive splitting tries to respect document structure like paragraphs and sections. Overlap between chunks (typically 10-20%) helps preserve context at boundaries.
+
+TinyRAG is this demo app. It runs entirely in the browser with no backend. It uses simple keyword-based scoring to find relevant chunks from your loaded documents, then sends them to your configured LLM endpoint. It supports loading documents from files, GitHub, Jira, Confluence, Google Drive, and URLs.`;
 
 const EXAMPLE_QUERIES = [
-  "How do I install OpenRAG?",
-  "What vector databases work?",
-  "How does hybrid search work?",
-  "Which LLMs are supported?",
+  "What is RAG?",
+  "How does chunking affect quality?",
+  "What happens during retrieval?",
+  "How does TinyRAG work?",
 ];
 
 const PIPELINE_STEPS = [
@@ -656,34 +658,47 @@ const PIPELINE_STEPS = [
 ];
 
 const CODE_SNIPPETS = [
-  { label: "Install", code: "pip install openrag" },
-  { label: "Ingest & Query", code: `from openrag import RAGPipeline
+  { label: "LangChain RAG", code: `from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import RetrievalQA
+from langchain.llms import ChatOpenAI
 
-rag = RAGPipeline(
-  vector_store="chroma",
-  llm="claude-3-5-sonnet",
-  chunk_size=512,
+splitter = RecursiveCharacterTextSplitter(
+  chunk_size=512, chunk_overlap=64
+)
+chunks = splitter.split_documents(docs)
+
+db = Chroma.from_documents(chunks, OpenAIEmbeddings())
+qa = RetrievalQA.from_chain_type(
+  llm=ChatOpenAI(), retriever=db.as_retriever()
+)
+qa.run("What is the refund policy?")` },
+  { label: "LlamaIndex RAG", code: `from llama_index.core import (
+  VectorStoreIndex,
+  SimpleDirectoryReader,
 )
 
-rag.ingest(["./docs/"])
+docs = SimpleDirectoryReader("./data").load_data()
+index = VectorStoreIndex.from_documents(docs)
 
-result = rag.query("What is the refund policy?")
-print(result.answer)
-print(result.citations)` },
-  { label: "Hybrid Search", code: `rag = RAGPipeline(
-  retrieval_mode="hybrid",
-  dense_weight=0.7,
-  sparse_weight=0.3,
-)
+engine = index.as_query_engine()
+response = engine.query("What is the refund policy?")
+print(response)` },
+  { label: "Plain Python", code: `import numpy as np
 
-result = rag.query("refund policy", top_k=10)
-for chunk in result.chunks:
-  print(f"[{chunk.score:.2f}] {chunk.text}")` },
-  { label: "Docker", code: `docker pull openrag/server:latest
+def cosine_sim(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-docker run -p 8080:8080 \\
-  -e OPENAI_KEY=$OPENAI_KEY \\
-  openrag/server:latest` },
+# embed query + chunks via any API
+q_emb = embed(query)
+scores = [cosine_sim(q_emb, c.emb) for c in chunks]
+
+top_k = sorted(zip(scores, chunks), reverse=True)[:5]
+context = "\\n".join(c.text for _, c in top_k)
+
+# send to LLM with context
+answer = llm(f"Context:\\n{context}\\n\\nQ: {query}")` },
 ];
 
 const SOURCE_ICONS = {
@@ -1255,14 +1270,93 @@ function renderChips() {
   });
 }
 
-// ── Chunk scoring ──
+// ── Stopwords for scoring ──
+const STOP = new Set(["the","a","an","is","are","was","were","be","been","being","have","has","had",
+  "do","does","did","will","would","shall","should","may","might","must","can","could",
+  "i","me","my","we","our","you","your","he","him","his","she","her","it","its","they","them","their",
+  "this","that","these","those","what","which","who","whom","how","when","where","why",
+  "in","on","at","to","for","of","with","by","from","up","about","into","through","during",
+  "and","or","but","if","then","so","than","too","very","just","not","no","nor","also"]);
+
+// ── Tokenize for scoring ──
+function tokenize(text) {
+  return text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(w => w.length > 1 && !STOP.has(w));
+}
+
+// ── Chunk text into paragraphs with overlap ──
+function chunkText(text, maxLen = 600, overlap = 80) {
+  // First split by paragraphs (double newline or blank lines)
+  const paragraphs = text.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 30);
+  const chunks = [];
+
+  for (const para of paragraphs) {
+    if (para.length <= maxLen) {
+      chunks.push(para);
+    } else {
+      // Split long paragraphs by sentences
+      const sentences = para.match(/[^.!?]+[.!?]+/g) || [para];
+      let current = "";
+      for (const s of sentences) {
+        if (current.length + s.length > maxLen && current.length > 0) {
+          chunks.push(current.trim());
+          // Keep overlap from end of previous chunk
+          const words = current.split(/\s+/);
+          const overlapWords = words.slice(-Math.ceil(overlap / 5));
+          current = overlapWords.join(" ") + " " + s;
+        } else {
+          current += (current ? " " : "") + s;
+        }
+      }
+      if (current.trim()) chunks.push(current.trim());
+    }
+  }
+  return chunks.length ? chunks : [text.trim()];
+}
+
+// ── BM25-like scoring ──
 function scoreChunks(text, q) {
-  const raw = text.match(/[^.!?\n]{60,}/g) || [];
-  const qw = q.toLowerCase().split(/\s+/).filter(w => w.length > 3);
-  return raw.map(c => ({
-    text: c.trim(),
-    score: Math.min(0.97, 0.45 + (qw.filter(w => c.toLowerCase().includes(w)).length / Math.max(qw.length, 1)) * 0.48 + Math.random() * 0.04)
-  })).sort((a, b) => b.score - a.score).slice(0, 3);
+  const chunks = chunkText(text);
+  const queryTokens = tokenize(q);
+  if (!queryTokens.length) return chunks.slice(0, 3).map(c => ({ text: c, score: 0 }));
+
+  // IDF: how rare is each query term across chunks?
+  const N = chunks.length;
+  const df = {};
+  for (const t of queryTokens) df[t] = 0;
+  const chunkTokenSets = chunks.map(c => new Set(tokenize(c)));
+  for (const ts of chunkTokenSets) {
+    for (const t of queryTokens) {
+      if (ts.has(t)) df[t]++;
+    }
+  }
+  const idf = {};
+  for (const t of queryTokens) {
+    idf[t] = Math.log((N - df[t] + 0.5) / (df[t] + 0.5) + 1);
+  }
+
+  // Score each chunk: BM25-inspired TF-IDF
+  const k1 = 1.5, b = 0.75;
+  const avgLen = chunkTokenSets.reduce((s, ts) => s + ts.size, 0) / N;
+
+  const scored = chunks.map((chunk, i) => {
+    const tokens = tokenize(chunk);
+    const tf = {};
+    for (const t of tokens) tf[t] = (tf[t] || 0) + 1;
+    const len = tokens.length;
+
+    let score = 0;
+    for (const t of queryTokens) {
+      const freq = tf[t] || 0;
+      score += (idf[t] || 0) * (freq * (k1 + 1)) / (freq + k1 * (1 - b + b * len / avgLen));
+    }
+    return { text: chunk, score };
+  });
+
+  // Normalize scores to 0-1 range
+  const maxScore = Math.max(...scored.map(s => s.score), 0.001);
+  scored.forEach(s => s.score = Math.round(s.score / maxScore * 100) / 100);
+
+  return scored.sort((a, b) => b.score - a.score).slice(0, 5);
 }
 
 // ── RAG query ──
@@ -1298,10 +1392,10 @@ async function runRAG() {
       body: JSON.stringify({
         model: apiConfig.model,
         messages: [
-          { role: "system", content: "You are a RAG assistant. Answer concisely and clearly using ONLY the provided context chunks. If the answer isn't in the context, say so. Keep answers short and scannable for mobile reading." },
-          { role: "user", content: "Context:\n" + retrieved.map(c => c.text).join("\n\n") + "\n\nQuestion: " + query }
+          { role: "system", content: "You are a helpful assistant. Answer the user's question using ONLY the provided context chunks. Rules:\n1. If the context contains the answer, respond concisely with the key facts.\n2. If the context does NOT contain enough information, say \"I don't have enough context to answer that\" — do NOT make things up.\n3. Keep answers short (2-4 sentences) and scannable.\n4. Do not mention \"chunks\" or \"context\" in your answer — just answer naturally." },
+          { role: "user", content: retrieved.map((c, i) => `[${i + 1}] ${c.text}`).join("\n\n") + "\n\n---\nQuestion: " + query }
         ],
-        max_tokens: 1000,
+        max_tokens: 512,
         temperature: 0.3,
       }),
     });
@@ -1351,7 +1445,7 @@ function renderChunks(chunks) {
     div.style.animationDelay = (i * 0.08) + "s";
     div.innerHTML =
       '<div class="chunk-header"><span>CHUNK_' + String(i + 1).padStart(3, "0") + '</span><span class="score">' + Math.round(c.score * 100) + '% match</span></div>' +
-      '<div class="chunk-body">' + escapeHtml(c.text.substring(0, 180)) + (c.text.length > 180 ? "..." : "") + '</div>';
+      '<div class="chunk-body">' + escapeHtml(c.text.substring(0, 280)) + (c.text.length > 280 ? "..." : "") + '</div>';
     list.appendChild(div);
   });
 }
