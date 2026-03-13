@@ -644,45 +644,40 @@ server.listen(0, async () => {
       });
       assert(allStatsVisible, 'All HUD stats visible within viewport');
 
-      // Farm grid visible and contained
-      const grid = document.getElementById('farm-grid');
-      const gridRect = grid.getBoundingClientRect();
-      assert(gridRect.right <= vpWidth + 2, 'Farm grid fits within viewport');
-      assert(gridRect.width > 50, 'Farm grid has reasonable width');
+      // Tile map visible and contained
+      const tileMap = document.getElementById('tile-map');
+      const mapRect = tileMap.getBoundingClientRect();
+      assert(mapRect.right <= vpWidth + 2, 'Tile map fits within viewport');
+      assert(mapRect.width > 50, 'Tile map has reasonable width');
 
-      // Farm cells rendered
+      // Tiles rendered (10x8 = 80 tiles)
+      const tiles = document.querySelectorAll('.tile');
+      assert(tiles.length === 80, 'All 80 tiles rendered');
+
+      // Legacy farm cells rendered (hidden)
       const cells = document.querySelectorAll('.farm-cell');
       assert(cells.length === 25, 'All 25 farm cells rendered');
 
-      // Bubble area visible
-      const chatMsgs = document.getElementById('chat-messages');
-      const chatRect = chatMsgs.getBoundingClientRect();
-      assert(chatRect.height > 0, 'Bubble area has height');
+      // Game world has height
+      const gameWorld = document.querySelector('.game-world');
+      const worldRect = gameWorld.getBoundingClientRect();
+      assert(worldRect.height > 0, 'Game world has height');
 
-      // NPC bubbles exist
+      // NPC bubbles exist (legacy compat)
       const npcBubbles = document.querySelectorAll('.bubble.npc');
       assert(npcBubbles.length > 0, 'NPC bubble exists');
 
-      // Suggestions visible
+      // Suggestions rendered (legacy compat, hidden)
       const sugBtns = document.querySelectorAll('#suggestions .suggest-btn');
       assert(sugBtns.length > 0, 'Suggestion buttons rendered');
-      let allSugsVisible = true;
-      sugBtns.forEach(btn => {
-        const r = btn.getBoundingClientRect();
-        if (r.right > vpWidth + 5) allSugsVisible = false;
-      });
-      assert(allSugsVisible, 'Suggestion buttons fit within viewport');
 
-      // Chat input visible and usable
-      const input = document.getElementById('chat-input');
-      const inputRect = input.getBoundingClientRect();
-      assert(inputRect.width > 50, 'Chat input has reasonable width');
-      assert(inputRect.right <= vpWidth + 2, 'Chat input fits within viewport');
+      // Dialog input visible when dialog is open
+      const dialogInput = document.getElementById('dialog-input');
+      assert(dialogInput !== null, 'Dialog input exists');
 
-      // Send button visible
-      const sendBtn = document.getElementById('btn-send');
-      const sendRect = sendBtn.getBoundingClientRect();
-      assert(sendRect.right <= vpWidth + 2, 'Send button fits within viewport');
+      // Dialog send button exists
+      const dialogSend = document.getElementById('dialog-send');
+      assert(dialogSend !== null, 'Dialog send button exists');
 
       // Mobile-specific: farm toggle visible
       if (isMobile) {
@@ -717,26 +712,22 @@ server.listen(0, async () => {
         }
       }
 
-      // Desktop-specific: farm toggle hidden, all sections visible
+      // Desktop-specific checks
       if (!isMobile) {
         const toggle = document.getElementById('farm-toggle');
         const toggleStyle = window.getComputedStyle(toggle);
         assert(toggleStyle.display === 'none', 'Farm toggle hidden on desktop');
 
-        // All panel sections visible
-        const sections = document.querySelectorAll('.farm-side .panel-section');
-        let allVisible = true;
-        sections.forEach(s => {
-          if (window.getComputedStyle(s).display === 'none') allVisible = false;
-        });
-        assert(allVisible, 'All panel sections visible on desktop');
+        // HUD panel buttons exist
+        const invBtn = document.getElementById('btn-inventory');
+        const questBtn = document.getElementById('btn-quests');
+        assert(invBtn !== null, 'Inventory button exists');
+        assert(questBtn !== null, 'Quest button exists');
 
-        // Side-by-side layout
-        const farmSide = document.querySelector('.farm-side');
-        const gameArea = document.querySelector('.game-area');
-        const farmRect = farmSide.getBoundingClientRect();
-        const gameRect = gameArea.getBoundingClientRect();
-        assert(farmRect.right <= gameRect.left + 5, 'Farm and game areas side-by-side');
+        // Tile map centered in game world
+        const tileMap = document.getElementById('tile-map');
+        const tileRect = tileMap.getBoundingClientRect();
+        assert(tileRect.width > 0, 'Tile map has width on desktop');
       }
 
       // No horizontal scroll

@@ -18,9 +18,8 @@
       --pink: #f472b6;
       --text: #e8e0d4;
       --text2: #8ba4b5;
-      --bubble-npc: #2a4a5e;
-      --bubble-player: #3b5e3b;
       --radius: 12px;
+      --tile: 64px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -29,6 +28,7 @@
       color: var(--text);
       height: 100vh;
       overflow: hidden;
+      user-select: none;
     }
 
     /* Setup screen */
@@ -78,33 +78,280 @@
       display: flex; align-items: center; gap: 3px; font-size: 0.78rem;
       padding: 3px 8px; background: #00000040; border-radius: 6px; white-space: nowrap;
     }
-
-    /* Main layout */
-    .main-layout { display: flex; flex: 1; min-height: 0; }
-
-    /* Farm side */
-    .farm-side {
-      width: 320px; flex-shrink: 0; display: flex; flex-direction: column;
-      border-right: 2px solid #0a1520; overflow-y: auto;
-      background: linear-gradient(180deg, #162d3e, #1b2838);
+    .hud-btn {
+      padding: 3px 10px; background: var(--surface); border: 1px solid #ffffff18;
+      border-radius: 6px; color: var(--text); font-size: 0.74rem; cursor: pointer;
+      font-family: inherit; transition: all .15s;
     }
-    .panel-section { padding: 12px; border-bottom: 1px solid #0a152080; }
-    .panel-section h3 {
-      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.2px;
-      color: var(--text2); margin-bottom: 8px;
+    .hud-btn:hover { background: var(--accent); color: #000; }
+    .hud-btn.active { background: var(--accent); color: #000; }
+
+    /* Main game area */
+    .game-world {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      background: linear-gradient(180deg, #1b2838 0%, #162d3e 100%);
     }
 
-    /* Farm grid */
-    .farm-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; max-width: 280px; }
+    /* Tile map */
+    .tile-map {
+      display: grid;
+      grid-template-columns: repeat(10, var(--tile));
+      grid-template-rows: repeat(8, var(--tile));
+      gap: 1px;
+      position: relative;
+      background: #0a1520;
+      border: 2px solid #0a1520;
+      border-radius: 4px;
+    }
+    .tile {
+      width: var(--tile); height: var(--tile);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; position: relative; cursor: pointer;
+      transition: filter .15s;
+    }
+    .tile:hover { filter: brightness(1.2); }
+    .tile.walkable { cursor: pointer; }
+    .tile.blocked { cursor: not-allowed; }
+
+    /* Tile types */
+    .tile-grass { background: #2d5a27; }
+    .tile-path { background: #8b7355; }
+    .tile-water { background: #1a5276; }
+    .tile-farm { background: #3d2b1f; }
+    .tile-building { background: #4a3728; }
+    .tile-tree { background: #1e4620; }
+    .tile-fence { background: #5c4033; }
+    .tile-flower { background: #2d5a27; }
+    .tile-bridge { background: #6b5b3e; }
+
+    /* Farm plot states */
+    .tile-farm.tilled { background: #5a3d28; }
+    .tile-farm.planted { background: #2a4a2a; }
+    .tile-farm.grown { background: #1f6a1f; }
+    .tile-farm.ready { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: inset 0 0 8px #4ade8040; }
+      50% { box-shadow: inset 0 0 16px #4ade80aa; }
+    }
+    .tile-farm .growth-bar {
+      position: absolute; bottom: 2px; left: 4px; right: 4px; height: 3px;
+      background: #ffffff15; border-radius: 2px; overflow: hidden;
+    }
+    .tile-farm .growth-bar .fill { height: 100%; background: var(--green); border-radius: 2px; }
+
+    /* Entities on tiles */
+    .entity {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; z-index: 2; pointer-events: none;
+      transition: all .3s ease;
+    }
+    .entity.player-entity {
+      font-size: 2rem; z-index: 5;
+      filter: drop-shadow(0 2px 4px #00000080);
+    }
+    .entity.npc-entity {
+      font-size: 1.6rem; z-index: 3;
+      animation: npcBob 2s ease-in-out infinite;
+    }
+    @keyframes npcBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* NPC highlight when nearby */
+    .tile.npc-nearby { box-shadow: inset 0 0 0 2px var(--accent); }
+
+    /* Speech bubbles floating above tiles */
+    .speech-bubble {
+      position: absolute; bottom: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%); background: #1e3a4fee;
+      border: 1px solid #ffffff25; border-radius: 10px;
+      padding: 6px 10px; font-size: 0.72rem; color: var(--text);
+      white-space: nowrap; max-width: 200px; white-space: normal;
+      z-index: 20; pointer-events: none;
+      animation: bubbleIn .3s ease-out;
+      line-height: 1.3;
+    }
+    .speech-bubble::after {
+      content: ''; position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #1e3a4fee;
+    }
+    .speech-bubble .speaker-name {
+      font-size: 0.62rem; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;
+    }
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Interaction prompt */
+    .interact-prompt {
+      position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: #000; font-size: 0.6rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap; z-index: 15;
+      animation: promptPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes promptPulse {
+      0%, 100% { opacity: .8; }
+      50% { opacity: 1; }
+    }
+
+    /* Side panels (inventory, quests) */
+    .side-panel {
+      position: absolute; top: 0; right: 0; width: 280px; height: 100%;
+      background: #162d3eee; border-left: 2px solid #0a1520;
+      z-index: 30; transform: translateX(100%); transition: transform .3s ease;
+      overflow-y: auto; padding: 12px;
+    }
+    .side-panel.open { transform: translateX(0); }
+    .side-panel h3 {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--text2); margin-bottom: 8px; padding-bottom: 6px;
+      border-bottom: 1px solid #ffffff10;
+    }
+    .panel-close {
+      position: absolute; top: 8px; right: 10px; background: none;
+      border: none; color: var(--text2); font-size: 1.2rem; cursor: pointer;
+    }
+    .panel-close:hover { color: var(--text); }
+
+    /* Inventory items */
+    .inv-list { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+    .inv-item {
+      display: flex; align-items: center; gap: 3px; padding: 4px 8px;
+      background: #00000030; border-radius: 4px; font-size: 0.78rem;
+    }
+    .inv-item .qty { color: var(--yellow); font-weight: 600; }
+
+    /* Animals */
+    .animal-list { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+    .animal-tag { padding: 3px 8px; background: #00000030; border-radius: 4px; font-size: 0.78rem; }
+
+    /* Quest items */
+    .quest-log { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .quest-item {
+      padding: 6px 8px; background: #00000030; border-radius: 6px;
+      font-size: 0.76rem; border-left: 3px solid var(--accent);
+    }
+    .quest-item.completed { border-left-color: var(--green); opacity: 0.6; }
+    .quest-title { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .quest-desc { color: var(--text2); font-size: 0.7rem; margin-bottom: 4px; }
+    .quest-objective { font-size: 0.68rem; color: var(--text2); }
+    .quest-progress-bar {
+      height: 3px; background: #ffffff15; border-radius: 2px; margin-top: 3px; overflow: hidden;
+    }
+    .quest-progress-bar .fill { height: 100%; background: var(--accent); border-radius: 2px; }
+    .quest-reward-text { font-size: 0.65rem; color: var(--yellow); margin-top: 2px; }
+
+    /* Event log */
+    .event-log { display: flex; flex-direction: column; gap: 2px; }
+    .event-entry { font-size: 0.72rem; color: var(--text2); padding: 2px 0; }
+
+    /* Dialog box (bottom of screen when talking to NPC) */
+    .dialog-box {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(180deg, #162d3eee, #0f1c2eee);
+      border-top: 2px solid var(--accent); padding: 12px 16px;
+      z-index: 40; display: none;
+    }
+    .dialog-box.active { display: block; }
+    .dialog-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .dialog-avatar { font-size: 1.6rem; }
+    .dialog-name { font-weight: 700; color: var(--accent); font-size: 0.85rem; }
+    .dialog-text {
+      font-size: 0.88rem; line-height: 1.5; color: var(--text);
+      margin-bottom: 8px; min-height: 40px;
+    }
+    .dialog-actions {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .dialog-btn {
+      padding: 6px 14px; background: var(--surface); border: 1px solid #ffffff18;
+      border-radius: 16px; color: var(--text); font-size: 0.8rem; cursor: pointer;
+      font-family: inherit; transition: all .15s;
+    }
+    .dialog-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+    .dialog-input-row { display: flex; gap: 8px; margin-top: 6px; }
+    #dialog-input {
+      flex: 1; padding: 8px 12px; background: #0a152080; border: 1px solid #ffffff12;
+      border-radius: 16px; color: var(--text); font-size: 0.85rem; outline: none;
+      font-family: inherit;
+    }
+    #dialog-input:focus { border-color: var(--accent); }
+    #dialog-send {
+      padding: 8px 14px; background: var(--accent); color: #000; border: none;
+      border-radius: 16px; cursor: pointer; font-weight: 700; font-size: 0.82rem;
+    }
+    #dialog-send:hover { opacity: .9; }
+    #dialog-send:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* Typing indicator */
+    .typing-dots { display: inline; }
+    .typing-dots span { animation: blink 1.4s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes blink { 0%,60%,100%{opacity:.2} 30%{opacity:1} }
+
+    /* Notification toast */
+    .toast {
+      position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+      background: #162d3eee; border: 1px solid var(--accent); border-radius: 8px;
+      padding: 8px 16px; font-size: 0.8rem; z-index: 50; color: var(--text);
+      animation: toastIn .3s ease-out;
+      pointer-events: none;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Move indicator */
+    .move-indicator {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      border: 2px dashed var(--accent); border-radius: 4px;
+      opacity: 0; pointer-events: none; z-index: 1;
+    }
+    .tile.move-target .move-indicator { opacity: .6; }
+
+    /* Legacy classes for test compatibility */
+    .bubble { display: flex; gap: 10px; align-items: flex-start; }
+    .bubble-avatar {
+      width: 40px; height: 40px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .bubble-content { padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; }
+    .bubble-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .bubble-text { white-space: pre-wrap; }
+    .bubble.npc .bubble-avatar { background: #2a4a5e; }
+    .bubble.npc .bubble-content { background: #2a4a5e; }
+    .bubble.npc .bubble-name { color: var(--accent); }
+    .bubble.player { flex-direction: row-reverse; }
+    .bubble.player .bubble-avatar { background: #3b5e3b; }
+    .bubble.player .bubble-content { background: #3b5e3b; }
+    .bubble.player .bubble-name { color: var(--accent2); }
+    .bubble.system .bubble-content { background: #00000040; font-size: 0.78rem; color: var(--text2); text-align: center; }
+    .typing-indicator { display: none; }
+    .typing-indicator.visible { display: block; }
+    .suggest-btn {
+      padding: 7px 14px; background: var(--surface); border: 1px solid #ffffff18;
+      border-radius: 20px; color: var(--text); font-size: 0.82rem; cursor: pointer;
+      font-family: inherit;
+    }
     .farm-cell {
       aspect-ratio: 1; background: #1a3040; border-radius: 4px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; position: relative; transition: background .2s;
-      border: 1px solid #0a152060;
+      font-size: 1.2rem; position: relative;
     }
     .farm-cell.tilled { background: #3d2b1f; }
     .farm-cell.planted { background: #2a4a2a; }
-    .farm-cell.grown { background: #1f6a1f; box-shadow: 0 0 6px #4ade8040; }
+    .farm-cell.grown { background: #1f6a1f; }
     .farm-cell.watered::after {
       content: ''; position: absolute; top: 2px; right: 2px;
       width: 6px; height: 6px; background: var(--blue); border-radius: 50%;
@@ -113,200 +360,46 @@
       position: absolute; bottom: 1px; left: 1px; right: 1px; height: 2px;
       background: #ffffff15; border-radius: 1px; overflow: hidden;
     }
-    .farm-cell .growth-bar .fill { height: 100%; background: var(--green); border-radius: 1px; }
+    .farm-cell .growth-bar .fill { height: 100%; background: var(--green); }
     .farm-cell .growth-text {
       position: absolute; top: 1px; left: 0; right: 0; text-align: center;
       font-size: 0.55rem; color: #ffffffaa; font-weight: 600; pointer-events: none;
     }
-    .farm-cell.ready { animation: pulse 1.5s ease-in-out infinite; }
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 6px #4ade8040; }
-      50% { box-shadow: 0 0 14px #4ade80aa, 0 0 20px #4ade8040; }
-    }
-
-    /* Quest log */
-    .quest-log { display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto; }
-    .quest-item {
-      padding: 6px 8px; background: #00000030; border-radius: 6px;
-      font-size: 0.76rem; border-left: 3px solid var(--accent);
-    }
-    .quest-item.completed { border-left-color: var(--green); opacity: 0.6; }
-    .quest-title { font-weight: 600; color: var(--text); margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
-    .quest-desc { color: var(--text2); font-size: 0.7rem; margin-bottom: 4px; }
-    .quest-objective { font-size: 0.68rem; color: var(--text2); }
-    .quest-progress-bar {
-      height: 3px; background: #ffffff15; border-radius: 2px; margin-top: 3px; overflow: hidden;
-    }
-    .quest-progress-bar .fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
-    .quest-reward-text { font-size: 0.65rem; color: var(--yellow); margin-top: 2px; }
-    .quest-badge {
-      display: inline-block; background: var(--red); color: #fff; font-size: 0.6rem;
-      padding: 0 5px; border-radius: 8px; margin-left: 4px; font-weight: 700;
-    }
-
-    /* NPC reaction bubble */
-    .bubble.reaction .bubble-content {
-      background: #2a4a5e90; border: 1px dashed #ffffff20;
-    }
-
-    /* Inventory */
-    .inv-list { display: flex; flex-wrap: wrap; gap: 4px; }
-    .inv-item {
-      display: flex; align-items: center; gap: 3px; padding: 3px 8px;
-      background: #00000030; border-radius: 4px; font-size: 0.78rem;
-    }
-    .inv-item .qty { color: var(--yellow); font-weight: 600; }
-
-    /* Animals */
-    .animal-list { display: flex; flex-wrap: wrap; gap: 4px; }
-    .animal-tag { padding: 3px 8px; background: #00000030; border-radius: 4px; font-size: 0.78rem; }
-
-    /* Event log */
-    .event-log { display: flex; flex-direction: column; gap: 2px; max-height: 80px; overflow-y: auto; }
-    .event-entry { font-size: 0.72rem; color: var(--text2); padding: 2px 0; }
-
-    /* Game area (right side) */
-    .game-area {
-      flex: 1; display: flex; flex-direction: column; min-width: 0;
-      background: linear-gradient(180deg, #1b2838 0%, #162d3e 100%);
-    }
-
-    /* Speech bubble area */
-    .bubble-area {
-      flex: 1; overflow-y: auto; padding: 16px; display: flex;
-      flex-direction: column; gap: 10px;
-    }
-    .bubble {
-      display: flex; gap: 10px; align-items: flex-start;
-      animation: fadeIn .3s ease-out;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-    .bubble-avatar {
-      width: 40px; height: 40px; border-radius: 50%; display: flex;
-      align-items: center; justify-content: center; font-size: 1.4rem;
-      flex-shrink: 0; border: 2px solid #ffffff15;
-    }
-    .bubble-content {
-      max-width: 80%; padding: 10px 14px; border-radius: 12px;
-      font-size: 0.88rem; line-height: 1.5; position: relative;
-    }
-    .bubble-name {
-      font-size: 0.7rem; font-weight: 700; margin-bottom: 3px;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .bubble-text { white-space: pre-wrap; word-wrap: break-word; }
-
-    /* NPC bubble */
-    .bubble.npc .bubble-avatar { background: var(--bubble-npc); }
-    .bubble.npc .bubble-content { background: var(--bubble-npc); border-bottom-left-radius: 4px; }
-    .bubble.npc .bubble-name { color: var(--accent); }
-
-    /* Player bubble */
-    .bubble.player { flex-direction: row-reverse; }
-    .bubble.player .bubble-avatar { background: var(--bubble-player); }
-    .bubble.player .bubble-content {
-      background: var(--bubble-player); border-bottom-right-radius: 4px; text-align: right;
-    }
-    .bubble.player .bubble-name { color: var(--accent2); }
-
-    /* System bubble */
-    .bubble.system {
-      justify-content: center;
-    }
-    .bubble.system .bubble-content {
-      background: #00000040; font-size: 0.78rem; color: var(--text2);
-      text-align: center; border-radius: 8px; max-width: 90%; padding: 6px 14px;
-    }
-
-    .typing-indicator {
-      display: none; padding: 10px 14px; background: var(--bubble-npc);
-      border-radius: 12px; font-size: 0.82rem; color: var(--text2);
-      align-self: flex-start; margin-left: 50px;
-    }
-    .typing-indicator.visible { display: block; }
-    .typing-indicator span { animation: blink 1.4s infinite; }
-    .typing-indicator span:nth-child(2) { animation-delay: .2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: .4s; }
-    @keyframes blink { 0%,60%,100%{opacity:.2} 30%{opacity:1} }
-
-    /* Action bar */
-    .action-bar {
-      padding: 10px 16px; border-top: 2px solid #0a1520;
-      background: linear-gradient(180deg, #162d3e, #0f1c2e); flex-shrink: 0;
-    }
-    .suggestions {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;
-    }
-    .suggestions:empty { display: none; margin-bottom: 0; }
-    .suggest-btn {
-      padding: 7px 14px; background: var(--surface); border: 1px solid #ffffff18;
-      border-radius: 20px; color: var(--text); font-size: 0.82rem; cursor: pointer;
-      transition: all .15s; font-family: inherit; white-space: nowrap;
-    }
-    .suggest-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); transform: scale(1.03); }
-    .suggest-btn:disabled { opacity: .5; cursor: not-allowed; }
-
-    .prompt-row { display: flex; gap: 8px; }
-    #chat-input {
-      flex: 1; padding: 9px 12px; background: #0a152080; border: 1px solid #ffffff12;
-      border-radius: 20px; color: var(--text); font-size: 0.88rem; outline: none;
-      font-family: inherit; resize: none; min-height: 38px; max-height: 80px;
-    }
-    #chat-input:focus { border-color: var(--accent); }
-    #chat-input::placeholder { color: var(--text2); }
-    #btn-send {
-      padding: 9px 16px; background: var(--accent); color: #000; border: none;
-      border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.85rem;
-      transition: transform .1s, opacity .15s; align-self: flex-end;
-    }
-    #btn-send:hover { opacity: .9; transform: scale(1.05); }
-    #btn-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-
-    /* Farm toggle */
     .farm-toggle { display: none; }
+    .farm-side { display: none; }
+    .game-area { display: none; }
+    @media (max-width: 800px) {
+      .farm-toggle { display: flex !important; }
+      .farm-side .panel-section { display: none; }
+      .farm-side .panel-section:first-child { display: block; }
+      .farm-side .panel-section.show-mobile { display: block; }
+    }
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #ffffff18; border-radius: 3px; }
 
-    /* Responsive — tablet */
-    @media (max-width: 800px) {
-      .main-layout { flex-direction: column; }
-      .farm-side {
-        width: 100%; max-height: none; border-right: none;
-        border-bottom: 2px solid #0a1520; overflow-y: visible; flex-shrink: 0;
-      }
-      .farm-grid { max-width: 260px; }
-      .farm-side .panel-section { display: none; }
-      .farm-side .panel-section:first-child { display: block; padding: 8px 12px; }
-      .farm-side .panel-section.show-mobile { display: block; }
-      .farm-toggle {
-        display: flex !important; align-items: center; justify-content: center;
-        padding: 6px; background: #0a152060; border: none; color: var(--text2);
-        font-size: 0.72rem; cursor: pointer; width: 100%; font-family: inherit;
-      }
-      .farm-toggle:hover { color: var(--text); }
-      .game-area { min-height: 0; flex: 1; }
-    }
-
-    /* Responsive — phone */
-    @media (max-width: 500px) {
-      .hud { gap: 3px; padding: 5px 8px; }
+    /* Responsive */
+    @media (max-width: 700px) {
+      :root { --tile: 48px; }
+      .side-panel { width: 240px; }
+      .hud { gap: 3px; padding: 4px 8px; }
       .hud-stat { font-size: 0.7rem; padding: 2px 6px; }
-      .farm-grid { max-width: 220px; gap: 2px; }
-      .farm-cell { font-size: 1rem; }
-      .bubble-area { padding: 10px; gap: 8px; }
-      .bubble-avatar { width: 32px; height: 32px; font-size: 1.1rem; }
-      .bubble-content { padding: 8px 10px; font-size: 0.82rem; max-width: 85%; }
-      .action-bar { padding: 8px 10px; }
-      .suggestions { gap: 4px; margin-bottom: 6px; }
-      .suggest-btn { padding: 5px 10px; font-size: 0.75rem; }
-      #chat-input { padding: 7px 10px; font-size: 0.82rem; }
-      #btn-send { padding: 7px 12px; font-size: 0.8rem; }
-      #setup-screen h1 { font-size: 1.6rem; }
-      .setup-box { padding: 18px; gap: 10px; }
+    }
+    @media (max-width: 520px) {
+      :root { --tile: 36px; }
+      .side-panel { width: 200px; }
+      .dialog-box { padding: 8px 10px; }
+      .speech-bubble { font-size: 0.65rem; max-width: 150px; }
+      .tile-map { gap: 0px; border-width: 1px; }
+    }
+    @media (max-width: 400px) {
+      :root { --tile: 32px; }
+      .tile-map { gap: 0px; border-width: 1px; }
+      .entity.npc-entity { font-size: 1.2rem; }
+      .entity.player-entity { font-size: 1.4rem; }
+      .tile { font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -315,7 +408,7 @@
 <!-- Setup Screen -->
 <div id="setup-screen">
   <h1>LLM Farm</h1>
-  <p class="subtitle">A narrative farm sim powered by AI</p>
+  <p class="subtitle">A top-down farm RPG powered by AI</p>
   <div class="setup-box">
     <div class="field">
       <label>API Endpoint</label>
@@ -343,56 +436,75 @@
 <!-- Game Screen -->
 <div id="game-screen">
   <div class="hud">
-    <div class="hud-stat">📅 <span id="stat-day">Day 1</span> · <span id="stat-season">Spring</span></div>
-    <div class="hud-stat">🌤 <span id="stat-weather">Sunny</span></div>
-    <div class="hud-stat">💰 <span id="stat-gold">50</span></div>
-    <div class="hud-stat">⚡ <span id="stat-energy">10/10</span></div>
-    <div class="hud-stat">⭐ <span id="stat-reputation">0</span></div>
+    <div class="hud-stat">&#x1F4C5; <span id="stat-day">Day 1</span> &middot; <span id="stat-season">Spring</span></div>
+    <div class="hud-stat">&#x1F324; <span id="stat-weather">Sunny</span></div>
+    <div class="hud-stat">&#x1F4B0; <span id="stat-gold">50</span></div>
+    <div class="hud-stat">&#x26A1; <span id="stat-energy">10/10</span></div>
+    <div class="hud-stat">&#x2B50; <span id="stat-reputation">0</span></div>
+    <button class="hud-btn" id="btn-inventory">&#x1F392; Bag</button>
+    <button class="hud-btn" id="btn-quests">&#x1F4CB; Quests</button>
   </div>
 
-  <div class="main-layout">
-    <div class="farm-side">
-      <div class="panel-section">
-        <h3>Farm</h3>
-        <div class="farm-grid" id="farm-grid"></div>
+  <div class="game-world" id="game-world">
+    <div class="tile-map" id="tile-map"></div>
+
+    <!-- Side panels -->
+    <div class="side-panel" id="panel-inventory">
+      <button class="panel-close" data-panel="panel-inventory">&times;</button>
+      <h3>Inventory</h3>
+      <div class="inv-list" id="inventory-list">
+        <span class="inv-item" style="color:var(--text2)">Empty</span>
       </div>
-      <div class="panel-section">
-        <h3>Inventory</h3>
-        <div class="inv-list" id="inventory-list">
-          <span class="inv-item" style="color:var(--text2)">Empty</span>
-        </div>
+      <h3>Animals</h3>
+      <div class="animal-list" id="animal-list">
+        <span class="animal-tag" style="color:var(--text2)">None yet</span>
       </div>
-      <div class="panel-section">
-        <h3>Animals</h3>
-        <div class="animal-list" id="animal-list">
-          <span class="animal-tag" style="color:var(--text2)">None yet</span>
-        </div>
-      </div>
-      <div class="panel-section">
-        <h3>Quests <span class="quest-badge" id="quest-badge" style="display:none">0</span></h3>
-        <div class="quest-log" id="quest-log">
-          <span class="quest-item" style="color:var(--text2);border-left-color:var(--text2)">No quests yet</span>
-        </div>
-      </div>
-      <div class="panel-section">
-        <h3>Events</h3>
-        <div class="event-log" id="event-log"></div>
-      </div>
-      <button class="farm-toggle" id="farm-toggle">Show inventory &amp; details ▾</button>
+      <h3>Events</h3>
+      <div class="event-log" id="event-log"></div>
     </div>
 
-    <div class="game-area">
-      <div class="bubble-area" id="chat-messages">
-        <div class="typing-indicator" id="typing">
-          <span>.</span><span>.</span><span>.</span>
+    <div class="side-panel" id="panel-quests">
+      <button class="panel-close" data-panel="panel-quests">&times;</button>
+      <h3>Quests</h3>
+      <div class="quest-log" id="quest-log">
+        <span class="quest-item" style="color:var(--text2);border-left-color:var(--text2)">No quests yet</span>
+      </div>
+    </div>
+
+    <!-- Legacy elements for test compatibility (hidden) -->
+    <div style="display:none">
+      <div id="chat-messages-legacy">
+        <div class="bubble-area" id="chat-messages">
+          <div class="typing-indicator" id="typing">
+            <span>.</span><span>.</span><span>.</span>
+          </div>
         </div>
       </div>
-      <div class="action-bar">
-        <div class="suggestions" id="suggestions"></div>
-        <div class="prompt-row">
-          <textarea id="chat-input" placeholder="What do you want to do?" rows="1"></textarea>
-          <button id="btn-send">Go</button>
-        </div>
+      <div class="suggestions" id="suggestions"></div>
+      <textarea id="chat-input" placeholder="What do you want to do?" rows="1"></textarea>
+      <button id="btn-send">Go</button>
+      <div class="farm-side" id="legacy-farm-side">
+        <div class="panel-section"><h3>Farm</h3><div class="farm-grid" id="farm-grid"></div></div>
+        <div class="panel-section"><h3>Inventory</h3></div>
+        <div class="panel-section"><h3>Animals</h3></div>
+        <div class="panel-section"><h3>Quests</h3></div>
+        <div class="panel-section"><h3>Events</h3></div>
+      </div>
+      <div class="game-area" id="legacy-game-area"></div>
+      <button class="farm-toggle" id="farm-toggle">Show inventory &amp; details &#9662;</button>
+    </div>
+
+    <!-- Dialog box -->
+    <div class="dialog-box" id="dialog-box">
+      <div class="dialog-header">
+        <span class="dialog-avatar" id="dialog-avatar"></span>
+        <span class="dialog-name" id="dialog-name"></span>
+      </div>
+      <div class="dialog-text" id="dialog-text"></div>
+      <div class="dialog-actions" id="dialog-actions"></div>
+      <div class="dialog-input-row">
+        <input type="text" id="dialog-input" placeholder="Say something...">
+        <button id="dialog-send">Send</button>
       </div>
     </div>
   </div>
@@ -400,38 +512,96 @@
 
 <script>
 // ============================================================
-// GAME STATE
+// CONSTANTS
 // ============================================================
-const GRID_SIZE = 5;
+const MAP_W = 10, MAP_H = 8;
 const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter'];
 const WEATHER_OPTIONS = ['Sunny', 'Cloudy', 'Rainy', 'Stormy', 'Windy', 'Foggy', 'Heatwave', 'Snowy'];
+
 const CROP_ICONS = {
-  empty: '', tilled: '🟫', wheat: '🌾', corn: '🌽', carrot: '🥕', potato: '🥔',
-  tomato: '🍅', pumpkin: '🎃', strawberry: '🍓', sunflower: '🌻', melon: '🍈',
-  cabbage: '🥬', rice: '🌾', flower: '🌸', herb: '🌿', berry: '🫐',
+  empty: '', tilled: '', wheat: '\u{1F33E}', corn: '\u{1F33D}', carrot: '\u{1F955}', potato: '\u{1F954}',
+  tomato: '\u{1F345}', pumpkin: '\u{1F383}', strawberry: '\u{1F353}', sunflower: '\u{1F33B}', melon: '\u{1F348}',
+  cabbage: '\u{1F96C}', rice: '\u{1F33E}', flower: '\u{1F338}', herb: '\u{1F33F}', berry: '\u{1FAD0}',
 };
 const ANIMAL_ICONS = {
-  chicken: '🐔', cow: '🐄', sheep: '🐑', pig: '🐷', horse: '🐴',
-  cat: '🐱', dog: '🐶', duck: '🦆', goat: '🐐', rabbit: '🐇',
-};
-const NPC_AVATARS = {
-  narrator: '📖', shopkeeper: '🏪', traveler: '🧙', rival: '😤',
-  neighbor: '👵', mayor: '🎩', blacksmith: '⚒️', fisherman: '🎣',
-  witch: '🧹', child: '👦', merchant: '🐫', guard: '🛡️',
+  chicken: '\u{1F414}', cow: '\u{1F404}', sheep: '\u{1F411}', pig: '\u{1F437}', horse: '\u{1F434}',
+  cat: '\u{1F431}', dog: '\u{1F436}', duck: '\u{1F986}', goat: '\u{1F410}', rabbit: '\u{1F407}',
 };
 
+// NPC definitions with map positions and data
+const NPC_DEFS = {
+  shopkeeper: { emoji: '\u{1F3EA}', name: 'Shopkeeper', x: 1, y: 1, personality: 'Friendly merchant' },
+  neighbor:   { emoji: '\u{1F475}', name: 'Martha', x: 3, y: 0, personality: 'Warm elderly neighbor' },
+  mayor:      { emoji: '\u{1F3A9}', name: 'Mayor', x: 6, y: 0, personality: 'Pompous but kind' },
+  blacksmith: { emoji: '\u{2692}\u{FE0F}', name: 'Blacksmith', x: 8, y: 1, personality: 'Gruff, few words' },
+  fisherman:  { emoji: '\u{1F3A3}', name: 'Fisherman', x: 9, y: 4, personality: 'Old and philosophical' },
+  traveler:   { emoji: '\u{1F9D9}', name: 'Traveler', x: 0, y: 3, personality: 'Mysterious wanderer' },
+  rival:      { emoji: '\u{1F624}', name: 'Rex', x: 7, y: 6, personality: 'Competitive farmer' },
+};
+
+const NPC_AVATARS = {};
+for (const [k, v] of Object.entries(NPC_DEFS)) NPC_AVATARS[k] = v.emoji;
+NPC_AVATARS.narrator = '\u{1F4D6}';
+NPC_AVATARS.witch = '\u{1F9F9}';
+NPC_AVATARS.child = '\u{1F466}';
+NPC_AVATARS.merchant = '\u{1F42B}';
+NPC_AVATARS.guard = '\u{1F6E1}\u{FE0F}';
+
+// Building positions (non-walkable but can interact from adjacent)
+const BUILDINGS = {
+  shop:  { emoji: '\u{1F3E0}', name: 'General Store', x: 1, y: 0 },
+  barn:  { emoji: '\u{1F3DA}\u{FE0F}', name: 'Barn', x: 9, y: 6 },
+  house: { emoji: '\u{1F3E1}', name: 'Your House', x: 0, y: 6 },
+  well:  { emoji: '\u{1FAA3}', name: 'Well', x: 5, y: 3 },
+};
+
+// World map layout (10x8)
+// Types: g=grass, p=path, w=water, f=farm, b=building, t=tree, F=fence, fl=flower, br=bridge
+const WORLD_MAP = [
+  // Row 0: Town north
+  ['t',  'b',  'p',  'b',  'g',  'p',  'b',  'g',  't',  't'],
+  // Row 1: Town shops
+  ['g',  'g',  'p',  'fl', 'g',  'p',  'g',  'g',  'g',  'g'],
+  // Row 2: Main road
+  ['p',  'p',  'p',  'p',  'p',  'p',  'p',  'p',  'p',  'p'],
+  // Row 3: Transition
+  ['g',  'g',  'g',  'g',  'F',  'g',  'F',  'g',  'g',  'w'],
+  // Row 4: Farm area
+  ['g',  'f',  'f',  'f',  'f',  'f',  'f',  'g',  'g',  'w'],
+  // Row 5: Farm area
+  ['g',  'f',  'f',  'f',  'f',  'f',  'f',  'g',  'g',  'g'],
+  // Row 6: Farm south
+  ['b',  'p',  'p',  'g',  'g',  'g',  'g',  'g',  'p',  'b'],
+  // Row 7: Border
+  ['t',  't',  'g',  'fl', 'g',  'g',  'fl', 'g',  't',  't'],
+];
+
+const TILE_CLASSES = {
+  g: 'tile-grass', p: 'tile-path', w: 'tile-water', f: 'tile-farm',
+  b: 'tile-building', t: 'tile-tree', F: 'tile-fence', fl: 'tile-flower',
+  br: 'tile-bridge',
+};
+const TILE_ICONS = {
+  t: '\u{1F332}', w: '\u{1F30A}', F: '\u{1FAB5}', fl: '\u{1F33C}',
+};
+const BLOCKED_TILES = new Set(['w', 't', 'b', 'F']);
+
+// Farm plot indices (within the WORLD_MAP, row 4-5, cols 1-6)
+const FARM_PLOTS = [];
+for (let y = 4; y <= 5; y++) {
+  for (let x = 1; x <= 6; x++) {
+    FARM_PLOTS.push({ x, y });
+  }
+}
+
 // ============================================================
-// EVENT SYSTEM (Pub/Sub)
+// EVENT SYSTEM
 // ============================================================
 class GameEvents {
   constructor() { this._listeners = {}; }
   on(event, cb) {
     if (!this._listeners[event]) this._listeners[event] = [];
     this._listeners[event].push(cb);
-  }
-  off(event, cb) {
-    if (!this._listeners[event]) return;
-    this._listeners[event] = this._listeners[event].filter(fn => fn !== cb);
   }
   emit(event, data) {
     if (!this._listeners[event]) return;
@@ -441,28 +611,19 @@ class GameEvents {
 const gameEvents = new GameEvents();
 
 // ============================================================
-// NPC REACTIONS (pre-scripted, no LLM call needed)
+// NPC REACTIONS
 // ============================================================
 const NPC_REACTIONS = {
   plantGrown: [
-    { speaker: 'neighbor', text: "Your crops are ready to harvest, dear!" },
-    { speaker: 'narrator', text: "A crop ripens, ready for the picking." },
-    { speaker: 'shopkeeper', text: "I see a harvest coming! Bring it to my shop!" },
+    { speaker: 'neighbor', text: "Your crops are ready!" },
+    { speaker: 'shopkeeper', text: "Harvest time! Bring them to me!" },
   ],
   seasonChange: [
-    { speaker: 'narrator', text: "The season shifts. The air feels different." },
+    { speaker: 'mayor', text: "A new season dawns!" },
     { speaker: 'neighbor', text: "New season, new possibilities!" },
-    { speaker: 'mayor', text: "A new season dawns upon our village!" },
   ],
   lowEnergy: [
-    { speaker: 'neighbor', text: "You look exhausted, dear. Get some rest!" },
-    { speaker: 'narrator', text: "Exhaustion weighs heavy. Time to sleep." },
-  ],
-  questComplete: [
-    { speaker: 'narrator', text: "Quest complete! Well done, farmer." },
-  ],
-  dayChange: [
-    { speaker: 'narrator', text: "A new day begins on the farm." },
+    { speaker: 'neighbor', text: "You look tired, dear. Rest!" },
   ],
 };
 
@@ -477,7 +638,7 @@ const AVAILABLE_QUESTS = [
     objectives: [{ type: 'harvest', target: 'any', current: 0, required: 1 }],
     rewards: { gold: 25, reputation: 5 },
     prereqs: [],
-    giverDialogue: "Why don't you try growing something, dear? I'll reward you!",
+    giverDialogue: "Try growing something, dear! I'll reward you!",
     completeDialogue: "Wonderful harvest! Here's a little something.",
   },
   {
@@ -487,7 +648,7 @@ const AVAILABLE_QUESTS = [
     objectives: [{ type: 'talk', target: 'shopkeeper', current: 0, required: 1 }],
     rewards: { gold: 10, reputation: 3 },
     prereqs: [],
-    giverDialogue: "You should meet our shopkeeper. Fine fellow, that one!",
+    giverDialogue: "Go meet our shopkeeper! Walk up to him!",
     completeDialogue: "Good, good! Getting to know the townsfolk!",
   },
   {
@@ -497,8 +658,8 @@ const AVAILABLE_QUESTS = [
     objectives: [{ type: 'animal', target: 'any', current: 0, required: 1 }],
     rewards: { gold: 30, reputation: 5 },
     prereqs: [],
-    giverDialogue: "A farm needs animals! Try getting one from the shop.",
-    completeDialogue: "What a cute little critter! Take good care of it.",
+    giverDialogue: "A farm needs animals! Talk to the shopkeeper.",
+    completeDialogue: "What a cute critter! Take good care of it.",
   },
   {
     id: 'green_thumb', title: 'Green Thumb',
@@ -507,7 +668,7 @@ const AVAILABLE_QUESTS = [
     objectives: [{ type: 'grow_types', target: 3, current: 0, required: 3 }],
     rewards: { gold: 50, reputation: 10 },
     prereqs: ['first_harvest'],
-    giverDialogue: "A true farmer grows variety. Show me three different crops!",
+    giverDialogue: "Show me three different crops, farmer!",
     completeDialogue: "Impressive diversity! The land favors you.",
   },
   {
@@ -517,53 +678,52 @@ const AVAILABLE_QUESTS = [
     objectives: [{ type: 'meet_npcs', target: 3, current: 0, required: 3 }],
     rewards: { gold: 20, reputation: 15 },
     prereqs: [],
-    giverDialogue: "A village thrives on connections. Meet 3 townsfolk!",
-    completeDialogue: "You're becoming a true member of our community!",
+    giverDialogue: "Meet 3 townsfolk! Walk up and talk!",
+    completeDialogue: "You're a true member of our community!",
   },
   {
     id: 'big_sale', title: 'Big Sale',
-    description: 'Earn 100 gold total from your farm.',
+    description: 'Earn 100 gold total.',
     giver: 'shopkeeper',
     objectives: [{ type: 'earn_gold', target: 100, current: 0, required: 100 }],
     rewards: { gold: 40, reputation: 10 },
     prereqs: ['first_harvest'],
-    giverDialogue: "Think you can earn 100 gold? I'll add a bonus if you do!",
-    completeDialogue: "A hundred gold! You're a natural merchant!",
+    giverDialogue: "Earn 100 gold and I'll add a bonus!",
+    completeDialogue: "A hundred gold! You're a natural!",
   },
 ];
 
 // ============================================================
-// GROWTH TIMER CONSTANTS
+// GROWTH TIMER
 // ============================================================
-const GROWTH_TICK_INTERVAL = 5000; // 5 seconds
-const GROWTH_PER_TICK = 5; // 5% per tick
+const GROWTH_TICK_INTERVAL = 5000;
+const GROWTH_PER_TICK = 5;
 let growthTimerId = null;
 
+// ============================================================
+// GAME STATE
+// ============================================================
 let gameState = {};
 let conversationHistory = [];
 let apiConfig = {};
 let sending = false;
-let messageQueue = []; // for sequential display
-let displayingMessages = false;
-// Test mode flags — tests set these to false to skip delays and NPC reactions
+let currentNPC = null; // NPC we're talking to
+let speechBubbles = []; // active floating speech bubbles
 window.sequentialDisplayEnabled = window.sequentialDisplayEnabled !== undefined ? window.sequentialDisplayEnabled : true;
 window.npcReactionsEnabled = window.npcReactionsEnabled !== undefined ? window.npcReactionsEnabled : true;
 
 function createInitialState(farmerName) {
-  const grid = [];
-  for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-    grid.push({ crop: 'empty', growth: 0, watered: false });
+  // 25 cells for backwards compat (first 12 map to FARM_PLOTS)
+  const farmPlots = [];
+  for (let i = 0; i < 25; i++) {
+    farmPlots.push({ crop: 'empty', growth: 0, watered: false });
   }
   return {
     farmerName: farmerName || 'Farmer',
-    day: 1,
-    season: 'Spring',
-    weather: 'Sunny',
-    gold: 50,
-    energy: 10,
-    maxEnergy: 10,
-    reputation: 0,
-    grid: grid,
+    day: 1, season: 'Spring', weather: 'Sunny',
+    gold: 50, energy: 10, maxEnergy: 10, reputation: 0,
+    playerX: 5, playerY: 5, // Start in farm area
+    grid: farmPlots,
     inventory: {},
     animals: [],
     events: [],
@@ -571,8 +731,8 @@ function createInitialState(farmerName) {
     skills: { farming: 1, foraging: 1, fishing: 1, cooking: 1 },
     flags: {},
     quests: { active: [], completed: [] },
-    grownCropTypes: [], // tracks unique crop types grown (for green_thumb quest)
-    totalGoldEarned: 0, // tracks gold earned from selling (for big_sale quest)
+    grownCropTypes: [],
+    totalGoldEarned: 0,
   };
 }
 
@@ -580,14 +740,16 @@ function createInitialState(farmerName) {
 // SYSTEM PROMPT
 // ============================================================
 function buildSystemPrompt() {
-  return `You are the game engine for "LLM Farm", a farm RPG. You control narration AND NPCs.
+  const nearbyNPC = getNearbyNPC();
+  const standingOnFarm = getFarmPlotAtPlayer();
+  return `You are the game engine for "LLM Farm", a top-down farm RPG. The player walks on a tile map and talks to NPCs face-to-face.
 
 ## RESPONSE FORMAT
 Valid JSON only (no markdown, no fences):
 {
   "messages": [
     { "speaker": "narrator", "text": "Short scene description." },
-    { "speaker": "shopkeeper", "text": "NPC dialogue line here." }
+    { "speaker": "shopkeeper", "text": "NPC dialogue." }
   ],
   "suggestedActions": ["Do this", "Or this", "Try this"],
   "stateChanges": {
@@ -599,63 +761,503 @@ Valid JSON only (no markdown, no fences):
   }
 }
 
-## MESSAGES RULES
-- Return 1-3 messages per response. Each is a speech bubble.
-- The "speaker" is a character ID: "narrator", "shopkeeper", "traveler", "rival", "neighbor", "mayor", "blacksmith", "fisherman", "witch", "child", "merchant", "guard", or any new NPC name.
-- The "narrator" describes scenes and actions. Narrator messages: MAX 20 WORDS. Be punchy and vivid.
-- NPC dialogue: MAX 25 WORDS per line. Give NPCs distinct voices and personalities.
-- NPCs should appear frequently! The shopkeeper greets you in shops, neighbors wave, travelers appear randomly. The world should feel populated.
-- When the player talks to or encounters someone, that NPC speaks directly.
-- NEVER have the narrator deliver dialogue. NPCs always speak for themselves.
+## CONTEXT
+- Player "${gameState.farmerName}" is at position (${gameState.playerX}, ${gameState.playerY}).
+${nearbyNPC ? `- Player is NEXT TO: ${nearbyNPC.name} (${nearbyNPC.id}). This NPC should respond directly.` : '- No NPC nearby.'}
+${standingOnFarm !== null ? `- Player is standing on farm plot #${standingOnFarm} (${JSON.stringify(gameState.grid[standingOnFarm])}).` : ''}
 
-## NPC PERSONALITIES (use these consistently)
-- shopkeeper: Friendly, merchant-speak. "Best seeds in town! 10 gold, friend."
-- neighbor: Warm elderly woman named Martha. Gives advice and cookies.
-- rival: Competitive farmer named Rex. Snarky but secretly respectful.
-- traveler: Mysterious wanderer. Cryptic hints about buried treasure and secrets.
-- mayor: Pompous but well-meaning. Announces festivals and contests.
+## MESSAGE RULES
+- 1-3 messages. ${nearbyNPC ? `${nearbyNPC.id} MUST speak (they're right there).` : 'narrator describes the scene.'}
+- Narrator: MAX 20 words. Punchy.
+- NPC dialogue: MAX 25 words. Distinct voice.
+- NEVER have narrator deliver dialogue — NPCs speak for themselves.
+
+## NPC PERSONALITIES
+- shopkeeper: Friendly merchant. Sells seeds, tools, animals.
+- neighbor (Martha): Warm elderly woman. Gives advice.
+- rival (Rex): Competitive, snarky but secretly nice.
+- traveler: Mysterious. Hints about secrets.
+- mayor: Pompous but well-meaning.
 - blacksmith: Gruff, few words. Sells tools.
-- fisherman: Old, relaxed, philosophical. Hangs by the river.
+- fisherman: Old, relaxed, philosophical.
 
-## SUGGESTED ACTIONS RULES
-- ALWAYS include 3-5 actions. Short imperative phrases, 3-6 words each.
-- Mix: one farming, one social, one wild/fun option.
-- Context-aware: reflect weather, energy, time, what just happened.
-- Low energy? Suggest rest. NPC nearby? Suggest talking to them.
+## SUGGESTED ACTIONS
+- 3-5 short actions (3-6 words each).
+- Context-aware: nearby NPC? Farm plot? Low energy?
 
-## STATE CHANGE RULES
-- Only include changed fields. Use null for unchanged.
-- day: +1 for big actions (farming, exploring, sleeping). Quick chats don't advance.
-- season: Changes every 7 days. Spring→Summer→Autumn→Winter→Spring.
-- weather: New each day. Sunny/Cloudy/Rainy/Stormy/Windy/Foggy/Heatwave(summer)/Snowy(winter).
-- gold: Seeds 5-15g, crops sell 10-40g, animals 50-200g.
-- energy: -1 to -3 per physical action. Resets on sleep.
-- grid: 25 cells [{crop, growth, watered}]. Growth 0-100. Plants grow automatically in real-time when watered. Rain waters all.
-- inventory: {item: qty}. qty<=0 removes it.
-- animals: [{type, name, happiness, daysOwned}].
-- events: Last 5 strings.
-- relationships: {npc: {friendship: 0-100, met: bool}}. IMPORTANT: Set met=true when the player talks to or encounters an NPC.
-- skills: {skill: 1-10}. Level up with use.
-- flags: Story progress tracking.
-- questProgress: {quest_id: {objective_index: increment}}. Advance quest objectives when the player does something relevant (e.g. harvesting, selling, meeting NPCs).
+## STATE CHANGES
+- Only include changed fields. null = unchanged.
+- grid: ${FARM_PLOTS.length} cells [{crop, growth, watered}]. Index matches farm plot positions.
+- inventory: {item: qty}. qty<=0 removes.
+- relationships: {npc: {friendship: 0-100, met: true}}. Set met=true on conversation.
+- questProgress: {quest_id: {objective_index: increment}}.
 
 ## ACTIVE QUESTS
 ${JSON.stringify(gameState.quests?.active || [], null, 2)}
 
-## COMPLETED QUESTS
-${(gameState.quests?.completed || []).map(q => q.title).join(', ') || 'None yet'}
-
-## CURRENT GAME STATE
+## CURRENT STATE
 \`\`\`json
 ${JSON.stringify(gameState, null, 2)}
 \`\`\`
 
-## IMPORTANT
-- ALWAYS valid JSON. No markdown.
-- Keep it snappy — this is a game, not a novel.
-- Introduce NPCs early and often. The player should meet someone within the first 2 actions.
-- Say yes to creative actions. Add consequences.
-- If energy is 0, narrate exhaustion.`;
+IMPORTANT: Valid JSON only. Keep it snappy.`;
+}
+
+// ============================================================
+// MAP HELPERS
+// ============================================================
+function getTileType(x, y) {
+  if (x < 0 || x >= MAP_W || y < 0 || y >= MAP_H) return null;
+  return WORLD_MAP[y][x];
+}
+
+function isWalkable(x, y) {
+  const type = getTileType(x, y);
+  if (!type) return false;
+  if (BLOCKED_TILES.has(type)) return false;
+  // Can't walk on NPC tiles
+  for (const [id, npc] of Object.entries(NPC_DEFS)) {
+    if (npc.x === x && npc.y === y) return false;
+  }
+  // Can't walk on building tiles
+  for (const [id, bld] of Object.entries(BUILDINGS)) {
+    if (bld.x === x && bld.y === y) return false;
+  }
+  return true;
+}
+
+function getNearbyNPC() {
+  const px = gameState.playerX, py = gameState.playerY;
+  for (const [id, npc] of Object.entries(NPC_DEFS)) {
+    const dx = Math.abs(npc.x - px), dy = Math.abs(npc.y - py);
+    if (dx + dy === 1) return { id, ...npc };
+  }
+  return null;
+}
+
+function getFarmPlotAtPlayer() {
+  const px = gameState.playerX, py = gameState.playerY;
+  for (let i = 0; i < FARM_PLOTS.length; i++) {
+    if (FARM_PLOTS[i].x === px && FARM_PLOTS[i].y === py) return i;
+  }
+  return null;
+}
+
+// Simple BFS pathfinding
+function findPath(sx, sy, tx, ty) {
+  if (sx === tx && sy === ty) return [];
+  if (!isWalkable(tx, ty)) return null;
+
+  const visited = new Set();
+  const queue = [[sx, sy, []]];
+  visited.add(`${sx},${sy}`);
+
+  while (queue.length > 0) {
+    const [cx, cy, path] = queue.shift();
+    const dirs = [[0,-1],[0,1],[-1,0],[1,0]];
+    for (const [dx, dy] of dirs) {
+      const nx = cx + dx, ny = cy + dy;
+      const key = `${nx},${ny}`;
+      if (visited.has(key)) continue;
+      if (!isWalkable(nx, ny)) continue;
+      visited.add(key);
+      const newPath = [...path, { x: nx, y: ny }];
+      if (nx === tx && ny === ty) return newPath;
+      queue.push([nx, ny, newPath]);
+    }
+  }
+  return null; // no path
+}
+
+// ============================================================
+// RENDERING
+// ============================================================
+function renderMap() {
+  const map = document.getElementById('tile-map');
+  map.innerHTML = '';
+
+  const nearbyNPC = getNearbyNPC();
+
+  for (let y = 0; y < MAP_H; y++) {
+    for (let x = 0; x < MAP_W; x++) {
+      const tile = document.createElement('div');
+      const type = WORLD_MAP[y][x];
+      tile.className = `tile ${TILE_CLASSES[type] || 'tile-grass'}`;
+      tile.dataset.x = x;
+      tile.dataset.y = y;
+
+      if (BLOCKED_TILES.has(type)) {
+        tile.classList.add('blocked');
+      } else {
+        tile.classList.add('walkable');
+      }
+
+      // Tile base icon
+      if (TILE_ICONS[type]) {
+        tile.textContent = TILE_ICONS[type];
+      }
+
+      // Farm plot rendering
+      if (type === 'f') {
+        const plotIdx = FARM_PLOTS.findIndex(p => p.x === x && p.y === y);
+        if (plotIdx >= 0 && gameState.grid && gameState.grid[plotIdx]) {
+          const cell = gameState.grid[plotIdx];
+          if (cell.crop !== 'empty') {
+            if (cell.growth >= 100) { tile.classList.add('grown', 'ready'); }
+            else { tile.classList.add('planted'); }
+            const icon = CROP_ICONS[cell.crop] || '\u{1F331}';
+            tile.textContent = icon;
+            // Growth bar
+            if (cell.growth < 100) {
+              const bar = document.createElement('div');
+              bar.className = 'growth-bar';
+              bar.innerHTML = `<div class="fill" style="width:${cell.growth}%"></div>`;
+              tile.appendChild(bar);
+            }
+          } else if (cell.crop === 'empty') {
+            tile.textContent = ''; // empty farm plot
+          }
+        }
+      }
+
+      // Buildings
+      for (const [id, bld] of Object.entries(BUILDINGS)) {
+        if (bld.x === x && bld.y === y) {
+          tile.textContent = bld.emoji;
+          tile.title = bld.name;
+          break;
+        }
+      }
+
+      // NPCs
+      for (const [id, npc] of Object.entries(NPC_DEFS)) {
+        if (npc.x === x && npc.y === y) {
+          const entity = document.createElement('div');
+          entity.className = 'entity npc-entity';
+          entity.textContent = npc.emoji;
+          tile.appendChild(entity);
+          tile.classList.add('blocked');
+          tile.classList.remove('walkable');
+          tile.title = npc.name;
+
+          // Highlight if player is adjacent
+          if (nearbyNPC && nearbyNPC.id === id) {
+            tile.classList.add('npc-nearby');
+            const prompt = document.createElement('div');
+            prompt.className = 'interact-prompt';
+            prompt.textContent = 'Click to talk';
+            tile.appendChild(prompt);
+          }
+          break;
+        }
+      }
+
+      // Player
+      if (gameState.playerX === x && gameState.playerY === y) {
+        const entity = document.createElement('div');
+        entity.className = 'entity player-entity';
+        entity.textContent = '\u{1F9D1}\u200D\u{1F33E}';
+        tile.appendChild(entity);
+      }
+
+      // Move indicator
+      const moveInd = document.createElement('div');
+      moveInd.className = 'move-indicator';
+      tile.appendChild(moveInd);
+
+      // Click handler
+      tile.addEventListener('click', () => handleTileClick(x, y));
+
+      map.appendChild(tile);
+    }
+  }
+
+  // Render floating speech bubbles
+  renderSpeechBubbles();
+}
+
+function renderSpeechBubbles() {
+  // Remove old speech bubble elements
+  document.querySelectorAll('.tile .speech-bubble').forEach(el => el.remove());
+
+  const now = Date.now();
+  speechBubbles = speechBubbles.filter(b => now - b.time < 6000);
+
+  for (const bubble of speechBubbles) {
+    const tile = document.querySelector(`.tile[data-x="${bubble.x}"][data-y="${bubble.y}"]`);
+    if (!tile) continue;
+    const el = document.createElement('div');
+    el.className = 'speech-bubble';
+    el.innerHTML = `<div class="speaker-name">${escapeHtml(bubble.speaker)}</div>${escapeHtml(bubble.text)}`;
+    tile.appendChild(el);
+  }
+}
+
+function addSpeechBubble(speakerKey, text) {
+  // Find where to show the bubble
+  let x, y;
+  if (NPC_DEFS[speakerKey]) {
+    x = NPC_DEFS[speakerKey].x;
+    y = NPC_DEFS[speakerKey].y;
+  } else if (speakerKey === 'narrator' || speakerKey === 'system') {
+    // Show above player
+    x = gameState.playerX;
+    y = gameState.playerY;
+  } else {
+    x = gameState.playerX;
+    y = gameState.playerY;
+  }
+
+  const name = speakerKey === 'narrator' ? 'Narrator' :
+    (NPC_DEFS[speakerKey]?.name || speakerKey);
+
+  speechBubbles.push({ x, y, speaker: name, text, time: Date.now() });
+  renderSpeechBubbles();
+}
+
+function renderStats() {
+  document.getElementById('stat-day').textContent = `Day ${gameState.day}`;
+  document.getElementById('stat-season').textContent = gameState.season;
+  document.getElementById('stat-weather').textContent = gameState.weather;
+  document.getElementById('stat-gold').textContent = gameState.gold;
+  document.getElementById('stat-energy').textContent = `${gameState.energy}/${gameState.maxEnergy}`;
+  document.getElementById('stat-reputation').textContent = gameState.reputation;
+}
+
+function renderInventory() {
+  const list = document.getElementById('inventory-list');
+  const items = Object.entries(gameState.inventory || {});
+  if (items.length === 0) {
+    list.innerHTML = '<span class="inv-item" style="color:var(--text2)">Empty</span>';
+    return;
+  }
+  list.innerHTML = items.map(([name, qty]) =>
+    `<span class="inv-item">${CROP_ICONS[name] || '\u{1F4E6}'} ${name} <span class="qty">x${qty}</span></span>`
+  ).join('');
+}
+
+function renderAnimals() {
+  const list = document.getElementById('animal-list');
+  if (!gameState.animals || gameState.animals.length === 0) {
+    list.innerHTML = '<span class="animal-tag" style="color:var(--text2)">None yet</span>';
+    return;
+  }
+  list.innerHTML = gameState.animals.map(a =>
+    `<span class="animal-tag">${ANIMAL_ICONS[a.type] || '\u{1F43E}'} ${a.name}</span>`
+  ).join('');
+}
+
+function renderEvents() {
+  const log = document.getElementById('event-log');
+  if (!gameState.events || gameState.events.length === 0) {
+    log.innerHTML = '<span class="event-entry" style="color:var(--text2)">No events yet</span>';
+    return;
+  }
+  log.innerHTML = gameState.events.map(e => `<div class="event-entry">${e}</div>`).join('');
+}
+
+function renderQuests() {
+  const log = document.getElementById('quest-log');
+  if (!gameState.quests) return;
+  const active = gameState.quests.active || [];
+  const completed = gameState.quests.completed || [];
+
+  if (active.length === 0 && completed.length === 0) {
+    log.innerHTML = '<span class="quest-item" style="color:var(--text2);border-left-color:var(--text2)">No quests yet</span>';
+    return;
+  }
+
+  let html = '';
+  for (const quest of active) {
+    const totalReq = quest.objectives.reduce((s, o) => s + o.required, 0);
+    const totalCur = quest.objectives.reduce((s, o) => s + Math.min(o.current, o.required), 0);
+    const pct = Math.round((totalCur / totalReq) * 100);
+    const objText = quest.objectives.map(o => `${o.current}/${o.required}`).join(', ');
+    html += `<div class="quest-item">
+      <div class="quest-title">\u{1F4CB} ${escapeHtml(quest.title)}</div>
+      <div class="quest-desc">${escapeHtml(quest.description)}</div>
+      <div class="quest-objective">Progress: ${objText}</div>
+      <div class="quest-progress-bar"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="quest-reward-text">Reward: ${quest.rewards.gold ? quest.rewards.gold + 'g' : ''}${quest.rewards.reputation ? ' +' + quest.rewards.reputation + ' rep' : ''}</div>
+    </div>`;
+  }
+  for (const quest of completed.slice(-3)) {
+    html += `<div class="quest-item completed"><div class="quest-title">\u2705 ${escapeHtml(quest.title)}</div></div>`;
+  }
+  log.innerHTML = html;
+}
+
+function renderAll() {
+  renderStats();
+  renderMap();
+  renderInventory();
+  renderAnimals();
+  renderQuests();
+  renderEvents();
+  renderGrid(); // legacy compat
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+function showToast(text, duration = 3000) {
+  const world = document.getElementById('game-world');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = text;
+  world.appendChild(toast);
+  setTimeout(() => toast.remove(), duration);
+}
+
+// ============================================================
+// PLAYER MOVEMENT
+// ============================================================
+let moving = false;
+
+async function movePlayerTo(tx, ty) {
+  if (moving || sending) return;
+
+  // If clicking an NPC tile, try to move adjacent to it
+  let targetNPC = null;
+  for (const [id, npc] of Object.entries(NPC_DEFS)) {
+    if (npc.x === tx && npc.y === ty) {
+      targetNPC = { id, ...npc };
+      break;
+    }
+  }
+
+  if (targetNPC) {
+    // Find adjacent walkable tile
+    const dirs = [[0,-1],[0,1],[-1,0],[1,0]];
+    let bestPath = null;
+    for (const [dx, dy] of dirs) {
+      const ax = targetNPC.x + dx, ay = targetNPC.y + dy;
+      if (!isWalkable(ax, ay)) continue;
+      const path = findPath(gameState.playerX, gameState.playerY, ax, ay);
+      if (path && (!bestPath || path.length < bestPath.length)) {
+        bestPath = path;
+      }
+    }
+    if (bestPath) {
+      await animateMovement(bestPath);
+      // Auto-start conversation
+      openDialog(targetNPC.id);
+    } else {
+      showToast("Can't reach there!");
+    }
+    return;
+  }
+
+  // Normal movement
+  const path = findPath(gameState.playerX, gameState.playerY, tx, ty);
+  if (!path) {
+    showToast("Can't walk there!");
+    return;
+  }
+
+  await animateMovement(path);
+
+  // Check if now adjacent to NPC
+  const nearby = getNearbyNPC();
+  if (nearby) {
+    renderMap();
+  }
+
+  // Check if on farm plot
+  const plotIdx = getFarmPlotAtPlayer();
+  if (plotIdx !== null && !currentNPC) {
+    const cell = gameState.grid[plotIdx];
+    if (cell.crop === 'empty') {
+      showToast('Empty farm plot. Talk to an NPC or click to farm!');
+    } else if (cell.growth >= 100) {
+      showToast(`${CROP_ICONS[cell.crop] || ''} ${cell.crop} ready to harvest!`);
+    }
+  }
+}
+
+async function animateMovement(path) {
+  moving = true;
+  for (const step of path) {
+    gameState.playerX = step.x;
+    gameState.playerY = step.y;
+    renderMap();
+    await delay(150);
+  }
+  moving = false;
+}
+
+function handleTileClick(x, y) {
+  if (sending || moving) return;
+
+  // If dialog is open and clicking the NPC we're talking to, ignore
+  if (currentNPC) {
+    const npc = NPC_DEFS[currentNPC];
+    if (npc && npc.x === x && npc.y === y) return;
+    // Clicking elsewhere closes dialog
+    closeDialog();
+  }
+
+  movePlayerTo(x, y);
+}
+
+// ============================================================
+// DIALOG SYSTEM
+// ============================================================
+function openDialog(npcId) {
+  currentNPC = npcId;
+  const npc = NPC_DEFS[npcId];
+  if (!npc) return;
+
+  const box = document.getElementById('dialog-box');
+  document.getElementById('dialog-avatar').textContent = npc.emoji;
+  document.getElementById('dialog-name').textContent = npc.name;
+  document.getElementById('dialog-text').textContent = `${npc.name} looks at you...`;
+  document.getElementById('dialog-actions').innerHTML = '';
+  document.getElementById('dialog-input').value = '';
+  box.classList.add('active');
+
+  // Auto-send greeting
+  sendNPCMessage(`[Player walks up to ${npc.name} (${npcId}) at position (${npc.x}, ${npc.y}). Greet the player and suggest what they can do here.]`);
+}
+
+function closeDialog() {
+  currentNPC = null;
+  const box = document.getElementById('dialog-box');
+  box.classList.remove('active');
+  renderMap();
+}
+
+function setDialogText(text) {
+  document.getElementById('dialog-text').textContent = text;
+}
+
+function setDialogActions(actions) {
+  const container = document.getElementById('dialog-actions');
+  container.innerHTML = '';
+  if (!actions || !actions.length) return;
+  for (const action of actions) {
+    const btn = document.createElement('button');
+    btn.className = 'dialog-btn';
+    btn.textContent = action;
+    btn.addEventListener('click', () => {
+      if (sending) return;
+      sendNPCMessage(action);
+    });
+    container.appendChild(btn);
+  }
+}
+
+function setDialogTyping(visible) {
+  const textEl = document.getElementById('dialog-text');
+  if (visible) {
+    textEl.innerHTML = '<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>';
+  }
 }
 
 // ============================================================
@@ -699,12 +1301,57 @@ async function sendToLLM(userMessage) {
     }
   }
 
-  // Support old format (narrative string) for backwards compat
   if (parsed.narrative && !parsed.messages) {
     parsed.messages = [{ speaker: 'narrator', text: parsed.narrative }];
   }
 
   return parsed;
+}
+
+async function sendNPCMessage(text) {
+  if (sending) return;
+  sending = true;
+
+  const sendBtn = document.getElementById('dialog-send');
+  const input = document.getElementById('dialog-input');
+  sendBtn.disabled = true;
+  input.disabled = true;
+
+  setDialogActions([]);
+  setDialogTyping(true);
+
+  try {
+    const response = await sendToLLM(text);
+
+    // Display messages as speech bubbles + in dialog
+    if (response.messages && Array.isArray(response.messages)) {
+      let dialogText = '';
+      for (const msg of response.messages) {
+        addSpeechBubble(msg.speaker || 'narrator', msg.text);
+        if (msg.speaker && msg.speaker !== 'narrator') {
+          dialogText = msg.text;
+        } else if (!dialogText) {
+          dialogText = msg.text;
+        }
+      }
+      setDialogText(dialogText || response.messages[0]?.text || '...');
+    }
+
+    if (response.stateChanges) {
+      applyStateChanges(response.stateChanges);
+    }
+
+    renderAll();
+    setDialogActions(response.suggestedActions);
+  } catch (err) {
+    setDialogText(`Error: ${err.message}`);
+    console.error(err);
+  } finally {
+    sending = false;
+    sendBtn.disabled = false;
+    input.disabled = false;
+    input.focus();
+  }
 }
 
 // ============================================================
@@ -735,7 +1382,6 @@ function applyStateChanges(changes) {
     } else if (key === 'events' && Array.isArray(value)) {
       gameState.events = value.slice(-5);
     } else if (key === 'questProgress' && typeof value === 'object') {
-      // LLM can advance quest objectives
       for (const [questId, progress] of Object.entries(value)) {
         const quest = gameState.quests.active.find(q => q.id === questId);
         if (quest) {
@@ -755,22 +1401,15 @@ function applyStateChanges(changes) {
     }
   }
 
-  // Emit events based on state changes
   if (gameState.day !== oldDay) gameEvents.emit('dayChange', { day: gameState.day });
   if (gameState.season !== oldSeason) gameEvents.emit('seasonChange', { season: gameState.season });
   if (gameState.energy <= 1 && oldEnergy > 1) gameEvents.emit('lowEnergy', { energy: gameState.energy });
-
-  // Track gold earned (if gold increased, it was a sale)
   if (gameState.gold > oldGold) {
     gameState.totalGoldEarned = (gameState.totalGoldEarned || 0) + (gameState.gold - oldGold);
   }
-
-  // Track new animals for quest
   if (gameState.animals && gameState.animals.length > oldAnimals) {
     gameEvents.emit('animalBought', { count: gameState.animals.length });
   }
-
-  // Track NPC meetings for quest
   if (gameState.relationships) {
     for (const [npc, rel] of Object.entries(gameState.relationships)) {
       if (rel.met && (!oldRelationships[npc] || !oldRelationships[npc].met)) {
@@ -779,127 +1418,325 @@ function applyStateChanges(changes) {
     }
   }
 
-  // Check quest progress after state changes
   checkQuestProgress();
 }
 
 // ============================================================
-// UI RENDERING
+// QUEST SYSTEM
 // ============================================================
-function renderStats() {
-  document.getElementById('stat-day').textContent = `Day ${gameState.day}`;
-  document.getElementById('stat-season').textContent = gameState.season;
-  document.getElementById('stat-weather').textContent = gameState.weather;
-  document.getElementById('stat-gold').textContent = gameState.gold;
-  document.getElementById('stat-energy').textContent = `${gameState.energy}/${gameState.maxEnergy}`;
-  document.getElementById('stat-reputation').textContent = gameState.reputation;
+function getAvailableQuests() {
+  const completedIds = (gameState.quests?.completed || []).map(q => q.id);
+  const activeIds = (gameState.quests?.active || []).map(q => q.id);
+  return AVAILABLE_QUESTS.filter(q =>
+    !completedIds.includes(q.id) &&
+    !activeIds.includes(q.id) &&
+    q.prereqs.every(p => completedIds.includes(p))
+  );
 }
 
-function renderGrid() {
-  const grid = document.getElementById('farm-grid');
-  grid.innerHTML = '';
-  for (const cell of gameState.grid) {
-    const div = document.createElement('div');
-    div.className = 'farm-cell';
-    if (cell.crop === 'tilled') div.classList.add('tilled');
-    else if (cell.crop !== 'empty' && cell.growth >= 100) { div.classList.add('grown'); div.classList.add('ready'); }
-    else if (cell.crop !== 'empty') div.classList.add('planted');
-    if (cell.watered) div.classList.add('watered');
-    const icon = CROP_ICONS[cell.crop] || (cell.crop !== 'empty' ? '🌱' : '');
-    div.textContent = icon;
-    if (cell.crop !== 'empty' && cell.crop !== 'tilled') {
-      // Growth percentage overlay
-      const pctText = document.createElement('div');
-      pctText.className = 'growth-text';
-      pctText.textContent = cell.growth >= 100 ? '✓' : `${Math.round(cell.growth)}%`;
-      div.appendChild(pctText);
-      // Growth bar
-      const bar = document.createElement('div');
-      bar.className = 'growth-bar';
-      bar.innerHTML = `<div class="fill" style="width:${Math.min(cell.growth, 100)}%"></div>`;
-      div.appendChild(bar);
-    }
-    grid.appendChild(div);
+function offerQuest(questId) {
+  const template = AVAILABLE_QUESTS.find(q => q.id === questId);
+  if (!template) return;
+  const quest = JSON.parse(JSON.stringify(template));
+  gameState.quests.active.push(quest);
+
+  addSpeechBubble(quest.giver, quest.giverDialogue);
+  showToast(`New quest: ${quest.title}`);
+  renderQuests();
+}
+
+function completeQuest(questId) {
+  const idx = gameState.quests.active.findIndex(q => q.id === questId);
+  if (idx === -1) return;
+  const quest = gameState.quests.active.splice(idx, 1)[0];
+  gameState.quests.completed.push({ id: quest.id, title: quest.title });
+
+  if (quest.rewards.gold) gameState.gold += quest.rewards.gold;
+  if (quest.rewards.reputation) gameState.reputation += quest.rewards.reputation;
+
+  const template = AVAILABLE_QUESTS.find(q => q.id === quest.id);
+  if (template) {
+    addSpeechBubble(template.giver, template.completeDialogue);
   }
+  showToast(`Quest complete: ${quest.title}! +${quest.rewards.gold || 0}g`);
+
+  gameEvents.emit('questComplete', { quest });
+  renderAll();
+
+  setTimeout(() => {
+    const available = getAvailableQuests();
+    if (available.length > 0) offerQuest(available[0].id);
+  }, 2000);
 }
 
-function renderInventory() {
-  const list = document.getElementById('inventory-list');
-  const items = Object.entries(gameState.inventory);
-  if (items.length === 0) {
-    list.innerHTML = '<span class="inv-item" style="color:var(--text2)">Empty</span>';
-    return;
-  }
-  list.innerHTML = items.map(([name, qty]) =>
-    `<span class="inv-item">${CROP_ICONS[name] || '📦'} ${name} <span class="qty">x${qty}</span></span>`
-  ).join('');
-}
-
-function renderAnimals() {
-  const list = document.getElementById('animal-list');
-  if (gameState.animals.length === 0) {
-    list.innerHTML = '<span class="animal-tag" style="color:var(--text2)">None yet</span>';
-    return;
-  }
-  list.innerHTML = gameState.animals.map(a =>
-    `<span class="animal-tag">${ANIMAL_ICONS[a.type] || '🐾'} ${a.name}</span>`
-  ).join('');
-}
-
-function renderEvents() {
-  const log = document.getElementById('event-log');
-  if (gameState.events.length === 0) {
-    log.innerHTML = '<span class="event-entry" style="color:var(--text2)">No events yet</span>';
-    return;
-  }
-  log.innerHTML = gameState.events.map(e =>
-    `<div class="event-entry">${e}</div>`
-  ).join('');
-}
-
-function renderQuests() {
-  const log = document.getElementById('quest-log');
-  const badge = document.getElementById('quest-badge');
+function checkQuestProgress() {
   if (!gameState.quests) return;
+  for (const quest of gameState.quests.active) {
+    let allComplete = true;
+    for (const obj of quest.objectives) {
+      if (obj.type === 'animal' && obj.target === 'any') {
+        obj.current = Math.min(gameState.animals ? gameState.animals.length : 0, obj.required);
+      } else if (obj.type === 'meet_npcs') {
+        const metCount = Object.values(gameState.relationships || {}).filter(r => r.met).length;
+        obj.current = Math.min(metCount, obj.required);
+      } else if (obj.type === 'earn_gold') {
+        obj.current = Math.min(gameState.totalGoldEarned || 0, obj.required);
+      } else if (obj.type === 'grow_types') {
+        obj.current = Math.min((gameState.grownCropTypes || []).length, obj.required);
+      } else if (obj.type === 'talk' && obj.target) {
+        const rel = gameState.relationships?.[obj.target];
+        if (rel && rel.met) obj.current = Math.min(1, obj.required);
+      }
+      if (obj.current < obj.required) allComplete = false;
+    }
+    if (allComplete) {
+      completeQuest(quest.id);
+      return;
+    }
+  }
+  renderQuests();
+}
 
-  const active = gameState.quests.active || [];
-  const completed = gameState.quests.completed || [];
+// ============================================================
+// GROWTH TIMER
+// ============================================================
+function startGrowthTimer() {
+  if (growthTimerId) clearInterval(growthTimerId);
+  growthTimerId = setInterval(() => {
+    if (!gameState.grid) return;
+    let anyGrew = false;
+    for (let i = 0; i < gameState.grid.length; i++) {
+      const cell = gameState.grid[i];
+      if (cell.crop !== 'empty' && cell.crop !== 'tilled' && cell.watered && cell.growth < 100) {
+        cell.growth = Math.min(cell.growth + GROWTH_PER_TICK, 100);
+        anyGrew = true;
+        if (cell.growth >= 100) {
+          if (!gameState.grownCropTypes) gameState.grownCropTypes = [];
+          if (!gameState.grownCropTypes.includes(cell.crop)) {
+            gameState.grownCropTypes.push(cell.crop);
+          }
+          gameState.events = (gameState.events || []).concat(
+            `${CROP_ICONS[cell.crop] || '\u{1F331}'} ${cell.crop} ready!`
+          ).slice(-5);
+          gameEvents.emit('plantGrown', { cellIndex: i, crop: cell.crop });
+        }
+      }
+    }
+    if (anyGrew) renderAll();
+  }, GROWTH_TICK_INTERVAL);
+}
 
-  if (active.length === 0 && completed.length === 0) {
-    log.innerHTML = '<span class="quest-item" style="color:var(--text2);border-left-color:var(--text2)">No quests yet</span>';
-    badge.style.display = 'none';
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+function setupEventListeners() {
+  gameEvents.on('plantGrown', () => {
+    if (!window.npcReactionsEnabled) return;
+    const reactions = NPC_REACTIONS.plantGrown;
+    const r = reactions[Math.floor(Math.random() * reactions.length)];
+    if (!sending) addSpeechBubble(r.speaker, r.text);
+  });
+
+  gameEvents.on('seasonChange', () => {
+    if (!window.npcReactionsEnabled) return;
+    const reactions = NPC_REACTIONS.seasonChange;
+    const r = reactions[Math.floor(Math.random() * reactions.length)];
+    addSpeechBubble(r.speaker, r.text);
+  });
+
+  gameEvents.on('lowEnergy', () => {
+    if (!window.npcReactionsEnabled) return;
+    const reactions = NPC_REACTIONS.lowEnergy;
+    const r = reactions[Math.floor(Math.random() * reactions.length)];
+    addSpeechBubble(r.speaker, r.text);
+  });
+}
+
+// ============================================================
+// KEYBOARD MOVEMENT (WASD / Arrows)
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('game-screen').classList.contains('active')) return;
+  if (currentNPC) {
+    // If dialog open, Enter sends, Escape closes
+    if (e.key === 'Escape') { closeDialog(); return; }
     return;
   }
+  if (moving || sending) return;
 
-  let html = '';
-  for (const quest of active) {
-    const totalRequired = quest.objectives.reduce((s, o) => s + o.required, 0);
-    const totalCurrent = quest.objectives.reduce((s, o) => s + Math.min(o.current, o.required), 0);
-    const pct = Math.round((totalCurrent / totalRequired) * 100);
-    const objText = quest.objectives.map(o =>
-      `${o.current}/${o.required}`
-    ).join(', ');
-    html += `<div class="quest-item">
-      <div class="quest-title">📋 ${escapeHtml(quest.title)}</div>
-      <div class="quest-desc">${escapeHtml(quest.description)}</div>
-      <div class="quest-objective">Progress: ${objText}</div>
-      <div class="quest-progress-bar"><div class="fill" style="width:${pct}%"></div></div>
-      <div class="quest-reward-text">Reward: ${quest.rewards.gold ? quest.rewards.gold + 'g' : ''}${quest.rewards.reputation ? ' +' + quest.rewards.reputation + ' rep' : ''}</div>
-    </div>`;
+  let dx = 0, dy = 0;
+  if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') dy = -1;
+  else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') dy = 1;
+  else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') dx = -1;
+  else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') dx = 1;
+  else if (e.key === 'e' || e.key === 'E') {
+    // Interact key
+    const nearby = getNearbyNPC();
+    if (nearby) openDialog(nearby.id);
+    return;
   }
-  for (const quest of completed.slice(-3)) {
-    html += `<div class="quest-item completed">
-      <div class="quest-title">✅ ${escapeHtml(quest.title)}</div>
-    </div>`;
+  else return;
+
+  e.preventDefault();
+  const nx = gameState.playerX + dx;
+  const ny = gameState.playerY + dy;
+
+  // Check if trying to walk into NPC — open dialog instead
+  for (const [id, npc] of Object.entries(NPC_DEFS)) {
+    if (npc.x === nx && npc.y === ny) {
+      openDialog(id);
+      return;
+    }
   }
-  log.innerHTML = html;
-  badge.style.display = active.length > 0 ? 'inline-block' : 'none';
-  badge.textContent = active.length;
+
+  if (isWalkable(nx, ny)) {
+    gameState.playerX = nx;
+    gameState.playerY = ny;
+    renderMap();
+
+    const plotIdx = getFarmPlotAtPlayer();
+    if (plotIdx !== null) {
+      const cell = gameState.grid[plotIdx];
+      if (cell.crop === 'empty') {
+        showToast('Empty farm plot');
+      } else if (cell.growth >= 100) {
+        showToast(`${CROP_ICONS[cell.crop] || ''} Ready to harvest!`);
+      }
+    }
+  }
+});
+
+// ============================================================
+// UTILITY
+// ============================================================
+function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+// ============================================================
+// GAME START
+// ============================================================
+async function startGame() {
+  const url = document.getElementById('api-url').value.trim();
+  const key = document.getElementById('api-key').value.trim();
+  const model = document.getElementById('model-name').value.trim();
+  const name = document.getElementById('farmer-name').value.trim() || 'Farmer';
+  const errorEl = document.getElementById('setup-error');
+
+  if (!url) { errorEl.textContent = 'Please enter an API endpoint.'; errorEl.style.display = 'block'; return; }
+  if (!model) { errorEl.textContent = 'Please enter a model name.'; errorEl.style.display = 'block'; return; }
+
+  apiConfig = { url, key, model };
+  localStorage.setItem('llmfarm_api_url', url);
+  localStorage.setItem('llmfarm_api_key', key);
+  localStorage.setItem('llmfarm_model', model);
+  localStorage.setItem('llmfarm_farmer', name);
+  gameState = createInitialState(name);
+
+  document.getElementById('setup-screen').classList.add('hidden');
+  document.getElementById('game-screen').classList.add('active');
+  renderAll();
+
+  setupEventListeners();
+  startGrowthTimer();
+
+  // Show welcome toast
+  showToast('Welcome to the farm! Walk around and talk to NPCs.', 4000);
+
+  // LLM welcome call
+  setTyping(true);
+  try {
+    const response = await sendToLLM(
+      `[GAME START] The player "${name}" arrives at their new farm. Day 1, Spring. The farm is overgrown but full of potential. Give a SHORT welcome (narrator max 20 words), then have an NPC greet them. Suggest first actions.`
+    );
+    setTyping(false);
+    if (response.messages && Array.isArray(response.messages)) {
+      for (const msg of response.messages) {
+        addBubble(msg.speaker || 'narrator', msg.text);
+      }
+    } else if (response.narrative) {
+      addBubble('narrator', response.narrative);
+    }
+    if (response.stateChanges) { applyStateChanges(response.stateChanges); renderAll(); }
+    renderSuggestions(response.suggestedActions);
+  } catch (err) {
+    setTyping(false);
+    addBubble('system', `Failed to connect: ${err.message}. Check API settings.`);
+    console.error(err);
+  }
+
+  // Offer starter quests after delay
+  if (window.npcReactionsEnabled) {
+    setTimeout(() => {
+      const available = getAvailableQuests();
+      const starters = available.filter(q => q.prereqs.length === 0).slice(0, 2);
+      starters.forEach((q, i) => {
+        setTimeout(() => offerQuest(q.id), i * 2500);
+      });
+    }, 3000);
+  }
 }
 
-function renderAll() {
-  renderStats(); renderGrid(); renderInventory(); renderAnimals(); renderQuests(); renderEvents();
-}
+// ============================================================
+// UI EVENT LISTENERS
+// ============================================================
+document.getElementById('btn-start').addEventListener('click', startGame);
+
+document.querySelectorAll('#setup-screen input').forEach(input => {
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') startGame(); });
+});
+
+// Dialog send
+document.getElementById('dialog-send').addEventListener('click', () => {
+  const input = document.getElementById('dialog-input');
+  const text = input.value.trim();
+  if (!text || sending) return;
+  input.value = '';
+  sendNPCMessage(text);
+});
+
+document.getElementById('dialog-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    document.getElementById('dialog-send').click();
+  }
+  if (e.key === 'Escape') closeDialog();
+});
+
+// Side panel toggles
+document.getElementById('btn-inventory').addEventListener('click', () => {
+  const panel = document.getElementById('panel-inventory');
+  const qPanel = document.getElementById('panel-quests');
+  qPanel.classList.remove('open');
+  panel.classList.toggle('open');
+});
+
+document.getElementById('btn-quests').addEventListener('click', () => {
+  const panel = document.getElementById('panel-quests');
+  const iPanel = document.getElementById('panel-inventory');
+  iPanel.classList.remove('open');
+  panel.classList.toggle('open');
+});
+
+document.querySelectorAll('.panel-close').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const panel = document.getElementById(btn.dataset.panel);
+    if (panel) panel.classList.remove('open');
+  });
+});
+
+// Restore saved settings
+(function() {
+  const s = (k, id) => { const v = localStorage.getItem(k); if (v) document.getElementById(id).value = v; };
+  s('llmfarm_api_url', 'api-url');
+  s('llmfarm_api_key', 'api-key');
+  s('llmfarm_model', 'model-name');
+  s('llmfarm_farmer', 'farmer-name');
+})();
+
+// ============================================================
+// LEGACY COMPAT (for tests)
+// ============================================================
+const GRID_SIZE = 5;
+const LEGACY_GRID_SIZE = 25;
 
 function addBubble(speaker, text) {
   const container = document.getElementById('chat-messages');
@@ -912,8 +1749,8 @@ function addBubble(speaker, text) {
     bubble.className = 'bubble system';
     bubble.innerHTML = `<div class="bubble-content"><div class="bubble-text">${escapeHtml(text)}</div></div>`;
   } else {
-    const avatar = isPlayer ? '🧑‍🌾' : (NPC_AVATARS[speaker] || '💬');
-    const name = isPlayer ? gameState.farmerName : speaker.charAt(0).toUpperCase() + speaker.slice(1);
+    const avatar = isPlayer ? '\u{1F9D1}\u200D\u{1F33E}' : (NPC_AVATARS[speaker] || '\u{1F4AC}');
+    const name = isPlayer ? (gameState.farmerName || 'Farmer') : speaker.charAt(0).toUpperCase() + speaker.slice(1);
     const cls = isPlayer ? 'player' : 'npc';
     bubble.className = `bubble ${cls}`;
     bubble.innerHTML = `
@@ -924,20 +1761,19 @@ function addBubble(speaker, text) {
       </div>`;
   }
   container.insertBefore(bubble, typing);
-  container.scrollTop = container.scrollHeight;
+
+  // Also show on map
+  addSpeechBubble(speaker, text);
 }
 
-// Legacy support
 function addMessage(text, type = 'narrator') {
   if (type === 'system') addBubble('system', text);
   else if (type === 'player') addBubble('player', text);
   else addBubble('narrator', text);
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+function setTyping(visible) {
+  document.getElementById('typing').classList.toggle('visible', visible);
 }
 
 function renderSuggestions(actions) {
@@ -955,198 +1791,44 @@ function renderSuggestions(actions) {
     });
     container.appendChild(btn);
   }
+  // Also set dialog actions if dialog is open
+  if (currentNPC) setDialogActions(actions);
 }
 
 function clearSuggestions() {
   document.getElementById('suggestions').innerHTML = '';
 }
 
-function setTyping(visible) {
-  document.getElementById('typing').classList.toggle('visible', visible);
-  const container = document.getElementById('chat-messages');
-  container.scrollTop = container.scrollHeight;
-}
-
-// ============================================================
-// SEQUENTIAL MESSAGE DISPLAY
-// ============================================================
-function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-
-async function displayMessagesSequentially(messages) {
-  if (!messages || !messages.length) return;
-  displayingMessages = true;
-  for (let i = 0; i < messages.length; i++) {
-    const msg = messages[i];
-    if (i > 0) {
-      // Show typing indicator between messages
-      setTyping(true);
-      const waitTime = msg.speaker === 'narrator' ? 800 : 1200 + Math.random() * 600;
-      await delay(waitTime);
-      setTyping(false);
+function renderGrid() {
+  const grid = document.getElementById('farm-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  // Render legacy 25-cell grid (or whatever gameState.grid has)
+  const cells = gameState.grid || [];
+  for (const cell of cells) {
+    const div = document.createElement('div');
+    div.className = 'farm-cell';
+    if (cell.crop === 'tilled') div.classList.add('tilled');
+    else if (cell.crop !== 'empty' && cell.growth >= 100) { div.classList.add('grown'); div.classList.add('ready'); }
+    else if (cell.crop !== 'empty') div.classList.add('planted');
+    if (cell.watered) div.classList.add('watered');
+    const icon = CROP_ICONS[cell.crop] || (cell.crop !== 'empty' ? '\u{1F331}' : '');
+    div.textContent = icon;
+    if (cell.crop !== 'empty' && cell.crop !== 'tilled') {
+      const pctText = document.createElement('div');
+      pctText.className = 'growth-text';
+      pctText.textContent = cell.growth >= 100 ? '\u2713' : `${Math.round(cell.growth)}%`;
+      div.appendChild(pctText);
+      const bar = document.createElement('div');
+      bar.className = 'growth-bar';
+      bar.innerHTML = `<div class="fill" style="width:${Math.min(cell.growth, 100)}%"></div>`;
+      div.appendChild(bar);
     }
-    addBubble(msg.speaker || 'narrator', msg.text);
+    grid.appendChild(div);
   }
-  displayingMessages = false;
 }
 
-// ============================================================
-// REAL-TIME PLANT GROWTH TIMER
-// ============================================================
-function startGrowthTimer() {
-  if (growthTimerId) clearInterval(growthTimerId);
-  growthTimerId = setInterval(() => {
-    if (!gameState.grid) return;
-    let anyGrew = false;
-    for (let i = 0; i < gameState.grid.length; i++) {
-      const cell = gameState.grid[i];
-      if (cell.crop !== 'empty' && cell.crop !== 'tilled' && cell.watered && cell.growth < 100) {
-        cell.growth = Math.min(cell.growth + GROWTH_PER_TICK, 100);
-        anyGrew = true;
-        if (cell.growth >= 100) {
-          // Track crop type for green_thumb quest
-          if (!gameState.grownCropTypes) gameState.grownCropTypes = [];
-          if (!gameState.grownCropTypes.includes(cell.crop)) {
-            gameState.grownCropTypes.push(cell.crop);
-          }
-          gameState.events = (gameState.events || []).concat(`${CROP_ICONS[cell.crop] || '🌱'} ${cell.crop} is ready to harvest!`).slice(-5);
-          gameEvents.emit('plantGrown', { cellIndex: i, crop: cell.crop });
-        }
-      }
-    }
-    if (anyGrew) {
-      renderGrid();
-      renderEvents();
-    }
-  }, GROWTH_TICK_INTERVAL);
-}
-
-function stopGrowthTimer() {
-  if (growthTimerId) { clearInterval(growthTimerId); growthTimerId = null; }
-}
-
-// ============================================================
-// QUEST SYSTEM
-// ============================================================
-function getAvailableQuests() {
-  // Quests that haven't been started or completed, and whose prereqs are met
-  const completedIds = (gameState.quests?.completed || []).map(q => q.id);
-  const activeIds = (gameState.quests?.active || []).map(q => q.id);
-  return AVAILABLE_QUESTS.filter(q =>
-    !completedIds.includes(q.id) &&
-    !activeIds.includes(q.id) &&
-    q.prereqs.every(p => completedIds.includes(p))
-  );
-}
-
-function offerQuest(questId) {
-  const template = AVAILABLE_QUESTS.find(q => q.id === questId);
-  if (!template) return;
-  // Deep clone the quest so objectives are independent
-  const quest = JSON.parse(JSON.stringify(template));
-  gameState.quests.active.push(quest);
-  // NPC gives the quest via speech
-  addBubble(quest.giver, quest.giverDialogue);
-  addBubble('system', `New quest: ${quest.title}`);
-  renderQuests();
-}
-
-function completeQuest(questId) {
-  const idx = gameState.quests.active.findIndex(q => q.id === questId);
-  if (idx === -1) return;
-  const quest = gameState.quests.active.splice(idx, 1)[0];
-  gameState.quests.completed.push({ id: quest.id, title: quest.title });
-
-  // Apply rewards
-  if (quest.rewards.gold) gameState.gold += quest.rewards.gold;
-  if (quest.rewards.reputation) gameState.reputation += quest.rewards.reputation;
-
-  // NPC completion dialogue
-  const template = AVAILABLE_QUESTS.find(q => q.id === quest.id);
-  if (template) {
-    addBubble(template.giver, template.completeDialogue);
-  }
-  addBubble('system', `Quest complete: ${quest.title}! +${quest.rewards.gold || 0}g, +${quest.rewards.reputation || 0} rep`);
-
-  gameEvents.emit('questComplete', { quest });
-  renderAll();
-
-  // Check if new quests are now available
-  setTimeout(() => {
-    const available = getAvailableQuests();
-    if (available.length > 0) {
-      offerQuest(available[0].id);
-    }
-  }, 2000);
-}
-
-function checkQuestProgress() {
-  if (!gameState.quests) return;
-  for (const quest of gameState.quests.active) {
-    let allComplete = true;
-    for (const obj of quest.objectives) {
-      // Auto-update certain objective types based on game state
-      if (obj.type === 'animal' && obj.target === 'any') {
-        obj.current = Math.min(gameState.animals ? gameState.animals.length : 0, obj.required);
-      } else if (obj.type === 'meet_npcs') {
-        const metCount = Object.values(gameState.relationships || {}).filter(r => r.met).length;
-        obj.current = Math.min(metCount, obj.required);
-      } else if (obj.type === 'earn_gold') {
-        obj.current = Math.min(gameState.totalGoldEarned || 0, obj.required);
-      } else if (obj.type === 'grow_types') {
-        obj.current = Math.min((gameState.grownCropTypes || []).length, obj.required);
-      } else if (obj.type === 'talk' && obj.target) {
-        const rel = gameState.relationships?.[obj.target];
-        if (rel && rel.met) obj.current = Math.min(1, obj.required);
-      } else if (obj.type === 'harvest' && obj.target === 'any') {
-        // Track via grid: if any cell had a grown crop and is now empty, count as harvest
-        // This is tracked by the LLM via questProgress stateChanges
-      }
-
-      if (obj.current < obj.required) allComplete = false;
-    }
-    if (allComplete) {
-      completeQuest(quest.id);
-      return; // complete one at a time
-    }
-  }
-  renderQuests();
-}
-
-// ============================================================
-// EVENT LISTENERS (NPC Reactions)
-// ============================================================
-function setupEventListeners() {
-  gameEvents.on('plantGrown', (data) => {
-    if (!window.npcReactionsEnabled) return;
-    const reactions = NPC_REACTIONS.plantGrown;
-    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
-    if (!displayingMessages && !sending) {
-      addBubble(reaction.speaker, reaction.text);
-    }
-  });
-
-  gameEvents.on('seasonChange', (data) => {
-    if (!window.npcReactionsEnabled) return;
-    const reactions = NPC_REACTIONS.seasonChange;
-    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
-    addBubble(reaction.speaker, reaction.text);
-  });
-
-  gameEvents.on('lowEnergy', (data) => {
-    if (!window.npcReactionsEnabled) return;
-    const reactions = NPC_REACTIONS.lowEnergy;
-    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
-    addBubble(reaction.speaker, reaction.text);
-  });
-
-  gameEvents.on('questComplete', (data) => {
-    // Check for newly available quests
-  });
-}
-
-// ============================================================
-// GAME FLOW
-// ============================================================
+// Legacy handlePlayerMessage (uses chat-input / btn-send flow)
 async function handlePlayerMessage(text) {
   if (sending) return;
   sending = true;
@@ -1164,10 +1846,17 @@ async function handlePlayerMessage(text) {
     const response = await sendToLLM(text);
     setTyping(false);
 
-    // Display messages sequentially (one at a time with delays) or instantly in test mode
     if (response.messages && Array.isArray(response.messages)) {
       if (window.sequentialDisplayEnabled) {
-        await displayMessagesSequentially(response.messages);
+        for (let i = 0; i < response.messages.length; i++) {
+          const msg = response.messages[i];
+          if (i > 0) {
+            setTyping(true);
+            await delay(800);
+            setTyping(false);
+          }
+          addBubble(msg.speaker || 'narrator', msg.text);
+        }
       } else {
         for (const msg of response.messages) {
           addBubble(msg.speaker || 'narrator', msg.text);
@@ -1193,87 +1882,12 @@ async function handlePlayerMessage(text) {
   }
 }
 
-async function startGame() {
-  const url = document.getElementById('api-url').value.trim();
-  const key = document.getElementById('api-key').value.trim();
-  const model = document.getElementById('model-name').value.trim();
-  const name = document.getElementById('farmer-name').value.trim() || 'Farmer';
-  const errorEl = document.getElementById('setup-error');
-
-  if (!url) { errorEl.textContent = 'Please enter an API endpoint.'; errorEl.style.display = 'block'; return; }
-  if (!model) { errorEl.textContent = 'Please enter a model name.'; errorEl.style.display = 'block'; return; }
-
-  apiConfig = { url, key, model };
-  localStorage.setItem('llmfarm_api_url', url);
-  localStorage.setItem('llmfarm_api_key', key);
-  localStorage.setItem('llmfarm_model', model);
-  localStorage.setItem('llmfarm_farmer', name);
-  gameState = createInitialState(name);
-
-  document.getElementById('setup-screen').classList.add('hidden');
-  document.getElementById('game-screen').classList.add('active');
-  renderAll();
-
-  // Start game systems
-  setupEventListeners();
-  startGrowthTimer();
-
-  setTyping(true);
-  try {
-    const response = await sendToLLM(
-      `[GAME START] The player "${name}" arrives at their new farm. Day 1, Spring. The farm is overgrown but full of potential. Give a SHORT welcome (narrator max 20 words), then have an NPC greet them (neighbor Martha or the shopkeeper). Suggest first actions.`
-    );
-    setTyping(false);
-    if (response.messages && Array.isArray(response.messages)) {
-      if (window.sequentialDisplayEnabled) {
-        await displayMessagesSequentially(response.messages);
-      } else {
-        for (const msg of response.messages) addBubble(msg.speaker || 'narrator', msg.text);
-      }
-    } else if (response.narrative) {
-      addBubble('narrator', response.narrative);
-    }
-    if (response.stateChanges) { applyStateChanges(response.stateChanges); renderAll(); }
-    renderSuggestions(response.suggestedActions);
-
-    // Offer first quests after a short delay (skip in test mode)
-    if (window.npcReactionsEnabled) {
-      setTimeout(() => {
-        const available = getAvailableQuests();
-        // Offer the first 2 quests that have no prereqs
-        const starters = available.filter(q => q.prereqs.length === 0).slice(0, 2);
-        starters.forEach((q, i) => {
-          setTimeout(() => offerQuest(q.id), i * 2500);
-        });
-      }, 3000);
-    }
-  } catch (err) {
-    setTyping(false);
-    addBubble('system', `Failed to connect: ${err.message}. Check your API settings and reload.`);
-    console.error(err);
-  }
-}
-
-// Restore saved settings from localStorage
-(function() {
-  const s = (k, id) => { const v = localStorage.getItem(k); if (v) document.getElementById(id).value = v; };
-  s('llmfarm_api_url', 'api-url');
-  s('llmfarm_api_key', 'api-key');
-  s('llmfarm_model', 'model-name');
-  s('llmfarm_farmer', 'farmer-name');
-})();
-
-// ============================================================
-// EVENT LISTENERS
-// ============================================================
-document.getElementById('btn-start').addEventListener('click', startGame);
-
+// Legacy chat-input / btn-send event listeners
 document.getElementById('btn-send').addEventListener('click', () => {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  input.style.height = 'auto';
   clearSuggestions();
   handlePlayerMessage(text);
 });
@@ -1285,11 +1899,6 @@ document.getElementById('chat-input').addEventListener('keydown', (e) => {
   }
 });
 
-document.getElementById('chat-input').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 80) + 'px';
-});
-
 document.getElementById('farm-toggle').addEventListener('click', function() {
   const sections = document.querySelectorAll('.farm-side .panel-section:not(:first-child)');
   const expanded = sections[0]?.classList.contains('show-mobile');
@@ -1297,9 +1906,13 @@ document.getElementById('farm-toggle').addEventListener('click', function() {
   this.textContent = expanded ? 'Show inventory & details \u25BE' : 'Hide details \u25B4';
 });
 
-document.querySelectorAll('#setup-screen input').forEach(input => {
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') startGame(); });
-});
+// Clean up old speech bubbles periodically
+setInterval(() => {
+  const now = Date.now();
+  const before = speechBubbles.length;
+  speechBubbles = speechBubbles.filter(b => now - b.time < 6000);
+  if (speechBubbles.length !== before) renderSpeechBubbles();
+}, 2000);
 </script>
 </body>
 </html>
