@@ -1133,16 +1133,48 @@ async function fetchURL() {
   status.className = "src-status"; status.textContent = "Fetching page...";
 
   try {
-    // Use allorigins as a CORS proxy for public pages
-    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error("Could not fetch URL (status " + res.status + ")");
-    const html = await res.text();
-    const content = htmlToText(html);
+    let content = "";
+    const hostname = new URL(url).hostname;
+
+    // Wikipedia: use their REST API directly (CORS-friendly)
+    const wikiMatch = hostname.match(/^([a-z]{2,})\.wikipedia\.org$/);
+    if (wikiMatch) {
+      const lang = wikiMatch[1];
+      const title = url.split("/wiki/")[1];
+      if (!title) throw new Error("Could not parse Wikipedia article title from URL");
+      const apiUrl = "https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + title;
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error("Wikipedia API error (status " + res.status + ")");
+      const data = await res.json();
+      content = "# " + data.title + "\n\n" + (data.extract || "");
+      // Try to get full text via MediaWiki API
+      try {
+        const fullRes = await fetch("https://" + lang + ".wikipedia.org/w/api.php?action=query&titles=" + encodeURIComponent(data.title) + "&prop=extracts&explaintext=1&format=json&origin=*");
+        const fullData = await fullRes.json();
+        const pages = fullData.query.pages;
+        const page = pages[Object.keys(pages)[0]];
+        if (page.extract && page.extract.length > content.length) content = "# " + data.title + "\n\n" + page.extract;
+      } catch (e) { /* summary fallback is fine */ }
+    } else {
+      // General pages: try multiple CORS proxies
+      const proxies = [
+        "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
+        "https://corsproxy.io/?" + encodeURIComponent(url),
+      ];
+      let html = "";
+      for (const p of proxies) {
+        try {
+          const res = await fetch(p);
+          if (res.ok) { html = await res.text(); break; }
+        } catch (e) { /* try next proxy */ }
+      }
+      if (!html) throw new Error("Could not fetch URL — all proxies failed. Try pasting the page text directly into the knowledge base.");
+      content = htmlToText(html);
+    }
 
     if (!content || content.length < 20) throw new Error("No meaningful text content found on this page");
 
-    const label = url.replace(/^https?:\/\//, "").split("/")[0];
+    const label = hostname.replace("www.", "");
     addToKB(content, "url", label);
     status.className = "src-status success";
     status.textContent = "Loaded " + content.split(/\s+/).length + " words from " + label;
