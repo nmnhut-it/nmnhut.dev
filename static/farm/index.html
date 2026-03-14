@@ -91,6 +91,96 @@
       flex: 1; display: flex; align-items: center; justify-content: center;
       position: relative; overflow: hidden;
       background: linear-gradient(180deg, #1b2838 0%, #162d3e 100%);
+      transition: background 2s ease, filter 2s ease;
+    }
+    /* Time-of-day tints */
+    .game-world.time-morning { background: linear-gradient(180deg, #2a3a28 0%, #1e3a2e 100%); }
+    .game-world.time-afternoon { background: linear-gradient(180deg, #1b2838 0%, #162d3e 100%); }
+    .game-world.time-evening { background: linear-gradient(180deg, #2a1a28 0%, #1e1428 100%); }
+    .game-world.time-night { background: linear-gradient(180deg, #0a0a18 0%, #080812 100%); filter: brightness(0.7); }
+
+    /* Weather overlay */
+    .weather-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 25; overflow: hidden;
+    }
+    .weather-particle {
+      position: absolute; pointer-events: none; opacity: 0.7;
+    }
+    /* Rain */
+    .weather-rain .weather-particle {
+      width: 2px; height: 12px; background: #60a5fa80;
+      animation: rainFall linear infinite;
+    }
+    @keyframes rainFall {
+      0% { transform: translateY(-20px); opacity: 0.7; }
+      100% { transform: translateY(calc(100vh + 20px)); opacity: 0.2; }
+    }
+    /* Snow */
+    .weather-snow .weather-particle {
+      width: 6px; height: 6px; background: #ffffff; border-radius: 50%;
+      animation: snowFall linear infinite;
+    }
+    @keyframes snowFall {
+      0% { transform: translateY(-10px) translateX(0); opacity: 0.8; }
+      50% { transform: translateY(50vh) translateX(20px); opacity: 0.6; }
+      100% { transform: translateY(calc(100vh + 10px)) translateX(-10px); opacity: 0.2; }
+    }
+    /* Fog */
+    .weather-fog::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at center, #ffffff08 0%, #ffffff18 50%, #ffffff08 100%);
+      animation: fogDrift 8s ease-in-out infinite alternate;
+    }
+    @keyframes fogDrift {
+      0% { transform: translateX(-5%); }
+      100% { transform: translateX(5%); }
+    }
+
+    /* Farm action particles */
+    .action-particle {
+      position: absolute; pointer-events: none; z-index: 20;
+      font-size: 1rem; animation: particleFloat 1s ease-out forwards;
+    }
+    @keyframes particleFloat {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-30px) scale(0.5); }
+    }
+    .gold-particle { color: var(--yellow); font-weight: 700; font-size: 0.85rem; }
+    @keyframes goldFloat {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-40px); }
+    }
+    .gold-particle { animation: goldFloat 1.2s ease-out forwards; }
+
+    /* Ambient critter */
+    .critter {
+      position: absolute; pointer-events: none; z-index: 4;
+      font-size: 0.9rem; transition: all 3s ease-in-out;
+      animation: critterBob 2s ease-in-out infinite;
+    }
+    @keyframes critterBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+
+    /* Day event banner */
+    .day-event-banner {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: #0a1520dd; border: 2px solid var(--accent); border-radius: 16px;
+      padding: 20px 32px; z-index: 50; text-align: center;
+      animation: bannerIn .5s ease-out;
+      max-width: 360px;
+    }
+    .day-event-banner h3 { color: var(--accent); font-size: 1rem; margin-bottom: 6px; }
+    .day-event-banner p { font-size: 0.82rem; color: var(--text); line-height: 1.5; }
+    .day-event-banner .banner-close {
+      margin-top: 10px; padding: 6px 20px; background: var(--accent); color: #000;
+      border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem;
+    }
+    @keyframes bannerIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
 
     /* Tile map */
@@ -660,15 +750,21 @@ const gameEvents = new GameEvents();
 // ============================================================
 const NPC_REACTIONS = {
   plantGrown: [
-    { speaker: 'neighbor', text: "Your crops are ready!" },
-    { speaker: 'shopkeeper', text: "Harvest time! Bring them to me!" },
+    { speaker: 'neighbor', text: "Your crops are ready! How exciting!" },
+    { speaker: 'shopkeeper', text: "Harvest time! I'll buy them fresh!" },
+    { speaker: 'rival', text: "Hmph, took you long enough..." },
+    { speaker: 'fisherman', text: "The earth gives to those who wait." },
   ],
   seasonChange: [
-    { speaker: 'mayor', text: "A new season dawns!" },
+    { speaker: 'mayor', text: "A new season dawns upon our town!" },
     { speaker: 'neighbor', text: "New season, new possibilities!" },
+    { speaker: 'traveler', text: "The winds of change blow again..." },
+    { speaker: 'blacksmith', text: "Time for new tools." },
   ],
   lowEnergy: [
-    { speaker: 'neighbor', text: "You look tired, dear. Rest!" },
+    { speaker: 'neighbor', text: "You look tired, dear. Get some rest!" },
+    { speaker: 'fisherman', text: "Even the river rests at night." },
+    { speaker: 'rival', text: "Don't pass out! ...not that I care." },
   ],
 };
 
@@ -1765,6 +1861,7 @@ function doSellAll() {
     gameState.gold += totalGold;
     gameState.totalGoldEarned = (gameState.totalGoldEarned || 0) + totalGold;
     showToast(`Sold ${soldItems.join(', ')} for ${totalGold}g!`, 4000);
+    spawnGoldParticle(totalGold);
     checkQuestProgress();
     renderAll();
     showFarmToolbar();
@@ -1826,6 +1923,289 @@ function setupEventListeners() {
     const r = reactions[Math.floor(Math.random() * reactions.length)];
     addSpeechBubble(r.speaker, r.text);
   });
+
+  // Farm action particles
+  gameEvents.on('farmAction', (data) => {
+    spawnActionParticle(data.type);
+  });
+  gameEvents.on('harvest', (data) => {
+    spawnActionParticle('harvest', CROP_ICONS[data.crop]);
+  });
+}
+
+// ============================================================
+// WEATHER EFFECTS
+// ============================================================
+let weatherOverlay = null;
+let weatherInterval = null;
+
+function updateWeatherEffects() {
+  if (weatherOverlay) { weatherOverlay.remove(); weatherOverlay = null; }
+  if (weatherInterval) { clearInterval(weatherInterval); weatherInterval = null; }
+
+  const world = document.getElementById('game-world');
+  if (!world) return;
+  const w = gameState.weather;
+
+  weatherOverlay = document.createElement('div');
+  weatherOverlay.className = 'weather-overlay';
+
+  if (w === 'Rainy' || w === 'Stormy') {
+    weatherOverlay.classList.add('weather-rain');
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'weather-particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
+      p.style.animationDelay = Math.random() * 2 + 's';
+      if (w === 'Stormy') p.style.background = '#93c5fdaa';
+      weatherOverlay.appendChild(p);
+    }
+  } else if (w === 'Snowy') {
+    weatherOverlay.classList.add('weather-snow');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'weather-particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (3 + Math.random() * 4) + 's';
+      p.style.animationDelay = Math.random() * 5 + 's';
+      p.style.width = (3 + Math.random() * 5) + 'px';
+      p.style.height = p.style.width;
+      weatherOverlay.appendChild(p);
+    }
+  } else if (w === 'Foggy') {
+    weatherOverlay.classList.add('weather-fog');
+  }
+
+  world.appendChild(weatherOverlay);
+}
+
+// ============================================================
+// TIME-OF-DAY AMBIANCE
+// ============================================================
+function updateTimeOfDay() {
+  const world = document.getElementById('game-world');
+  if (!world) return;
+  world.classList.remove('time-morning', 'time-afternoon', 'time-evening', 'time-night');
+  // Cycle time based on real seconds within a "day" (every 120 seconds = 1 game day cycle feel)
+  const phase = Math.floor((Date.now() / 30000) % 4);
+  const classes = ['time-morning', 'time-afternoon', 'time-evening', 'time-night'];
+  world.classList.add(classes[phase]);
+}
+
+// ============================================================
+// ACTION PARTICLES
+// ============================================================
+function spawnActionParticle(type, emoji) {
+  const world = document.getElementById('game-world');
+  if (!world) return;
+  const map = document.getElementById('tile-map');
+  if (!map) return;
+
+  const mapRect = map.getBoundingClientRect();
+  const worldRect = world.getBoundingClientRect();
+  const px = gameState.playerX, py = gameState.playerY;
+  const tileSize = mapRect.width / MAP_W;
+
+  const centerX = mapRect.left - worldRect.left + (px + 0.5) * tileSize;
+  const centerY = mapRect.top - worldRect.top + (py + 0.5) * tileSize;
+
+  const particles = {
+    till: ['🪨', '💨', '🟤'],
+    plant: ['🌱', '✨', '🌿'],
+    water: ['💧', '💦', '🫧'],
+    harvest: [emoji || '🌾', '✨', '⭐'],
+  };
+
+  const icons = particles[type] || ['✨'];
+  for (let i = 0; i < 3; i++) {
+    const el = document.createElement('div');
+    el.className = 'action-particle';
+    el.textContent = icons[i % icons.length];
+    el.style.left = (centerX + (Math.random() - 0.5) * tileSize) + 'px';
+    el.style.top = (centerY - 10) + 'px';
+    el.style.animationDelay = (i * 0.15) + 's';
+    world.appendChild(el);
+    setTimeout(() => el.remove(), 1200);
+  }
+}
+
+function spawnGoldParticle(amount) {
+  const world = document.getElementById('game-world');
+  if (!world) return;
+  const map = document.getElementById('tile-map');
+  if (!map) return;
+
+  const mapRect = map.getBoundingClientRect();
+  const worldRect = world.getBoundingClientRect();
+  const px = gameState.playerX, py = gameState.playerY;
+  const tileSize = mapRect.width / MAP_W;
+
+  const el = document.createElement('div');
+  el.className = 'action-particle gold-particle';
+  el.textContent = `+${amount}g`;
+  el.style.left = (mapRect.left - worldRect.left + (px + 0.5) * tileSize) + 'px';
+  el.style.top = (mapRect.top - worldRect.top + (py + 0.3) * tileSize) + 'px';
+  world.appendChild(el);
+  setTimeout(() => el.remove(), 1400);
+}
+
+// ============================================================
+// AMBIENT CRITTERS
+// ============================================================
+const CRITTER_EMOJIS = ['🦋', '🐛', '🐝', '🐞', '🕊️', '🐿️', '🦗', '🐸'];
+let critterElements = [];
+let critterInterval = null;
+
+function startAmbientCritters() {
+  if (critterInterval) clearInterval(critterInterval);
+  critterInterval = setInterval(() => {
+    const world = document.getElementById('game-world');
+    const map = document.getElementById('tile-map');
+    if (!world || !map) return;
+
+    // Max 3 critters at a time
+    critterElements = critterElements.filter(el => el.parentNode);
+    if (critterElements.length >= 3) return;
+
+    const mapRect = map.getBoundingClientRect();
+    const worldRect = world.getBoundingClientRect();
+
+    const emoji = CRITTER_EMOJIS[Math.floor(Math.random() * CRITTER_EMOJIS.length)];
+    const el = document.createElement('div');
+    el.className = 'critter';
+    el.textContent = emoji;
+    el.style.left = (mapRect.left - worldRect.left + Math.random() * mapRect.width) + 'px';
+    el.style.top = (mapRect.top - worldRect.top + Math.random() * mapRect.height) + 'px';
+    world.appendChild(el);
+    critterElements.push(el);
+
+    // Move randomly
+    const moveInterval = setInterval(() => {
+      if (!el.parentNode) { clearInterval(moveInterval); return; }
+      el.style.left = (mapRect.left - worldRect.left + Math.random() * mapRect.width) + 'px';
+      el.style.top = (mapRect.top - worldRect.top + Math.random() * mapRect.height) + 'px';
+    }, 3000 + Math.random() * 2000);
+
+    // Despawn after 12-20 seconds
+    setTimeout(() => {
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 1000);
+      clearInterval(moveInterval);
+    }, 12000 + Math.random() * 8000);
+  }, 6000);
+}
+
+// ============================================================
+// NPC AMBIENT CHATTER (local, no LLM)
+// ============================================================
+const NPC_IDLE_CHATTER = {
+  shopkeeper: [
+    "Fresh seeds today!", "Business is good~", "Need anything?",
+    "Half-price pumpkins... just kidding!", "My shelves are stocked!",
+  ],
+  neighbor: [
+    "What lovely weather!", "Reminds me of the old days...", "I baked cookies!",
+    "The flowers are blooming~", "Have you eaten, dear?",
+  ],
+  mayor: [
+    "Order in the town!", "A fine day for governance!", "Elections? What elections?",
+    "The town prospers!", "I should give a speech...",
+  ],
+  blacksmith: [
+    "*hammering*", "Hmph.", "Steel's expensive.", "Need sharper tools?", "...",
+  ],
+  fisherman: [
+    "The river knows all...", "Patience...", "Big one got away...",
+    "Best time to fish is now.", "Life is like a river...",
+  ],
+  traveler: [
+    "I've seen strange things...", "The stars whisper...", "Secrets everywhere...",
+    "A storm is coming... maybe.", "Have you found the hidden path?",
+  ],
+  rival: [
+    "My farm is better!", "Is that all you've got?", "Watch and learn!",
+    "I'll beat you this season!", "Hmph, not bad... I guess.",
+  ],
+};
+let ambientChatterInterval = null;
+
+function startAmbientChatter() {
+  if (ambientChatterInterval) clearInterval(ambientChatterInterval);
+  ambientChatterInterval = setInterval(() => {
+    if (!window.npcReactionsEnabled || sending || currentNPC) return;
+    // 40% chance each tick
+    if (Math.random() > 0.4) return;
+
+    const npcIds = Object.keys(NPC_DEFS);
+    const id = npcIds[Math.floor(Math.random() * npcIds.length)];
+    const lines = NPC_IDLE_CHATTER[id];
+    if (!lines) return;
+    const text = lines[Math.floor(Math.random() * lines.length)];
+    addSpeechBubble(id, text);
+  }, 10000);
+}
+
+// ============================================================
+// LLM-POWERED DAY EVENT (on sleep)
+// ============================================================
+async function generateDayEvent() {
+  if (!apiConfig.url) return null;
+  try {
+    const prompt = `[NEW DAY EVENT] Day ${gameState.day}, ${gameState.season}, ${gameState.weather}.
+Farm state: ${Object.values(gameState.grid).filter(c => c.crop !== 'empty' && c.crop !== 'tilled').length} crops planted.
+Gold: ${gameState.gold}. Reputation: ${gameState.reputation}.
+Generate a SHORT random event for the new day. Could be: a visiting merchant, a wild animal spotted, a neighbor's gift, weather damage, found item, festival hint, mysterious stranger, etc.
+Return JSON: { "title": "Event Title (3 words)", "description": "What happened (max 25 words)", "speaker": "npc_id or narrator", "effect": { "gold": 0, "inventory": {} } }
+Keep effects small (0-15 gold, 0-1 item). Be creative and varied!`;
+
+    const response = await sendToLLM(prompt);
+    return response;
+  } catch (e) {
+    console.error('Day event error:', e);
+    return null;
+  }
+}
+
+function showDayEventBanner(title, description, onClose) {
+  const world = document.getElementById('game-world');
+  const banner = document.createElement('div');
+  banner.className = 'day-event-banner';
+  banner.innerHTML = `<h3>🌅 ${escapeHtml(title)}</h3><p>${escapeHtml(description)}</p>
+    <button class="banner-close">OK</button>`;
+  banner.querySelector('.banner-close').addEventListener('click', () => {
+    banner.remove();
+    if (onClose) onClose();
+  });
+  world.appendChild(banner);
+  // Auto-dismiss after 8 seconds
+  setTimeout(() => { if (banner.parentNode) banner.remove(); }, 8000);
+}
+
+// ============================================================
+// LLM-POWERED NPC DAILY GOSSIP (background, non-blocking)
+// ============================================================
+async function generateMorningGossip() {
+  if (!apiConfig.url || !window.npcReactionsEnabled) return;
+  try {
+    const npcIds = Object.keys(NPC_DEFS);
+    const npcId = npcIds[Math.floor(Math.random() * npcIds.length)];
+    const npc = NPC_DEFS[npcId];
+
+    const prompt = `[NPC MORNING GOSSIP - non-interactive, just flavor text]
+${npc.name} (${npcId}, personality: ${npc.personality}) mutters something to themselves at the start of Day ${gameState.day}, ${gameState.season}, ${gameState.weather}.
+Give a single short atmospheric line (max 15 words) that adds life to the world. Could reference: weather, season, a rumor, their daily routine, another NPC, or the player's farm progress (${Object.values(gameState.grid).filter(c => c.crop !== 'empty').length} crops).
+Return JSON: { "speaker": "${npcId}", "text": "the line" }`;
+
+    const res = await sendToLLM(prompt);
+    if (res.speaker && res.text) {
+      addSpeechBubble(res.speaker, res.text);
+    } else if (res.messages && res.messages[0]) {
+      addSpeechBubble(res.messages[0].speaker || npcId, res.messages[0].text);
+    }
+  } catch (e) {
+    console.error('Morning gossip error:', e);
+  }
 }
 
 // ============================================================
@@ -1923,6 +2303,11 @@ async function startGame() {
 
   setupEventListeners();
   startGrowthTimer();
+  startAmbientCritters();
+  startAmbientChatter();
+  updateWeatherEffects();
+  updateTimeOfDay();
+  setInterval(updateTimeOfDay, 30000); // update time-of-day every 30s
 
   // Show welcome toast
   showToast('WASD to move, Space to farm, E to talk to NPCs!', 5000);
@@ -1987,8 +2372,8 @@ document.getElementById('dialog-input').addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeDialog();
 });
 
-// Sleep button — advance day, restore energy, reset watered (deterministic)
-document.getElementById('btn-sleep').addEventListener('click', () => {
+// Sleep button — advance day, restore energy, reset watered, trigger events
+document.getElementById('btn-sleep').addEventListener('click', async () => {
   if (sending || moving) return;
   gameState.day += 1;
   gameState.energy = gameState.maxEnergy;
@@ -2007,7 +2392,41 @@ document.getElementById('btn-sleep').addEventListener('click', () => {
   gameState.weather = WEATHER_OPTIONS[Math.floor(Math.random() * WEATHER_OPTIONS.length)];
   showToast(`Day ${gameState.day} - ${gameState.season} - ${gameState.weather}`, 3000);
   renderAll();
+  updateWeatherEffects();
   showFarmToolbar();
+
+  // LLM day event (non-blocking, runs in background)
+  generateDayEvent().then(event => {
+    if (!event) return;
+    let title = event.title || 'New Day';
+    let desc = event.description || event.messages?.[0]?.text || '';
+    let speaker = event.speaker || event.messages?.[0]?.speaker || 'narrator';
+    if (!desc && event.messages) desc = event.messages.map(m => m.text).join(' ');
+    if (desc) {
+      showDayEventBanner(title, desc);
+      addSpeechBubble(speaker, desc);
+    }
+    // Apply small effects
+    const fx = event.effect || event.stateChanges;
+    if (fx) {
+      if (fx.gold && typeof fx.gold === 'number') {
+        gameState.gold += fx.gold;
+        if (fx.gold > 0) {
+          gameState.totalGoldEarned = (gameState.totalGoldEarned || 0) + fx.gold;
+          spawnGoldParticle(fx.gold);
+        }
+      }
+      if (fx.inventory && typeof fx.inventory === 'object') {
+        for (const [item, qty] of Object.entries(fx.inventory)) {
+          if (qty > 0) gameState.inventory[item] = (gameState.inventory[item] || 0) + qty;
+        }
+      }
+      renderAll();
+    }
+  });
+
+  // LLM morning gossip after a short delay
+  setTimeout(() => generateMorningGossip(), 3000);
 });
 
 // Side panel toggles (both can be open simultaneously)
