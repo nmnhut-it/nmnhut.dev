@@ -202,12 +202,13 @@
 
     /* Side panels (inventory, quests) */
     .side-panel {
-      position: absolute; top: 0; right: 0; width: 280px; height: 100%;
+      position: absolute; top: 0; right: 0; width: 260px; height: 100%;
       background: #162d3eee; border-left: 2px solid #0a1520;
       z-index: 30; transform: translateX(100%); transition: transform .3s ease;
       overflow-y: auto; padding: 12px;
     }
     .side-panel.open { transform: translateX(0); }
+    #panel-quests.open.shift-left { right: 260px; }
     .side-panel h3 {
       font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.2px;
       color: var(--text2); margin-bottom: 8px; padding-bottom: 6px;
@@ -365,6 +366,49 @@
       position: absolute; top: 1px; left: 0; right: 0; text-align: center;
       font-size: 0.55rem; color: #ffffffaa; font-weight: 600; pointer-events: none;
     }
+    /* Farm action toolbar */
+    .farm-toolbar {
+      position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; z-index: 35;
+      background: #162d3eee; border: 1px solid var(--accent); border-radius: 12px;
+      padding: 6px 10px; animation: toastIn .3s ease-out;
+    }
+    .farm-toolbar .farm-action {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 6px 12px; background: var(--surface); border: 1px solid #ffffff18;
+      border-radius: 8px; color: var(--text); font-size: 0.72rem; cursor: pointer;
+      font-family: inherit; transition: all .15s; min-width: 56px;
+    }
+    .farm-toolbar .farm-action:hover:not(:disabled) { background: var(--accent); color: #000; border-color: var(--accent); }
+    .farm-toolbar .farm-action:disabled { opacity: .35; cursor: not-allowed; }
+    .farm-toolbar .farm-action .action-icon { font-size: 1.2rem; }
+    .farm-toolbar .farm-action .action-label { font-size: 0.65rem; font-weight: 600; }
+    .farm-toolbar .farm-action .action-cost { font-size: 0.58rem; color: var(--yellow); }
+
+    /* Seed picker dropdown */
+    .seed-picker {
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: #162d3eee; border: 1px solid var(--accent); border-radius: 10px;
+      padding: 8px; z-index: 36; display: flex; flex-wrap: wrap; gap: 4px;
+      min-width: 200px; animation: toastIn .2s ease-out;
+    }
+    .seed-picker .seed-option {
+      display: flex; align-items: center; gap: 4px; padding: 5px 10px;
+      background: var(--surface); border: 1px solid #ffffff12; border-radius: 6px;
+      color: var(--text); font-size: 0.75rem; cursor: pointer; font-family: inherit;
+      transition: all .15s;
+    }
+    .seed-picker .seed-option:hover { background: var(--accent); color: #000; }
+    .seed-picker .seed-option:disabled { opacity: .4; cursor: not-allowed; }
+    .seed-picker .seed-option .seed-price { color: var(--yellow); font-size: 0.65rem; margin-left: 2px; }
+
+    /* NPC interaction prompt update */
+    .tile .interact-hint {
+      position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+      background: #162d3ecc; color: var(--text2); font-size: 0.55rem;
+      padding: 1px 6px; border-radius: 3px; white-space: nowrap; z-index: 15;
+    }
+
     .farm-toggle { display: none; }
     .farm-side { display: none; }
     .game-area { display: none; }
@@ -441,6 +485,7 @@
     <div class="hud-stat">&#x1F4B0; <span id="stat-gold">50</span></div>
     <div class="hud-stat">&#x26A1; <span id="stat-energy">10/10</span></div>
     <div class="hud-stat">&#x2B50; <span id="stat-reputation">0</span></div>
+    <button class="hud-btn" id="btn-sleep">&#x1F319; Sleep</button>
     <button class="hud-btn" id="btn-inventory">&#x1F392; Bag</button>
     <button class="hud-btn" id="btn-quests">&#x1F4CB; Quests</button>
   </div>
@@ -701,6 +746,21 @@ const GROWTH_PER_TICK = 5;
 let growthTimerId = null;
 
 // ============================================================
+// CROP PRICES (deterministic, no LLM needed)
+// ============================================================
+const SEED_PRICES = {
+  wheat: 5, corn: 8, carrot: 4, potato: 6, tomato: 7,
+  pumpkin: 12, strawberry: 10, sunflower: 8, melon: 15,
+  cabbage: 6, rice: 5, flower: 4, herb: 3, berry: 6,
+};
+const SELL_PRICES = {
+  wheat: 15, corn: 22, carrot: 12, potato: 18, tomato: 20,
+  pumpkin: 35, strawberry: 28, sunflower: 24, melon: 42,
+  cabbage: 18, rice: 15, flower: 12, herb: 10, berry: 16,
+};
+const STARTER_SEEDS = ['wheat', 'corn', 'carrot', 'potato', 'tomato', 'strawberry'];
+
+// ============================================================
 // GAME STATE
 // ============================================================
 let gameState = {};
@@ -956,7 +1016,7 @@ function renderMap() {
             tile.classList.add('npc-nearby');
             const prompt = document.createElement('div');
             prompt.className = 'interact-prompt';
-            prompt.textContent = 'Click to talk';
+            prompt.textContent = 'E / Click to talk';
             tile.appendChild(prompt);
           }
           break;
@@ -1180,20 +1240,18 @@ async function movePlayerTo(tx, ty) {
     renderMap();
   }
 
-  // Check if on farm plot
+  // Check if on farm plot — show action toolbar
   const plotIdx = getFarmPlotAtPlayer();
   if (plotIdx !== null && !currentNPC) {
-    const cell = gameState.grid[plotIdx];
-    if (cell.crop === 'empty') {
-      showToast('Empty farm plot. Talk to an NPC or click to farm!');
-    } else if (cell.growth >= 100) {
-      showToast(`${CROP_ICONS[cell.crop] || ''} ${cell.crop} ready to harvest!`);
-    }
+    showFarmToolbar();
+  } else {
+    hideFarmToolbar();
   }
 }
 
 async function animateMovement(path) {
   moving = true;
+  hideFarmToolbar();
   try {
     for (const step of path) {
       gameState.playerX = step.x;
@@ -1227,6 +1285,7 @@ function openDialog(npcId) {
   currentNPC = npcId;
   const npc = NPC_DEFS[npcId];
   if (!npc) return;
+  hideFarmToolbar();
 
   const box = document.getElementById('dialog-box');
   document.getElementById('dialog-avatar').textContent = npc.emoji;
@@ -1519,6 +1578,202 @@ function checkQuestProgress() {
 }
 
 // ============================================================
+// DIRECT FARM ACTIONS (no LLM needed!)
+// ============================================================
+let farmToolbarEl = null;
+let seedPickerEl = null;
+
+function showFarmToolbar() {
+  hideFarmToolbar();
+  const plotIdx = getFarmPlotAtPlayer();
+  if (plotIdx === null || currentNPC) return;
+
+  const cell = gameState.grid[plotIdx];
+  const world = document.getElementById('game-world');
+  farmToolbarEl = document.createElement('div');
+  farmToolbarEl.className = 'farm-toolbar';
+
+  const actions = [];
+
+  if (cell.crop === 'empty') {
+    // Can till
+    actions.push({ icon: '\u{1F6A7}', label: 'Till', cost: '1 energy', action: () => doTill(plotIdx), disabled: gameState.energy < 1 });
+  }
+
+  if (cell.crop === 'tilled' || cell.crop === 'empty') {
+    // Can plant
+    actions.push({ icon: '\u{1F331}', label: 'Plant', cost: 'seeds', action: () => showSeedPicker(plotIdx), disabled: false });
+  }
+
+  if (cell.crop !== 'empty' && cell.crop !== 'tilled' && !cell.watered) {
+    // Can water
+    actions.push({ icon: '\u{1F4A7}', label: 'Water', cost: '1 energy', action: () => doWater(plotIdx), disabled: gameState.energy < 1 });
+  }
+
+  if (cell.crop !== 'empty' && cell.crop !== 'tilled' && cell.watered && cell.growth < 100) {
+    actions.push({ icon: '\u{1F4A7}', label: 'Watered', cost: '\u2713', action: null, disabled: true });
+  }
+
+  if (cell.crop !== 'empty' && cell.crop !== 'tilled' && cell.growth >= 100) {
+    // Can harvest
+    actions.push({ icon: '\u{1F33E}', label: 'Harvest', cost: '+1 crop', action: () => doHarvest(plotIdx), disabled: false });
+  }
+
+  // Always show a sell button if player has sellable items
+  const sellableItems = Object.entries(gameState.inventory || {}).filter(([k, v]) => SELL_PRICES[k] && v > 0);
+  if (sellableItems.length > 0) {
+    actions.push({ icon: '\u{1F4B0}', label: 'Sell', cost: 'items', action: () => doSellAll(), disabled: false });
+  }
+
+  // Water all button if multiple unwaterd crops
+  const unwateredCount = gameState.grid.filter((c, i) => i < FARM_PLOTS.length && c.crop !== 'empty' && c.crop !== 'tilled' && !c.watered).length;
+  if (unwateredCount > 1) {
+    const cost = Math.min(unwateredCount, gameState.energy);
+    actions.push({ icon: '\u{1F30A}', label: 'Water All', cost: `${cost} energy`, action: () => doWaterAll(), disabled: gameState.energy < 1 });
+  }
+
+  for (const a of actions) {
+    const btn = document.createElement('button');
+    btn.className = 'farm-action';
+    btn.disabled = a.disabled;
+    btn.innerHTML = `<span class="action-icon">${a.icon}</span><span class="action-label">${a.label}</span><span class="action-cost">${a.cost}</span>`;
+    if (a.action && !a.disabled) btn.addEventListener('click', a.action);
+    farmToolbarEl.appendChild(btn);
+  }
+
+  if (actions.length > 0) world.appendChild(farmToolbarEl);
+}
+
+function hideFarmToolbar() {
+  if (farmToolbarEl) { farmToolbarEl.remove(); farmToolbarEl = null; }
+  hideSeedPicker();
+}
+
+function showSeedPicker(plotIdx) {
+  hideSeedPicker();
+  if (!farmToolbarEl) return;
+  seedPickerEl = document.createElement('div');
+  seedPickerEl.className = 'seed-picker';
+
+  for (const crop of STARTER_SEEDS) {
+    const price = SEED_PRICES[crop];
+    const btn = document.createElement('button');
+    btn.className = 'seed-option';
+    btn.disabled = gameState.gold < price || gameState.energy < 1;
+    btn.innerHTML = `${CROP_ICONS[crop] || '\u{1F331}'} ${crop} <span class="seed-price">${price}g</span>`;
+    btn.addEventListener('click', () => {
+      doPlant(plotIdx, crop);
+      hideSeedPicker();
+    });
+    seedPickerEl.appendChild(btn);
+  }
+
+  farmToolbarEl.appendChild(seedPickerEl);
+}
+
+function hideSeedPicker() {
+  if (seedPickerEl) { seedPickerEl.remove(); seedPickerEl = null; }
+}
+
+function doTill(plotIdx) {
+  if (gameState.energy < 1) { showToast('Not enough energy!'); return; }
+  const cell = gameState.grid[plotIdx];
+  cell.crop = 'tilled';
+  gameState.energy -= 1;
+  showToast('Tilled the soil!');
+  gameEvents.emit('farmAction', { type: 'till', plotIdx });
+  renderAll();
+  showFarmToolbar();
+}
+
+function doPlant(plotIdx, cropType) {
+  const price = SEED_PRICES[cropType];
+  if (gameState.gold < price) { showToast(`Need ${price}g for ${cropType} seeds!`); return; }
+  if (gameState.energy < 1) { showToast('Not enough energy!'); return; }
+  const cell = gameState.grid[plotIdx];
+  cell.crop = cropType;
+  cell.growth = 0;
+  cell.watered = false;
+  gameState.gold -= price;
+  gameState.energy -= 1;
+  showToast(`Planted ${cropType}! (-${price}g)`);
+  gameEvents.emit('farmAction', { type: 'plant', plotIdx, crop: cropType });
+  renderAll();
+  showFarmToolbar();
+}
+
+function doWater(plotIdx) {
+  if (gameState.energy < 1) { showToast('Not enough energy!'); return; }
+  const cell = gameState.grid[plotIdx];
+  cell.watered = true;
+  gameState.energy -= 1;
+  showToast('Watered the crop!');
+  renderAll();
+  showFarmToolbar();
+}
+
+function doWaterAll() {
+  let count = 0;
+  for (let i = 0; i < FARM_PLOTS.length; i++) {
+    const cell = gameState.grid[i];
+    if (cell.crop !== 'empty' && cell.crop !== 'tilled' && !cell.watered && gameState.energy >= 1) {
+      cell.watered = true;
+      gameState.energy -= 1;
+      count++;
+    }
+  }
+  if (count > 0) {
+    showToast(`Watered ${count} crops!`);
+    renderAll();
+    showFarmToolbar();
+  } else {
+    showToast('Nothing to water!');
+  }
+}
+
+function doHarvest(plotIdx) {
+  const cell = gameState.grid[plotIdx];
+  if (cell.crop === 'empty' || cell.crop === 'tilled' || cell.growth < 100) return;
+  const crop = cell.crop;
+  gameState.inventory[crop] = (gameState.inventory[crop] || 0) + 1;
+  // Track for quest progress
+  if (!gameState.grownCropTypes) gameState.grownCropTypes = [];
+  if (!gameState.grownCropTypes.includes(crop)) gameState.grownCropTypes.push(crop);
+  // Reset plot
+  cell.crop = 'empty';
+  cell.growth = 0;
+  cell.watered = false;
+  showToast(`Harvested ${CROP_ICONS[crop] || ''} ${crop}!`);
+  gameEvents.emit('harvest', { crop, plotIdx });
+  checkQuestProgress();
+  renderAll();
+  showFarmToolbar();
+}
+
+function doSellAll() {
+  let totalGold = 0;
+  let soldItems = [];
+  for (const [item, qty] of Object.entries(gameState.inventory)) {
+    if (SELL_PRICES[item] && qty > 0) {
+      const earned = SELL_PRICES[item] * qty;
+      totalGold += earned;
+      soldItems.push(`${qty}x ${item}`);
+      delete gameState.inventory[item];
+    }
+  }
+  if (totalGold > 0) {
+    gameState.gold += totalGold;
+    gameState.totalGoldEarned = (gameState.totalGoldEarned || 0) + totalGold;
+    showToast(`Sold ${soldItems.join(', ')} for ${totalGold}g!`, 4000);
+    checkQuestProgress();
+    renderAll();
+    showFarmToolbar();
+  } else {
+    showToast('Nothing to sell!');
+  }
+}
+
+// ============================================================
 // GROWTH TIMER
 // ============================================================
 function startGrowthTimer() {
@@ -1596,16 +1851,29 @@ document.addEventListener('keydown', (e) => {
     if (nearby) openDialog(nearby.id);
     return;
   }
+  else if (e.key === ' ') {
+    // Quick farm action on current tile
+    e.preventDefault();
+    const plotIdx = getFarmPlotAtPlayer();
+    if (plotIdx !== null) {
+      const cell = gameState.grid[plotIdx];
+      if (cell.crop === 'empty') doTill(plotIdx);
+      else if (cell.crop !== 'tilled' && !cell.watered && cell.growth < 100) doWater(plotIdx);
+      else if (cell.crop !== 'tilled' && cell.growth >= 100) doHarvest(plotIdx);
+      else showFarmToolbar();
+    }
+    return;
+  }
   else return;
 
   e.preventDefault();
   const nx = gameState.playerX + dx;
   const ny = gameState.playerY + dy;
 
-  // Check if trying to walk into NPC — open dialog instead
+  // Check if trying to walk into NPC — block movement, show hint
   for (const [id, npc] of Object.entries(NPC_DEFS)) {
     if (npc.x === nx && npc.y === ny) {
-      openDialog(id);
+      showToast(`Press E to talk to ${npc.name}`, 2000);
       return;
     }
   }
@@ -1617,12 +1885,9 @@ document.addEventListener('keydown', (e) => {
 
     const plotIdx = getFarmPlotAtPlayer();
     if (plotIdx !== null) {
-      const cell = gameState.grid[plotIdx];
-      if (cell.crop === 'empty') {
-        showToast('Empty farm plot');
-      } else if (cell.growth >= 100) {
-        showToast(`${CROP_ICONS[cell.crop] || ''} Ready to harvest!`);
-      }
+      showFarmToolbar();
+    } else {
+      hideFarmToolbar();
     }
   }
 });
@@ -1660,7 +1925,7 @@ async function startGame() {
   startGrowthTimer();
 
   // Show welcome toast
-  showToast('Welcome to the farm! Walk around and talk to NPCs.', 4000);
+  showToast('WASD to move, Space to farm, E to talk to NPCs!', 5000);
 
   // LLM welcome call
   setTyping(true);
@@ -1722,19 +1987,44 @@ document.getElementById('dialog-input').addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeDialog();
 });
 
-// Side panel toggles
+// Sleep button — advance day, restore energy, reset watered (deterministic)
+document.getElementById('btn-sleep').addEventListener('click', () => {
+  if (sending || moving) return;
+  gameState.day += 1;
+  gameState.energy = gameState.maxEnergy;
+  // Reset watered status for all crops
+  for (let i = 0; i < FARM_PLOTS.length; i++) {
+    if (gameState.grid[i]) gameState.grid[i].watered = false;
+  }
+  // Season change every 7 days
+  const seasonIdx = Math.floor((gameState.day - 1) / 7) % SEASONS.length;
+  const newSeason = SEASONS[seasonIdx];
+  if (newSeason !== gameState.season) {
+    gameState.season = newSeason;
+    gameEvents.emit('seasonChange', { season: newSeason });
+  }
+  // Random weather
+  gameState.weather = WEATHER_OPTIONS[Math.floor(Math.random() * WEATHER_OPTIONS.length)];
+  showToast(`Day ${gameState.day} - ${gameState.season} - ${gameState.weather}`, 3000);
+  renderAll();
+  showFarmToolbar();
+});
+
+// Side panel toggles (both can be open simultaneously)
 document.getElementById('btn-inventory').addEventListener('click', () => {
   const panel = document.getElementById('panel-inventory');
   const qPanel = document.getElementById('panel-quests');
-  qPanel.classList.remove('open');
   panel.classList.toggle('open');
+  // Shift quest panel left if both are open
+  qPanel.classList.toggle('shift-left', panel.classList.contains('open') && qPanel.classList.contains('open'));
 });
 
 document.getElementById('btn-quests').addEventListener('click', () => {
   const panel = document.getElementById('panel-quests');
   const iPanel = document.getElementById('panel-inventory');
-  iPanel.classList.remove('open');
   panel.classList.toggle('open');
+  // Shift quest panel left if both are open
+  panel.classList.toggle('shift-left', iPanel.classList.contains('open') && panel.classList.contains('open'));
 });
 
 document.querySelectorAll('.panel-close').forEach(btn => {
