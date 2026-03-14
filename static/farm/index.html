@@ -418,7 +418,7 @@
     <div class="field">
       <label>API Key</label>
       <input type="password" id="api-key" placeholder="sk-...">
-      <span class="hint">Stored only in your browser session</span>
+      <span class="hint">Stored in your browser's localStorage (persists across sessions)</span>
     </div>
     <div class="field">
       <label>Model</label>
@@ -843,17 +843,18 @@ function getFarmPlotAtPlayer() {
   return null;
 }
 
-// Simple BFS pathfinding
+// BFS pathfinding with parent pointers (O(n) memory)
 function findPath(sx, sy, tx, ty) {
   if (sx === tx && sy === ty) return [];
   if (!isWalkable(tx, ty)) return null;
 
   const visited = new Set();
-  const queue = [[sx, sy, []]];
+  const parent = new Map();
+  const queue = [[sx, sy]];
   visited.add(`${sx},${sy}`);
 
   while (queue.length > 0) {
-    const [cx, cy, path] = queue.shift();
+    const [cx, cy] = queue.shift();
     const dirs = [[0,-1],[0,1],[-1,0],[1,0]];
     for (const [dx, dy] of dirs) {
       const nx = cx + dx, ny = cy + dy;
@@ -861,9 +862,19 @@ function findPath(sx, sy, tx, ty) {
       if (visited.has(key)) continue;
       if (!isWalkable(nx, ny)) continue;
       visited.add(key);
-      const newPath = [...path, { x: nx, y: ny }];
-      if (nx === tx && ny === ty) return newPath;
-      queue.push([nx, ny, newPath]);
+      parent.set(key, `${cx},${cy}`);
+      if (nx === tx && ny === ty) {
+        // Reconstruct path from parent pointers
+        const path = [];
+        let cur = key;
+        while (cur !== `${sx},${sy}`) {
+          const [px, py] = cur.split(',').map(Number);
+          path.push({ x: px, y: py });
+          cur = parent.get(cur);
+        }
+        return path.reverse();
+      }
+      queue.push([nx, ny]);
     }
   }
   return null; // no path
@@ -1032,7 +1043,7 @@ function renderInventory() {
     return;
   }
   list.innerHTML = items.map(([name, qty]) =>
-    `<span class="inv-item">${CROP_ICONS[name] || '\u{1F4E6}'} ${name} <span class="qty">x${qty}</span></span>`
+    `<span class="inv-item">${CROP_ICONS[name] || '\u{1F4E6}'} ${escapeHtml(name)} <span class="qty">x${qty}</span></span>`
   ).join('');
 }
 
@@ -1043,7 +1054,7 @@ function renderAnimals() {
     return;
   }
   list.innerHTML = gameState.animals.map(a =>
-    `<span class="animal-tag">${ANIMAL_ICONS[a.type] || '\u{1F43E}'} ${a.name}</span>`
+    `<span class="animal-tag">${ANIMAL_ICONS[a.type] || '\u{1F43E}'} ${escapeHtml(a.name)}</span>`
   ).join('');
 }
 
@@ -1053,7 +1064,7 @@ function renderEvents() {
     log.innerHTML = '<span class="event-entry" style="color:var(--text2)">No events yet</span>';
     return;
   }
-  log.innerHTML = gameState.events.map(e => `<div class="event-entry">${e}</div>`).join('');
+  log.innerHTML = gameState.events.map(e => `<div class="event-entry">${escapeHtml(e)}</div>`).join('');
 }
 
 function renderQuests() {
@@ -1183,13 +1194,16 @@ async function movePlayerTo(tx, ty) {
 
 async function animateMovement(path) {
   moving = true;
-  for (const step of path) {
-    gameState.playerX = step.x;
-    gameState.playerY = step.y;
-    renderMap();
-    await delay(150);
+  try {
+    for (const step of path) {
+      gameState.playerX = step.x;
+      gameState.playerY = step.y;
+      renderMap();
+      await delay(150);
+    }
+  } finally {
+    moving = false;
   }
-  moving = false;
 }
 
 function handleTileClick(x, y) {
@@ -1469,32 +1483,39 @@ function completeQuest(questId) {
   }, 2000);
 }
 
+let _checkingQuests = false;
 function checkQuestProgress() {
   if (!gameState.quests) return;
-  for (const quest of gameState.quests.active) {
-    let allComplete = true;
-    for (const obj of quest.objectives) {
-      if (obj.type === 'animal' && obj.target === 'any') {
-        obj.current = Math.min(gameState.animals ? gameState.animals.length : 0, obj.required);
-      } else if (obj.type === 'meet_npcs') {
-        const metCount = Object.values(gameState.relationships || {}).filter(r => r.met).length;
-        obj.current = Math.min(metCount, obj.required);
-      } else if (obj.type === 'earn_gold') {
-        obj.current = Math.min(gameState.totalGoldEarned || 0, obj.required);
-      } else if (obj.type === 'grow_types') {
-        obj.current = Math.min((gameState.grownCropTypes || []).length, obj.required);
-      } else if (obj.type === 'talk' && obj.target) {
-        const rel = gameState.relationships?.[obj.target];
-        if (rel && rel.met) obj.current = Math.min(1, obj.required);
+  if (_checkingQuests) return; // prevent re-entrancy cascade
+  _checkingQuests = true;
+  try {
+    for (const quest of [...gameState.quests.active]) {
+      let allComplete = true;
+      for (const obj of quest.objectives) {
+        if (obj.type === 'animal' && obj.target === 'any') {
+          obj.current = Math.min(gameState.animals ? gameState.animals.length : 0, obj.required);
+        } else if (obj.type === 'meet_npcs') {
+          const metCount = Object.values(gameState.relationships || {}).filter(r => r.met).length;
+          obj.current = Math.min(metCount, obj.required);
+        } else if (obj.type === 'earn_gold') {
+          obj.current = Math.min(gameState.totalGoldEarned || 0, obj.required);
+        } else if (obj.type === 'grow_types') {
+          obj.current = Math.min((gameState.grownCropTypes || []).length, obj.required);
+        } else if (obj.type === 'talk' && obj.target) {
+          const rel = gameState.relationships?.[obj.target];
+          if (rel && rel.met) obj.current = Math.min(1, obj.required);
+        }
+        if (obj.current < obj.required) allComplete = false;
       }
-      if (obj.current < obj.required) allComplete = false;
+      if (allComplete) {
+        completeQuest(quest.id);
+        break;
+      }
     }
-    if (allComplete) {
-      completeQuest(quest.id);
-      return;
-    }
+    renderQuests();
+  } finally {
+    _checkingQuests = false;
   }
-  renderQuests();
 }
 
 // ============================================================
@@ -1505,7 +1526,7 @@ function startGrowthTimer() {
   growthTimerId = setInterval(() => {
     if (!gameState.grid) return;
     let anyGrew = false;
-    for (let i = 0; i < gameState.grid.length; i++) {
+    for (let i = 0; i < FARM_PLOTS.length; i++) {
       const cell = gameState.grid[i];
       if (cell.crop !== 'empty' && cell.crop !== 'tilled' && cell.watered && cell.growth < 100) {
         cell.growth = Math.min(cell.growth + GROWTH_PER_TICK, 100);
