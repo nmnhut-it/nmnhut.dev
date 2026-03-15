@@ -889,6 +889,7 @@ function createInitialState(farmerName) {
     quests: { active: [], completed: [] },
     grownCropTypes: [],
     totalGoldEarned: 0,
+    totalHarvests: 0,
   };
 }
 
@@ -1273,8 +1274,18 @@ function escapeHtml(text) {
 // ============================================================
 // TOAST NOTIFICATIONS
 // ============================================================
+let _lastToastText = '';
+let _lastToastTime = 0;
 function showToast(text, duration = 3000) {
+  // Debounce identical toasts within 1 second
+  const now = Date.now();
+  if (text === _lastToastText && now - _lastToastTime < 1000) return;
+  _lastToastText = text;
+  _lastToastTime = now;
+
   const world = document.getElementById('game-world');
+  // Remove existing toasts to prevent stacking
+  world.querySelectorAll('.toast').forEach(t => t.remove());
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.textContent = text;
@@ -1432,6 +1443,44 @@ function setDialogTyping(visible) {
 // ============================================================
 // LLM INTERACTION
 // ============================================================
+// Send a background LLM request that does NOT pollute conversation history
+async function sendToLLMBackground(prompt) {
+  const messages = [
+    { role: 'system', content: buildSystemPrompt() },
+    { role: 'user', content: prompt },
+  ];
+
+  const res = await fetch(apiConfig.url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(apiConfig.key ? { 'Authorization': `Bearer ${apiConfig.key}` } : {}),
+    },
+    body: JSON.stringify({ model: apiConfig.model, messages, temperature: 0.9, max_tokens: 500 }),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`API error ${res.status}: ${errText.slice(0, 200)}`);
+  }
+
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('Empty response from API');
+
+  let parsed;
+  try { parsed = JSON.parse(content); } catch {
+    const match = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (match) { parsed = JSON.parse(match[1].trim()); }
+    else {
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) { parsed = JSON.parse(jsonMatch[0]); }
+      else { throw new Error('Could not parse JSON from response'); }
+    }
+  }
+  return parsed;
+}
+
 async function sendToLLM(userMessage) {
   conversationHistory.push({ role: 'user', content: userMessage });
   const messages = [
@@ -1659,6 +1708,9 @@ function checkQuestProgress() {
         } else if (obj.type === 'talk' && obj.target) {
           const rel = gameState.relationships?.[obj.target];
           if (rel && rel.met) obj.current = Math.min(1, obj.required);
+        } else if (obj.type === 'harvest') {
+          // Track total harvests from gameState
+          obj.current = Math.min(gameState.totalHarvests || 0, obj.required);
         }
         if (obj.current < obj.required) allComplete = false;
       }
@@ -1785,8 +1837,15 @@ function doTill(plotIdx) {
 function doPlant(plotIdx, cropType) {
   const price = SEED_PRICES[cropType];
   if (gameState.gold < price) { showToast(`Need ${price}g for ${cropType} seeds!`); return; }
-  if (gameState.energy < 1) { showToast('Not enough energy!'); return; }
+  // Planting on empty auto-tills first (costs 1 extra energy)
   const cell = gameState.grid[plotIdx];
+  const needsTill = cell.crop === 'empty';
+  const energyCost = needsTill ? 2 : 1;
+  if (gameState.energy < energyCost) { showToast(`Need ${energyCost} energy!`); return; }
+  if (needsTill) {
+    gameState.energy -= 1;
+    spawnActionParticle('till');
+  }
   cell.crop = cropType;
   cell.growth = 0;
   cell.watered = false;
@@ -1832,6 +1891,7 @@ function doHarvest(plotIdx) {
   if (cell.crop === 'empty' || cell.crop === 'tilled' || cell.growth < 100) return;
   const crop = cell.crop;
   gameState.inventory[crop] = (gameState.inventory[crop] || 0) + 1;
+  gameState.totalHarvests = (gameState.totalHarvests || 0) + 1;
   // Track for quest progress
   if (!gameState.grownCropTypes) gameState.grownCropTypes = [];
   if (!gameState.grownCropTypes.includes(crop)) gameState.grownCropTypes.push(crop);
@@ -2080,11 +2140,13 @@ function startAmbientCritters() {
     world.appendChild(el);
     critterElements.push(el);
 
-    // Move randomly
+    // Move randomly — recalculate bounds each time for resize safety
     const moveInterval = setInterval(() => {
       if (!el.parentNode) { clearInterval(moveInterval); return; }
-      el.style.left = (mapRect.left - worldRect.left + Math.random() * mapRect.width) + 'px';
-      el.style.top = (mapRect.top - worldRect.top + Math.random() * mapRect.height) + 'px';
+      const mr = map.getBoundingClientRect();
+      const wr = world.getBoundingClientRect();
+      el.style.left = (mr.left - wr.left + Math.random() * mr.width) + 'px';
+      el.style.top = (mr.top - wr.top + Math.random() * mr.height) + 'px';
     }, 3000 + Math.random() * 2000);
 
     // Despawn after 12-20 seconds
@@ -2159,7 +2221,7 @@ Generate a SHORT random event for the new day. Could be: a visiting merchant, a 
 Return JSON: { "title": "Event Title (3 words)", "description": "What happened (max 25 words)", "speaker": "npc_id or narrator", "effect": { "gold": 0, "inventory": {} } }
 Keep effects small (0-15 gold, 0-1 item). Be creative and varied!`;
 
-    const response = await sendToLLM(prompt);
+    const response = await sendToLLMBackground(prompt);
     return response;
   } catch (e) {
     console.error('Day event error:', e);
@@ -2197,7 +2259,7 @@ ${npc.name} (${npcId}, personality: ${npc.personality}) mutters something to the
 Give a single short atmospheric line (max 15 words) that adds life to the world. Could reference: weather, season, a rumor, their daily routine, another NPC, or the player's farm progress (${Object.values(gameState.grid).filter(c => c.crop !== 'empty').length} crops).
 Return JSON: { "speaker": "${npcId}", "text": "the line" }`;
 
-    const res = await sendToLLM(prompt);
+    const res = await sendToLLMBackground(prompt);
     if (res.speaker && res.text) {
       addSpeechBubble(res.speaker, res.text);
     } else if (res.messages && res.messages[0]) {
@@ -2238,6 +2300,7 @@ document.addEventListener('keydown', (e) => {
     if (plotIdx !== null) {
       const cell = gameState.grid[plotIdx];
       if (cell.crop === 'empty') doTill(plotIdx);
+      else if (cell.crop === 'tilled') { showFarmToolbar(); showSeedPicker(plotIdx); }
       else if (cell.crop !== 'tilled' && !cell.watered && cell.growth < 100) doWater(plotIdx);
       else if (cell.crop !== 'tilled' && cell.growth >= 100) doHarvest(plotIdx);
       else showFarmToolbar();
@@ -2449,7 +2512,12 @@ document.getElementById('btn-quests').addEventListener('click', () => {
 document.querySelectorAll('.panel-close').forEach(btn => {
   btn.addEventListener('click', () => {
     const panel = document.getElementById(btn.dataset.panel);
-    if (panel) panel.classList.remove('open');
+    if (panel) {
+      panel.classList.remove('open');
+      panel.classList.remove('shift-left');
+      // Also remove shift-left from quest panel if inventory is being closed
+      document.getElementById('panel-quests').classList.remove('shift-left');
+    }
   });
 });
 
