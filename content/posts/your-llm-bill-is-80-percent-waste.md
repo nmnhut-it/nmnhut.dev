@@ -25,14 +25,14 @@ A router sits in front of your models and classifies each incoming query — in 
 
 Think of hospital triage. The nurse at the front desk doesn't diagnose — she routes. Chest pain goes to cardiology. Sprained ankle goes to general. Nobody waits in the wrong line, and the specialists stay focused on what only they can do.
 
-**How it works:** you define categories with example phrases — "simple Q&A", "summarization", "architecture", "code review." The router converts each query into a mathematical fingerprint (technically called an embedding) and checks which category it's closest to. Pure math, no AI call needed.
+How it works: you define categories with example phrases — "simple Q&A", "summarization", "architecture", "code review." The router converts each query into a mathematical fingerprint (technically called an embedding) and checks which category it's closest to. Pure math, no AI call needed.
 
 | Query | Best match | Routed to |
 |-------|-----------|-----------|
 | "What's our refund policy?" | Simple Q&A (92% match) | Cheap model |
 | "Design a caching layer for 10M users" | Architecture (88% match) | Strong model |
 
-The router has three layers, each catching what the last misses. **Category matching** handles most queries via the fingerprint comparison. **Keyword overrides** catch domain-specific signals — mentions "OWASP" or "vulnerability"? Always route to code review. **Complexity scoring** adjusts within a category — a 5-line function review goes to the cheap model, a 200-line distributed system goes to the strong one.
+The router has three layers, each catching what the last misses. Category matching handles most queries via the fingerprint comparison. Keyword overrides catch domain-specific signals — mentions "OWASP" or "vulnerability"? Always route to code review. Complexity scoring adjusts within a category — a 5-line function review goes to the cheap model, a 200-line distributed system goes to the strong one.
 
 | Query type | % of traffic | Before (all mid-tier) | After routing |
 |-----------|-------------|----------------------|--------------|
@@ -44,9 +44,9 @@ The router has three layers, each catching what the last misses. **Category matc
 
 *MTok = million tokens. Tokens are the units LLMs charge by — roughly one token per word.*
 
-That looks modest — only 8% off the blended rate. But look at it differently: **65% of your traffic just got 3.75x cheaper** ($3 → $0.80). The architecture tier pulls the average up because it's a premium model, but those queries now produce **better results**. You're not just saving money — you're allocating it where it matters.
+That looks modest — only 8% off the blended rate. But look at it differently: 65% of your traffic just got 3.75x cheaper ($3 → $0.80). The architecture tier pulls the average up because it's a premium model, but those queries now produce *better results*. You're not just saving money — you're allocating it where it matters.
 
-The real power of routing isn't the blended rate. It's that routing **unlocks Lever 2** — caching — which wouldn't work without stable, per-category instruction sets.
+The real power of routing isn't the blended rate. It's that routing unlocks Lever 2 — caching — which wouldn't work without stable, per-category instruction sets.
 
 **Impact: 65% of queries cost 3.75x less. Architecture quality goes up.** Medium effort — one new component in your pipeline.
 
@@ -56,7 +56,7 @@ The real power of routing isn't the blended rate. It's that routing **unlocks Le
 
 **Your brain doesn't replay every conversation you've ever had before answering a question — and neither should your model.** Yet that's exactly what happens today: message #50 re-sends messages 1–49 in full, re-processed, re-billed. The longer the conversation, the more you pay per message, and the worse the model performs. The fix is to give the model the same memory architecture your brain already uses.
 
-Your brain handles information in layers. **Sensory input** floods in constantly — sights, sounds, smells — and most of it gets discarded in milliseconds. **Working memory** holds roughly 7 items at a time (Miller's law), which is why you can't remember a 12-digit number someone just read to you. **Long-term memory** stores the things that matter, but only after repeated reinforcement — the hippocampus literally replays important experiences during sleep to strengthen neural pathways.
+Your brain handles information in layers. Sensory input floods in constantly — sights, sounds, smells — and most of it gets discarded in milliseconds. Working memory holds roughly 7 items at a time (Miller's law), which is why you can't remember a 12-digit number someone just read to you. Long-term memory stores the things that matter, but only after repeated reinforcement — the hippocampus literally replays important experiences during sleep to strengthen neural pathways.
 
 LLM context works the same way, and breaks the same way. Research confirms that effective accuracy drops past 50–65% of the advertised context window — the model's "working memory" is smaller than the spec sheet suggests. Past the halfway mark, it starts forgetting, contradicting itself, and looping. You're paying more for worse output, just like a student trying to cram 200 flashcards into one late-night session.
 
@@ -64,9 +64,9 @@ Give the model the same layered architecture your brain already has.
 
 ### Three layers of context
 
-**Layer 1: Sensory buffer → Working memory (the current conversation).** Raw input floods in — prior messages, tool outputs, system prompts — and most of it is noise by the time you're on message 30. Keep working memory focused. When a conversation branches into an unrelated subtask — say you're designing an API and suddenly need to debug a deployment issue — **fork it into a separate conversation.** Think of it like Slack channels: you don't discuss the Q4 roadmap and a production outage in the same thread. Each channel gets a clean, focused context. Both perform better than one bloated thread trying to hold everything.
+**Layer 1: Sensory buffer → Working memory (the current conversation).** Raw input floods in — prior messages, tool outputs, system prompts — and most of it is noise by the time you're on message 30. Keep working memory focused. When a conversation branches into an unrelated subtask — say you're designing an API and suddenly need to debug a deployment issue — fork it into a separate conversation. Think of it like Slack channels: you don't discuss the Q4 roadmap and a production outage in the same thread. Each channel gets a clean, focused context. Both perform better than one bloated thread trying to hold everything.
 
-**Layer 2: Short-term → Long-term consolidation (session memory).** In your brain, reading your notes once before an exam gives you short-term recall that fades by morning. Reviewing the same flashcards five times over a week consolidates them into long-term memory. Context management works the same way. When a conversation reaches a natural milestone (feature complete, decision made, problem solved), **summarize and restart.** Have the model write compact meeting minutes — what was decided, what was built, what's left — then start a fresh conversation from those minutes. Same knowledge, 5% of the tokens, accuracy resets to baseline. Facts that keep coming up across conversations — architectural patterns, user preferences, recurring corrections — get **promoted to persistent memory.** This is exactly how Claude Code's memory works: correct it on the same thing three times and it saves the lesson to CLAUDE.md permanently. One-off details fade. Repeated patterns consolidate. Just like the brain.
+**Layer 2: Short-term → Long-term consolidation (session memory).** In your brain, reading your notes once before an exam gives you short-term recall that fades by morning. Reviewing the same flashcards five times over a week consolidates them into long-term memory. Context management works the same way. When a conversation reaches a natural milestone (feature complete, decision made, problem solved), summarize and restart. Have the model write compact meeting minutes — what was decided, what was built, what's left — then start a fresh conversation from those minutes. Same knowledge, 5% of the tokens, accuracy resets to baseline. Facts that keep coming up across conversations — architectural patterns, user preferences, recurring corrections — get promoted to persistent memory. This is exactly how Claude Code's memory works: correct it on the same thing three times and it saves the lesson to CLAUDE.md permanently. One-off details fade. Repeated patterns consolidate. Just like the brain.
 
 **Layer 3: Cue-based retrieval (long-term memory).** You don't replay every memory you have to answer "Where did we eat last Tuesday?" — your brain retrieves by association. Give the model the same ability. Two approaches:
 
@@ -85,9 +85,9 @@ Give the model the same layered architecture your brain already has.
 | Model repeats itself or contradicts earlier answers | Context is degraded — reset |
 | Model suggests something it already rejected | Context is degraded — reset |
 
-For agent systems running autonomously, automate this — think of it as artificial sleep. Set a threshold (70% context or 30 minutes of continuous work) and trigger compaction: summarize completed work, replay key decisions into long-term memory, spawn a fresh context. Just as the hippocampus replays and consolidates during sleep without you doing anything, the agent replays and compacts without human intervention. Research shows this **doubles success rates** on long-running tasks while cutting context costs by 35%.
+For agent systems running autonomously, automate this — think of it as artificial sleep. Set a threshold (70% context or 30 minutes of continuous work) and trigger compaction: summarize completed work, replay key decisions into long-term memory, spawn a fresh context. Just as the hippocampus replays and consolidates during sleep without you doing anything, the agent replays and compacts without human intervention. Research shows this doubles success rates on long-running tasks while cutting context costs by 35%.
 
-**Impact: 35%+ context cost reduction. Quality stays at baseline instead of degrading. Past knowledge is preserved and retrievable, not lost.** Medium effort — requires a memory layer alongside your LLM integration.
+What would your longest-running agent sessions look like if context never degraded? That's 35%+ context cost reduction with quality that stays at baseline — and past knowledge preserved and retrievable, not lost. Medium effort — requires a memory layer alongside your LLM integration.
 
 ---
 
@@ -97,23 +97,19 @@ Now that queries are routed and context is managed, the next question: can each 
 
 **You can cut input costs by up to 90% without changing a line of application code.** Here's why: every API call re-sends your full instructions from scratch. System prompt, rules, output format, examples — all re-transmitted and re-processed every single time. The model re-reads the entire playbook before generating a single word of response.
 
-Providers now offer **prefix caching** — the provider remembers the beginning of your request if it hasn't changed, and charges 75–90% less for the matched portion.
+Providers now offer prefix caching — the provider remembers the beginning of your request if it hasn't changed, and charges 75–90% less for the matched portion.
 
 It's like a highway EZ-Pass. Same account, same lane, fly through. But if you showed up with a different pass each time, the system couldn't recognize you — and you'd pay cash-lane prices every trip.
 
-**What breaks the cache:** anything dynamic mixed into your instructions. Many teams embed the user's name, a timestamp, or session data into their instruction prompts for personalization — and that breaks the cache on every call.
+What breaks the cache: anything dynamic mixed into your instructions. Many teams embed the user's name, a timestamp, or session data into their instruction prompts for personalization — and that breaks the cache on every call.
 
-**The rule:** put all static content first (instructions, rules, format, examples). Put all dynamic content last (conversation history, user's message). Everything above the dividing line must be word-for-word identical across requests.
+Structure your prompts accordingly: put all static content first (instructions, rules, format, examples). Put all dynamic content last (conversation history, user's message). Everything above the dividing line must be word-for-word identical across requests.
 
-Routing (Lever 1) and context management (Lever 2) **multiply** this benefit. Each model category gets a stable, task-specific instruction set. The cheap model always gets the same "answer simply" instructions. The strong model always gets the same "architect carefully" instructions. Cache hit rates approach 100% per category because every request in that category shares the same prefix.
+Routing (Lever 1) and context management (Lever 2) multiply this benefit. Each model category gets a stable, task-specific instruction set. The cheap model always gets the same "answer simply" instructions. The strong model always gets the same "architect carefully" instructions. Cache hit rates approach 100% per category because every request in that category shares the same prefix.
 
-| Provider | Cache discount | Minimum prefix |
-|----------|---------------|----------------|
-| Anthropic | 90% off | 1,024 tokens |
-| Google | 75% off | Variable |
-| OpenAI | 50% off | 1,024 tokens |
+All major providers offer this today: Anthropic discounts cached prefixes by 90%, Google by 75%, and OpenAI by 50%, each requiring roughly 1,024 tokens of stable prefix to qualify.
 
-**Impact: 60–90% input cost reduction** from the second call per category. Low effort — it's a prompt restructure, not an architecture change.
+Compare that to Lever 2's 35% savings from reducing history — caching slashes the cost of the history you still send by another 60–90% from the second call per category. Low effort — it's a prompt restructure, not an architecture change.
 
 ---
 
@@ -123,7 +119,7 @@ Routing (Lever 1) and context management (Lever 2) **multiply** this benefit. Ea
 
 The problem: without explicit limits, models over-deliver. Ask for a yes/no classification, get a 500-word explanation. Ask for a data extraction, get a preamble, the data, and a reflective summary. You're paying premium rates for words nobody reads.
 
-The fix is a maximum output length per task type:
+Set a maximum output length for each task type:
 
 | Task | Sensible cap | Typical without cap |
 |------|-------------|-------------------|
@@ -132,11 +128,11 @@ The fix is a maximum output length per task type:
 | Summarization | ~125 words | ~500 words |
 | Analysis / review | ~250 words | ~1,000 words (default) |
 
-There's a subtler cost most teams miss: **thinking tokens.** Newer reasoning models — like OpenAI's o-series or Claude with extended thinking — "think" internally before answering. This reasoning is invisible in the response but billed at the same output rate. A simple math question can burn ~3,000 words of internal thinking before producing a 50-word answer.
+There's a subtler cost most teams miss: thinking tokens. Newer reasoning models — like OpenAI's o-series or Claude with extended thinking — "think" internally before answering. This reasoning is invisible in the response but billed at the same output rate. A simple math question can burn ~3,000 words of internal thinking before producing a 50-word answer.
 
 Telling the model "answer directly, do not deliberate on format" in the instructions cuts this thinking waste significantly. For simple tasks, this one instruction saves more than switching models.
 
-**Impact: 50–90% output cost reduction.** Lowest effort — it's a configuration change.
+Stack this on top of routing, context management, and caching, and you've now cut every component of the bill — model price, input volume, input rate, and output volume. That's 50–90% output cost reduction with the lowest effort of all four levers — a configuration change.
 
 ---
 

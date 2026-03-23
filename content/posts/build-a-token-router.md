@@ -6,7 +6,7 @@ description = 'No training pipeline. No GPU. Just embeddings, cosine similarity,
 tags = ['ai', 'llm', 'routing', 'optimization', 'embeddings']
 +++
 
-*No training pipeline. No GPU. Just embeddings, cosine similarity, and structured prompts that cut your LLM bill by 80%.*
+*Skip the training pipeline and the GPU — embeddings, cosine similarity, and structured prompts are enough to cut your LLM bill by 80%.*
 
 ---
 
@@ -18,7 +18,7 @@ Every query has a **shape** — topic, complexity, expected output format. You c
 2. **Pick a model** — cheap for easy queries, strong for hard ones
 3. **Cap output tokens** — templates define expected length
 
-No model training. No preference data. Just geometry in embedding space.
+All of this works with pure geometry in embedding space — no model training, no preference data required.
 
 ---
 

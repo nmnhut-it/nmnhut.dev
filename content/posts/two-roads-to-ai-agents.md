@@ -41,7 +41,7 @@ description: Guide safe database migrations
 3. Verify row counts post-migration
 ```
 
-No orchestration code. No deployment. Just version-controlled knowledge that reshapes what the agent knows. Edit the file, behavior changes immediately.
+The entire thing is version-controlled knowledge that reshapes what the agent knows — no orchestration code, no deployment step. Edit the file, behavior changes immediately.
 
 This pattern started in Claude Code and spread fast. By late 2025, GitHub Copilot, OpenAI Codex, and Cursor all adopted the [SKILL.md spec](https://agentskills.io/specification). Write once, run on any compliant agent.
 
@@ -55,7 +55,7 @@ The cost: no branching logic, no error recovery, no state machines. When the age
 
 Both approaches need tools — the concrete actions an agent can take. This is where it gets interesting.
 
-**[MCP (Model Context Protocol)](https://modelcontextprotocol.io/)** standardizes tool discovery and invocation. Anthropic launched it, OpenAI and Google adopted it. Thousands of MCP servers exist for databases, APIs, cloud services. It's the USB-C of agent tools.
+**[MCP (Model Context Protocol)](https://modelcontextprotocol.io/)** standardizes tool discovery and invocation. Anthropic launched it, OpenAI and Google adopted it. Thousands of MCP servers exist for databases, APIs, cloud services. It's becoming the standard interface that every agent platform speaks.
 
 But here's the thing: **in terminal-native environments, MCP is often overkill.**
 
