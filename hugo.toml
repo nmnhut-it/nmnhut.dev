@@ -59,6 +59,11 @@ theme = "PaperMod"
     url = "/transcribe/"
     weight = 25
   [[menu.main]]
+    identifier = "token-router"
+    name = "Router"
+    url = "/token-router/"
+    weight = 27
+  [[menu.main]]
     identifier = "about"
     name = "About"
     url = "/about/"
