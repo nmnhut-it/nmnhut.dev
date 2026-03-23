@@ -54,23 +54,25 @@ The real power of routing isn't the blended rate. It's that routing **unlocks Le
 
 ## Lever 2: Manage context like memory
 
-**The model has no memory. Every call re-sends the entire conversation from scratch.** Message #50 carries the full weight of messages 1–49 — re-transmitted, re-processed, re-billed. The longer the conversation, the more you pay per message, and the worse the model performs.
+**Your brain doesn't replay every conversation you've ever had before answering a question — and neither should your model.** Yet that's exactly what happens today: message #50 re-sends messages 1–49 in full, re-processed, re-billed. The longer the conversation, the more you pay per message, and the worse the model performs. The fix is to give the model the same memory architecture your brain already uses.
 
-Your brain doesn't work this way. You don't replay every conversation you've ever had before answering a question. You have **working memory** (what you're thinking about right now), **short-term recall** (what happened today), and **long-term memory** (facts you've accumulated over years). You pull in what's relevant and leave the rest alone.
+Your brain handles information in layers. **Sensory input** floods in constantly — sights, sounds, smells — and most of it gets discarded in milliseconds. **Working memory** holds roughly 7 items at a time (Miller's law), which is why you can't remember a 12-digit number someone just read to you. **Long-term memory** stores the things that matter, but only after repeated reinforcement — the hippocampus literally replays important experiences during sleep to strengthen neural pathways.
 
-Give the model the same architecture.
+LLM context works the same way, and breaks the same way. Research confirms that effective accuracy drops past 50–65% of the advertised context window — the model's "working memory" is smaller than the spec sheet suggests. Past the halfway mark, it starts forgetting, contradicting itself, and looping. You're paying more for worse output, just like a student trying to cram 200 flashcards into one late-night session.
+
+Give the model the same layered architecture your brain already has.
 
 ### Three layers of context
 
-**Layer 1: Working memory — the current conversation.** This is what the model sees right now. Keep it focused. When a conversation branches into an unrelated subtask — say you're designing an API and suddenly need to debug a deployment issue — **fork it into a separate conversation.** The deployment gets its own clean context. The API design keeps its context clean. Both perform better than one bloated thread trying to hold everything. Think of it like Slack channels: you don't discuss the Q4 roadmap and a production outage in the same thread.
+**Layer 1: Sensory buffer → Working memory (the current conversation).** Raw input floods in — prior messages, tool outputs, system prompts — and most of it is noise by the time you're on message 30. Keep working memory focused. When a conversation branches into an unrelated subtask — say you're designing an API and suddenly need to debug a deployment issue — **fork it into a separate conversation.** Think of it like Slack channels: you don't discuss the Q4 roadmap and a production outage in the same thread. Each channel gets a clean, focused context. Both perform better than one bloated thread trying to hold everything.
 
-**Layer 2: Session memory — today's summary.** When a conversation reaches a natural milestone (feature complete, decision made, problem solved), don't push through with a ballooning context. **Summarize and restart.** Have the model write a compact summary of what was decided, what's been built, and what's left. Start a fresh conversation that reads that summary. Same knowledge, 5% of the tokens, and accuracy resets to baseline. This is like writing meeting minutes and starting the next meeting from the minutes instead of replaying the recording.
+**Layer 2: Short-term → Long-term consolidation (session memory).** In your brain, reading your notes once before an exam gives you short-term recall that fades by morning. Reviewing the same flashcards five times over a week consolidates them into long-term memory. Context management works the same way. When a conversation reaches a natural milestone (feature complete, decision made, problem solved), **summarize and restart.** Have the model write compact meeting minutes — what was decided, what was built, what's left — then start a fresh conversation from those minutes. Same knowledge, 5% of the tokens, accuracy resets to baseline. Facts that keep coming up across conversations — architectural patterns, user preferences, recurring corrections — get **promoted to persistent memory.** This is exactly how Claude Code's memory works: correct it on the same thing three times and it saves the lesson to CLAUDE.md permanently. One-off details fade. Repeated patterns consolidate. Just like the brain.
 
-**Layer 3: Long-term memory — persistent facts.** What does this user always ask about? What architectural decisions were made last month? What tools does this project use? These facts don't belong in every conversation — they're stored externally and **retrieved when relevant.** Two approaches:
+**Layer 3: Cue-based retrieval (long-term memory).** You don't replay every memory you have to answer "Where did we eat last Tuesday?" — your brain retrieves by association. Give the model the same ability. Two approaches:
 
 - **Semantic search** over past conversations. The current question gets converted into a fingerprint (same embedding technique from Lever 1) and matched against stored history. "How did we handle auth last time?" retrieves the relevant 200-word excerpt from a 3-week-old conversation — not the entire conversation.
 
-- **Knowledge graphs** that store relationships: *this user → owns this project → uses this API → had this bug last month.* Richer than raw chat history because they capture structure, not just text. When the user asks about that API, the graph surfaces the bug history automatically.
+- **Knowledge graphs** that store relationships: *this user → owns this project → uses this API → had this bug last month.* Richer than raw chat history because they capture structure, not just text. When the user asks about that API, the graph surfaces the bug history automatically — the same way hearing a song instantly recalls where you were when you first heard it.
 
 ### When to act
 
@@ -83,9 +85,7 @@ Give the model the same architecture.
 | Model repeats itself or contradicts earlier answers | Context is degraded — reset |
 | Model suggests something it already rejected | Context is degraded — reset |
 
-Research confirms this matters: effective accuracy drops past 50–65% of the advertised context window. Past the halfway mark, the model starts forgetting, contradicting itself, and looping. You're paying more for worse output.
-
-For agent systems running autonomously, automate this. Set a threshold (70% context or 30 minutes of continuous work) and trigger compaction: summarize completed work, extract key decisions to long-term memory, spawn a fresh context. Research shows this **doubles success rates** on long-running tasks while cutting context costs by 35%.
+For agent systems running autonomously, automate this — think of it as artificial sleep. Set a threshold (70% context or 30 minutes of continuous work) and trigger compaction: summarize completed work, replay key decisions into long-term memory, spawn a fresh context. Just as the hippocampus replays and consolidates during sleep without you doing anything, the agent replays and compacts without human intervention. Research shows this **doubles success rates** on long-running tasks while cutting context costs by 35%.
 
 **Impact: 35%+ context cost reduction. Quality stays at baseline instead of degrading. Past knowledge is preserved and retrievable, not lost.** Medium effort — requires a memory layer alongside your LLM integration.
 

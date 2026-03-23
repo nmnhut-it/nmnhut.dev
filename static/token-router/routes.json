@@ -1,0 +1,92 @@
+[
+  {
+    "id": "code",
+    "name": "Code Helper",
+    "icon": "⌨",
+    "keywords": ["python", "javascript", "typescript", "function", "class", "bug", "error", "code", "refactor", "compile", "syntax", "algorithm", "debug", "api", "import"],
+    "examples": [
+      "write a python function to sort a list",
+      "fix this null pointer exception",
+      "explain how this recursive algorithm works",
+      "refactor this class to use dependency injection",
+      "convert this javascript to typescript"
+    ],
+    "promptTemplate": "You are an expert programming assistant. Help with the following:\n\n{query}",
+    "threshold": 0.40
+  },
+  {
+    "id": "summarize",
+    "name": "Summarizer",
+    "icon": "📋",
+    "keywords": ["summarize", "summary", "tldr", "key points", "takeaways", "condense", "bullet points", "brief", "overview"],
+    "examples": [
+      "summarize this article for me",
+      "give me the key points from this document",
+      "tldr of this long email thread",
+      "condense this report into bullet points",
+      "what are the main takeaways from this paper"
+    ],
+    "promptTemplate": "You are a concise summarizer. Extract the key points:\n\n{query}",
+    "threshold": 0.40
+  },
+  {
+    "id": "data",
+    "name": "Data Analyst",
+    "icon": "📊",
+    "keywords": ["sql", "query", "data", "chart", "graph", "trend", "average", "pivot", "dataset", "csv", "metrics", "analytics", "dashboard", "regression"],
+    "examples": [
+      "analyze this sales data for trends",
+      "create a SQL query to find top customers",
+      "what does this chart tell us",
+      "calculate the average growth rate",
+      "build a pivot table from this dataset"
+    ],
+    "promptTemplate": "You are a data analyst. Analyze and interpret:\n\n{query}",
+    "threshold": 0.40
+  },
+  {
+    "id": "writing",
+    "name": "Creative Writer",
+    "icon": "✍",
+    "keywords": ["story", "poem", "write", "draft", "creative", "tagline", "narrative", "fiction", "essay", "rewrite", "engaging", "compelling"],
+    "examples": [
+      "write a short story about a time traveler",
+      "help me draft a compelling introduction",
+      "rewrite this paragraph to be more engaging",
+      "come up with a catchy tagline for my product",
+      "write a poem about the ocean"
+    ],
+    "promptTemplate": "You are a creative writing assistant with a vivid imagination:\n\n{query}",
+    "threshold": 0.40
+  },
+  {
+    "id": "devops",
+    "name": "DevOps Engineer",
+    "icon": "🔧",
+    "keywords": ["docker", "dockerfile", "kubernetes", "k8s", "nginx", "ci/cd", "pipeline", "deploy", "server", "linux", "container", "aws", "terraform", "jenkins", "yaml"],
+    "examples": [
+      "write a dockerfile for a node app",
+      "set up a CI/CD pipeline with github actions",
+      "my kubernetes pod keeps crashing",
+      "configure nginx as a reverse proxy",
+      "how do I monitor memory usage on linux"
+    ],
+    "promptTemplate": "You are a DevOps engineer. Help with infrastructure and deployment:\n\n{query}",
+    "threshold": 0.40
+  },
+  {
+    "id": "chat",
+    "name": "General Chat",
+    "icon": "💬",
+    "keywords": ["hello", "hi", "thanks", "help", "hey", "goodbye"],
+    "examples": [
+      "hello how are you",
+      "what can you help me with",
+      "tell me something interesting",
+      "thanks for your help",
+      "what do you think about this"
+    ],
+    "promptTemplate": "You are a friendly assistant. Respond naturally:\n\n{query}",
+    "threshold": 0.40
+  }
+]

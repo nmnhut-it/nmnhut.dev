@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Router - nmnhut.dev</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0e1a;
+  --surface: #141829;
+  --surface2: #1c2039;
+  --surface3: #252a42;
+  --border: #2a2f4a;
+  --accent: #7c6aef;
+  --accent-dim: #7c6aef33;
+  --accent-glow: #7c6aef66;
+  --green: #34d399;
+  --green-dim: #34d39922;
+  --amber: #fbbf24;
+  --amber-dim: #fbbf2422;
+  --red: #f87171;
+  --red-dim: #f8717122;
+  --cyan: #22d3ee;
+  --cyan-dim: #22d3ee22;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --radius: 10px;
+  --gutter: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Grain overlay ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+
+/* ─── Layout ─── */
+.shell { max-width: 920px; margin: 0 auto; padding: 0 var(--gutter) 80px; }
+
+/* ─── Header ─── */
+.hero {
+  padding: 48px 0 36px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.hero h1 span { color: var(--text3); font-weight: 300; }
+.hero-desc { color: var(--text2); font-size: .9rem; max-width: 540px; }
+
+/* ─── Stats bar ─── */
+.stats {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  padding: 12px 0 20px;
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--text3);
+  letter-spacing: .04em;
+}
+.stats .val { color: var(--text); font-weight: 500; margin-left: 4px; }
+
+/* ─── Input ─── */
+.input-row {
+  display: flex; gap: 10px;
+  margin-bottom: 24px;
+}
+.input-row input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.input-row input:focus { border-color: var(--accent); }
+.input-row input::placeholder { color: var(--text3); }
+.btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px 28px;
+  font-family: var(--sans);
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: opacity .15s, transform .1s;
+  white-space: nowrap;
+}
+.btn:hover { opacity: .88; }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-sm {
+  padding: 6px 14px;
+  font-size: .72rem;
+  border-radius: 6px;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.btn-ghost:hover { border-color: var(--text3); color: var(--text); }
+.btn-red { background: var(--red-dim); color: var(--red); border: 1px solid transparent; }
+.btn-red:hover { border-color: var(--red); }
+
+/* ─── Progress bar ─── */
+.progress-wrap {
+  margin-bottom: 24px;
+  display: none;
+}
+.progress-wrap.active { display: block; }
+.progress-label {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.progress-bar {
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width .3s;
+  border-radius: 2px;
+}
+
+/* ─── Pipeline lanes ─── */
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 24px;
+}
+.lane {
+  display: grid;
+  grid-template-columns: 140px 1fr 80px;
+  align-items: center;
+  background: var(--surface);
+  padding: 14px 16px;
+  border-left: 3px solid var(--border);
+  transition: all .3s;
+  opacity: .5;
+}
+.lane:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+.lane:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+.lane.active { opacity: 1; border-left-color: var(--accent); background: var(--surface2); }
+.lane.hit { border-left-color: var(--green); }
+.lane.miss { border-left-color: var(--red); opacity: .65; }
+.lane-name {
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.lane-detail {
+  font-size: .8rem;
+  color: var(--text2);
+  min-height: 20px;
+}
+.lane-status {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .04em;
+}
+.lane-status .hit-label { color: var(--green); }
+.lane-status .miss-label { color: var(--text3); }
+.lane-status .skip-label { color: var(--text3); }
+
+/* ─── Similarity bars ─── */
+.sim-bars { display: flex; flex-direction: column; gap: 4px; }
+.sim-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 46px;
+  align-items: center;
+  gap: 8px;
+  font-size: .72rem;
+}
+.sim-row .name { font-family: var(--mono); color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sim-track { height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+.sim-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+.sim-row .score { font-family: var(--mono); text-align: right; color: var(--text3); }
+.sim-row.winner .name { color: var(--green); }
+.sim-row.winner .sim-fill { background: var(--green); }
+.sim-row.winner .score { color: var(--green); }
+.sim-row:not(.winner) .sim-fill { background: var(--text3); }
+
+/* ─── Result card ─── */
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
+  display: none;
+}
+.result-card.show { display: block; animation: slideIn .3s ease; }
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.result-icon { font-size: 1.4rem; }
+.result-route { font-weight: 600; font-size: 1.05rem; }
+.result-tier {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: auto;
+}
+.tier-keyword { background: #f0abfc22; color: #f0abfc; }
+.tier-memory { background: var(--green-dim); color: var(--green); }
+.tier-embed { background: var(--accent-dim); color: var(--accent); }
+.tier-llm { background: var(--amber-dim); color: var(--amber); }
+.tier-manual { background: var(--cyan-dim); color: var(--cyan); }
+.result-template {
+  font-family: var(--mono);
+  font-size: .76rem;
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.result-template .query-highlight { color: var(--accent); }
+.result-meta {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: .66rem;
+  color: var(--text3);
+  display: flex;
+  gap: 16px;
+}
+
+/* ─── Manual selector (LLM fallback) ─── */
+.manual-select {
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 24px;
+  display: none;
+}
+.manual-select.show { display: block; animation: slideIn .3s ease; }
+.manual-select h4 {
+  font-size: .85rem;
+  margin-bottom: 10px;
+  color: var(--amber);
+}
+.manual-select p { font-size: .78rem; color: var(--text2); margin-bottom: 12px; }
+.manual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 6px;
+}
+.manual-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .78rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .2s, background .2s;
+}
+.manual-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+
+/* ─── Collapsible panels ─── */
+.panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.panel-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: none;
+  padding: 14px 16px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+}
+.panel-toggle:hover { background: var(--surface2); }
+.panel-toggle .arrow { color: var(--text3); transition: transform .2s; font-size: .7rem; }
+.panel.open .panel-toggle .arrow { transform: rotate(90deg); }
+.panel-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease;
+  background: var(--bg);
+}
+.panel.open .panel-body { max-height: 2000px; }
+.panel-inner { padding: 16px; }
+.panel-badge {
+  font-family: var(--mono);
+  font-size: .62rem;
+  background: var(--surface2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--text3);
+}
+
+/* ─── Route editor ─── */
+.route-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.route-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.route-header:hover { background: var(--surface2); }
+.route-header .icon { font-size: 1.1rem; }
+.route-header .name { font-weight: 500; font-size: .85rem; flex: 1; }
+.route-header .count {
+  font-family: var(--mono);
+  font-size: .62rem;
+  color: var(--text3);
+}
+.route-body {
+  display: none;
+  padding: 0 14px 14px;
+}
+.route-card.open .route-body { display: block; }
+.field-label {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 10px 0 4px;
+}
+.field-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .8rem;
+  outline: none;
+}
+.field-input:focus { border-color: var(--accent); }
+textarea.field-input {
+  resize: vertical;
+  min-height: 60px;
+  font-family: var(--mono);
+  font-size: .75rem;
+  line-height: 1.5;
+}
+.threshold-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.threshold-row input[type=range] {
+  flex: 1;
+  accent-color: var(--accent);
+  height: 4px;
+}
+.threshold-val {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--text2);
+  min-width: 36px;
+  text-align: right;
+}
+.example-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: .7rem;
+  font-family: var(--mono);
+  color: var(--text2);
+  margin: 2px;
+}
+.example-tag.learned { border-color: var(--green-dim); color: var(--green); }
+.example-tag .remove {
+  cursor: pointer;
+  color: var(--text3);
+  margin-left: 2px;
+  font-size: .65rem;
+}
+.example-tag .remove:hover { color: var(--red); }
+.route-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  justify-content: flex-end;
+}
+
+/* ─── Utilities ─── */
+@keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+.pulsing { animation: pulse .8s ease infinite; }
+
+@media (max-width: 600px) {
+  .lane { grid-template-columns: 100px 1fr 60px; padding: 10px 12px; }
+  .sim-row { grid-template-columns: 70px 1fr 40px; }
+  .manual-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">nmnhut.dev · interactive demo</div>
+  <h1>Token Router <span>/ self-learning</span></h1>
+  <p class="hero-desc">Type a request and watch it get routed through three tiers: memory cache, semantic embeddings (ONNX), and small-LLM fallback. The router learns from every query.</p>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <span>queries <span class="val" id="stat-queries">0</span></span>
+  <span>memory hits <span class="val" id="stat-hits">0%</span></span>
+  <span>learned <span class="val" id="stat-learned">0</span></span>
+  <span>avg latency <span class="val" id="stat-latency">—</span></span>
+  <span>model <span class="val" id="stat-model">loading…</span></span>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-label" id="progress-label">Loading embedding model…</div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<!-- Input -->
+<div class="input-row">
+  <input type="text" id="query-input" placeholder="e.g. write a python script to parse CSV files" disabled>
+  <button class="btn" id="route-btn" disabled>Route</button>
+</div>
+
+<!-- Pipeline -->
+<div class="pipeline" id="pipeline">
+  <div class="lane" id="lane-keyword">
+    <div class="lane-name">Keywords</div>
+    <div class="lane-detail" id="lane-keyword-detail">exact substring match</div>
+    <div class="lane-status" id="lane-keyword-status"></div>
+  </div>
+  <div class="lane" id="lane-memory">
+    <div class="lane-name">Memory</div>
+    <div class="lane-detail" id="lane-memory-detail">cached request → route lookup</div>
+    <div class="lane-status" id="lane-memory-status"></div>
+  </div>
+  <div class="lane" id="lane-embed">
+    <div class="lane-name">Embeddings</div>
+    <div class="lane-detail" id="lane-embed-detail">ONNX cosine similarity</div>
+    <div class="lane-status" id="lane-embed-status"></div>
+  </div>
+  <div class="lane" id="lane-llm">
+    <div class="lane-name">LLM Fallback</div>
+    <div class="lane-detail" id="lane-llm-detail">OpenAI-compatible classifier</div>
+    <div class="lane-status" id="lane-llm-status"></div>
+  </div>
+</div>
+
+<!-- Manual selection (shown when LLM unavailable) -->
+<div class="manual-select" id="manual-select">
+  <h4>No confident match — pick the right route</h4>
+  <p>Embedding scores were below threshold and the LLM classifier is unavailable. Your selection teaches the router for next time.</p>
+  <div class="manual-grid" id="manual-grid"></div>
+</div>
+
+<!-- Result -->
+<div class="result-card" id="result-card">
+  <div class="result-header">
+    <span class="result-icon" id="result-icon"></span>
+    <span class="result-route" id="result-route"></span>
+    <span class="result-tier" id="result-tier"></span>
+  </div>
+  <div class="result-template" id="result-template"></div>
+  <div class="result-meta">
+    <span>confidence: <span id="result-conf"></span></span>
+    <span>latency: <span id="result-latency"></span></span>
+  </div>
+</div>
+
+<!-- Route editor panel -->
+<div class="panel" id="panel-routes">
+  <button class="panel-toggle" onclick="togglePanel('panel-routes')">
+    <span>Route Configuration</span>
+    <span style="display:flex;align-items:center;gap:8px">
+      <span class="panel-badge" id="route-count-badge">0 routes</span>
+      <span class="arrow">▶</span>
+    </span>
+  </button>
+  <div class="panel-body">
+    <div class="panel-inner">
+      <div id="route-list"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-sm btn-ghost" onclick="addNewRoute()">+ Add Route</button>
+        <button class="btn btn-sm btn-ghost" onclick="resetRoutes()">Reset to Defaults</button>
+        <button class="btn btn-sm btn-ghost" onclick="exportRoutes()">Export JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LLM config panel -->
+<div class="panel" id="panel-llm">
+  <button class="panel-toggle" onclick="togglePanel('panel-llm')">
+    <span>LLM Fallback Settings</span>
+    <span style="display:flex;align-items:center;gap:8px">
+      <span class="panel-badge" id="llm-status-badge">not configured</span>
+      <span class="arrow">▶</span>
+    </span>
+  </button>
+  <div class="panel-body">
+    <div class="panel-inner">
+      <p style="font-size:.78rem;color:var(--text2);margin-bottom:12px">Any OpenAI-compatible endpoint (OpenAI, Zing Play, LM Studio, etc). Credentials from LLM Farm are auto-loaded if available.</p>
+      <div class="field-label">API Endpoint</div>
+      <input class="field-input" id="llm-url" placeholder="https://chat.zingplay.com/api/v1/chat/completions">
+      <div class="field-label">API Key</div>
+      <input class="field-input" id="llm-key" type="password" placeholder="sk-...">
+      <div class="field-label">Model</div>
+      <input class="field-input" id="llm-model" placeholder="local-model" value="local-model">
+      <div style="margin-top:12px">
+        <button class="btn btn-sm" onclick="saveLlmConfig()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Learning log panel -->
+<div class="panel" id="panel-learning">
+  <button class="panel-toggle" onclick="togglePanel('panel-learning')">
+    <span>Learning Log</span>
+    <span style="display:flex;align-items:center;gap:8px">
+      <span class="panel-badge" id="learn-count-badge">0 learned</span>
+      <span class="arrow">▶</span>
+    </span>
+  </button>
+  <div class="panel-body">
+    <div class="panel-inner">
+      <div id="learn-log"></div>
+      <div style="margin-top:12px">
+        <button class="btn btn-sm btn-red" onclick="clearLearned()">Clear All Learned</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- shell -->
+
+<script type="module">
+
+/* ═══════════════════════════════════════════
+   State
+   ═══════════════════════════════════════════ */
+const LS_ROUTES = 'token-router-routes';
+const LS_LEARNED = 'token-router-learned';
+const MEMORY_THRESHOLD = 0.92;
+const MAX_LEARNED_PER_ROUTE = 50;
+const LS_LLM = 'token-router-llm';
+let llmConfig = { url: '', key: '', model: 'local-model' };
+
+let routes = [];               // current route definitions
+let defaultRoutes = [];         // from routes.json
+let learned = {};               // { routeId: [{ text, embedding }] }
+let learnedKeywords = {};       // { routeId: [string] }
+let routeEmbeddings = {};       // { routeId: { centroid: [], examples: [{ text, emb }] } }
+let modelReady = false;
+let stats = { queries: 0, memoryHits: 0, totalLatency: 0 };
+const MAX_LEARNED_KEYWORDS_PER_ROUTE = 30;
+const LS_LEARNED_KW = 'token-router-learned-kw';
+
+/* ═══════════════════════════════════════════
+   Worker
+   ═══════════════════════════════════════════ */
+const worker = new Worker('./worker.js', { type: 'module' });
+let pendingCallbacks = {};
+let msgId = 0;
+
+function workerCall(type, payload) {
+  return new Promise((resolve, reject) => {
+    const id = ++msgId;
+    pendingCallbacks[id] = { resolve, reject };
+    worker.postMessage({ type, payload, id });
+  });
+}
+
+worker.onmessage = (e) => {
+  const { type, payload, id } = e.data;
+  if (type === 'progress') {
+    handleProgress(payload);
+    return;
+  }
+  if (type === 'error') {
+    pendingCallbacks[id]?.reject(new Error(payload));
+    delete pendingCallbacks[id];
+    return;
+  }
+  pendingCallbacks[id]?.resolve(payload);
+  delete pendingCallbacks[id];
+};
+
+/* ═══════════════════════════════════════════
+   Init
+   ═══════════════════════════════════════════ */
+async function init() {
+  showProgress(true);
+
+  // Load default routes
+  const res = await fetch('./routes.json');
+  defaultRoutes = await res.json();
+
+  // Load saved routes or use defaults
+  const saved = localStorage.getItem(LS_ROUTES);
+  routes = saved ? JSON.parse(saved) : structuredClone(defaultRoutes);
+
+  // Load learned examples
+  const savedLearned = localStorage.getItem(LS_LEARNED);
+  learned = savedLearned ? JSON.parse(savedLearned) : {};
+
+  // Load learned keywords
+  const savedKw = localStorage.getItem(LS_LEARNED_KW);
+  learnedKeywords = savedKw ? JSON.parse(savedKw) : {};
+
+  // Load LLM config — try saved, then fall back to LLM Farm credentials
+  loadLlmConfig();
+
+  renderRouteEditor();
+  renderLearnLog();
+  updateStats();
+
+  // Load embedding model
+  await workerCall('load', { modelId: 'Xenova/all-MiniLM-L6-v2' });
+  $('stat-model').textContent = 'MiniLM-L6-v2';
+  showProgress(false);
+
+  // Pre-embed all route examples
+  await recomputeAllEmbeddings();
+
+  modelReady = true;
+  $('query-input').disabled = false;
+  $('route-btn').disabled = false;
+  $('query-input').focus();
+}
+
+async function recomputeAllEmbeddings() {
+  routeEmbeddings = {};
+  for (const route of routes) {
+    const allExamples = [...route.examples, ...(learned[route.id] || []).map(l => l.text)];
+    if (allExamples.length === 0) {
+      routeEmbeddings[route.id] = { centroid: null, examples: [] };
+      continue;
+    }
+    const { embeddings } = await workerCall('embed', { texts: allExamples });
+    const examples = allExamples.map((text, i) => ({ text, emb: embeddings[i] }));
+    const centroid = averageVectors(embeddings);
+    routeEmbeddings[route.id] = { centroid, examples };
+  }
+}
+
+async function recomputeRouteEmbedding(routeId) {
+  const route = routes.find(r => r.id === routeId);
+  if (!route) return;
+  const allExamples = [...route.examples, ...(learned[routeId] || []).map(l => l.text)];
+  if (allExamples.length === 0) {
+    routeEmbeddings[routeId] = { centroid: null, examples: [] };
+    return;
+  }
+  const { embeddings } = await workerCall('embed', { texts: allExamples });
+  const examples = allExamples.map((text, i) => ({ text, emb: embeddings[i] }));
+  routeEmbeddings[routeId] = { centroid: averageVectors(embeddings), examples };
+}
+
+/* ═══════════════════════════════════════════
+   Routing pipeline
+   ═══════════════════════════════════════════ */
+async function routeQuery(text) {
+  const t0 = performance.now();
+  resetLanes();
+  hideResult();
+  hideManual();
+
+  // ── Tier 0: Keyword match ──
+  activateLane('keyword');
+  const kwResult = keywordMatch(text);
+  if (kwResult) {
+    hitLane('keyword', `matched: "${kwResult.matchedKeywords.join(', ')}" → ${kwResult.route.name}`);
+    skipLane('memory');
+    skipLane('embed');
+    skipLane('llm');
+    const latency = performance.now() - t0;
+    // Still embed for learning
+    const { embeddings: kwEmbs } = await workerCall('embed', { texts: [text] });
+    await learnExample(kwResult.route.id, text, kwEmbs[0]);
+    autoLearnKeywords(kwResult.route.id, text);
+    showResult(kwResult.route, 'keyword', kwResult.score, latency, text);
+    finishQuery(latency);
+    return;
+  }
+  missLane('keyword');
+
+  // Embed the query
+  const { embeddings } = await workerCall('embed', { texts: [text] });
+  const queryEmb = embeddings[0];
+
+  // ── Tier 1: Memory lookup ──
+  activateLane('memory');
+  const memResult = memoryLookup(queryEmb);
+  if (memResult) {
+    hitLane('memory', `matched: "${truncate(memResult.matchedText, 30)}"`);
+    skipLane('embed');
+    skipLane('llm');
+    const latency = performance.now() - t0;
+    stats.memoryHits++;
+    showResult(memResult.route, 'memory', memResult.score, latency, text);
+    finishQuery(latency);
+    return;
+  }
+  missLane('memory');
+
+  // ── Tier 2: Semantic similarity ──
+  activateLane('embed');
+  const scores = computeScores(queryEmb);
+  renderSimBars(scores);
+  const best = scores[0];
+
+  const second = scores[1];
+  const gap = best.score - (second ? second.score : 0);
+  const confident = best && best.score >= best.route.threshold && gap >= 0.03;
+
+  if (confident) {
+    hitLane('embed', `best: ${best.route.name} (${(best.score * 100).toFixed(1)}%) gap: ${(gap * 100).toFixed(1)}%`);
+    skipLane('llm');
+    const latency = performance.now() - t0;
+    await learnExample(best.route.id, text, queryEmb);
+    autoLearnKeywords(best.route.id, text);
+    showResult(best.route, 'embed', { score: best.score, gap }, latency, text);
+    finishQuery(latency);
+    return;
+  }
+  missLane('embed');
+
+  // ── Tier 3: LLM fallback ──
+  activateLane('llm');
+  const llmResult = await tryLlmClassify(text);
+
+  if (llmResult) {
+    const route = routes.find(r => r.id === llmResult);
+    if (route) {
+      hitLane('llm', `classified: ${route.name}`);
+      const latency = performance.now() - t0;
+      await learnExample(route.id, text, queryEmb);
+      autoLearnKeywords(route.id, text);
+      showResult(route, 'llm', null, latency, text);
+      finishQuery(latency);
+      return;
+    }
+  }
+
+  // LLM failed or returned unknown → manual
+  missLane('llm');
+  showManual(text, queryEmb);
+}
+
+const STOPWORDS = new Set([
+  'a','an','the','is','are','was','were','be','been','being','have','has','had',
+  'do','does','did','will','would','could','should','shall','may','might','can',
+  'i','me','my','you','your','he','she','it','we','they','them','this','that',
+  'what','which','who','how','when','where','why','and','or','but','not','no',
+  'to','of','in','for','on','with','at','by','from','as','into','about','if',
+  'so','up','out','just','also','than','then','some','very','too','more','most',
+  'please','help','want','need','make','get','give','take','let','use','try',
+]);
+
+function keywordMatch(text) {
+  const lower = text.toLowerCase();
+  const results = [];
+
+  for (const route of routes) {
+    const allKeywords = [...(route.keywords || []), ...(learnedKeywords[route.id] || [])];
+    const matched = allKeywords.filter(kw => lower.includes(kw.toLowerCase()));
+    if (matched.length > 0) {
+      results.push({ route, matchedKeywords: matched, score: matched.length });
+    }
+  }
+
+  if (results.length === 0) return null;
+
+  // Sort by match count desc; if tied, pick the one with fewer total keywords (more specific)
+  results.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    const aTotal = (a.route.keywords || []).length + (learnedKeywords[a.route.id] || []).length;
+    const bTotal = (b.route.keywords || []).length + (learnedKeywords[b.route.id] || []).length;
+    return aTotal - bTotal;
+  });
+
+  // Only confident if winner has clear lead (2+ matches, or 1 match with no ties)
+  const best = results[0];
+  const second = results[1];
+  if (best.score >= 2 || (best.score === 1 && (!second || second.score === 0))) {
+    return best;
+  }
+  // Single keyword matched by multiple routes → ambiguous, skip to embeddings
+  if (second && best.score === second.score) return null;
+
+  return best;
+}
+
+function autoLearnKeywords(routeId, text) {
+  const words = text.toLowerCase().replace(/[^a-z0-9\s/-]/g, '').split(/\s+/);
+  const candidates = words.filter(w => w.length >= 3 && !STOPWORDS.has(w));
+
+  const route = routes.find(r => r.id === routeId);
+  if (!route) return;
+
+  const existing = new Set([
+    ...(route.keywords || []).map(k => k.toLowerCase()),
+    ...(learnedKeywords[routeId] || []).map(k => k.toLowerCase()),
+  ]);
+
+  // Only learn words that appear unique to this route (not in other routes' keywords)
+  const otherKeywords = new Set();
+  for (const r of routes) {
+    if (r.id === routeId) continue;
+    for (const kw of (r.keywords || [])) otherKeywords.add(kw.toLowerCase());
+    for (const kw of (learnedKeywords[r.id] || [])) otherKeywords.add(kw.toLowerCase());
+  }
+
+  let changed = false;
+  for (const word of candidates) {
+    if (existing.has(word) || otherKeywords.has(word)) continue;
+    if (!learnedKeywords[routeId]) learnedKeywords[routeId] = [];
+    if (learnedKeywords[routeId].length >= MAX_LEARNED_KEYWORDS_PER_ROUTE) break;
+    learnedKeywords[routeId].push(word);
+    existing.add(word);
+    changed = true;
+  }
+
+  if (changed) {
+    saveLearnedKeywords();
+    renderRouteEditor();
+    renderLearnLog();
+    updateStats();
+  }
+}
+
+function memoryLookup(queryEmb) {
+  let bestScore = 0;
+  let bestRoute = null;
+  let bestText = '';
+
+  for (const route of routes) {
+    const re = routeEmbeddings[route.id];
+    if (!re) continue;
+    for (const ex of re.examples) {
+      const s = cosine(queryEmb, ex.emb);
+      if (s > bestScore) {
+        bestScore = s;
+        bestRoute = route;
+        bestText = ex.text;
+      }
+    }
+  }
+
+  if (bestScore >= MEMORY_THRESHOLD) {
+    return { route: bestRoute, score: bestScore, matchedText: bestText };
+  }
+  return null;
+}
+
+function computeScores(queryEmb) {
+  return routes
+    .map(route => {
+      const re = routeEmbeddings[route.id];
+      const score = re?.centroid ? cosine(queryEmb, re.centroid) : 0;
+      return { route, score };
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
+async function tryLlmClassify(text) {
+  if (!llmConfig.url) return null;
+
+  const routeList = routes.map(r => `- ${r.id}: ${r.name}`).join('\n');
+  const messages = [
+    { role: 'system', content: `Classify the user request into exactly one category. Reply with ONLY the category id, nothing else.\n\nCategories:\n${routeList}` },
+    { role: 'user', content: text },
+  ];
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    const headers = { 'Content-Type': 'application/json' };
+    if (llmConfig.key) headers['Authorization'] = `Bearer ${llmConfig.key}`;
+
+    const res = await fetch(llmConfig.url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ model: llmConfig.model, messages, temperature: 0, max_tokens: 20 }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!res.ok) return null;
+    const data = await res.json();
+    const answer = (data.choices?.[0]?.message?.content || '').trim().toLowerCase().replace(/[^a-z_]/g, '');
+    return routes.some(r => r.id === answer) ? answer : null;
+  } catch {
+    return null;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Self-learning
+   ═══════════════════════════════════════════ */
+async function learnExample(routeId, text, embedding) {
+  if (!learned[routeId]) learned[routeId] = [];
+
+  // Don't add duplicates (by similarity)
+  for (const entry of learned[routeId]) {
+    if (entry.text === text) return;
+  }
+
+  // Check against base examples too
+  const route = routes.find(r => r.id === routeId);
+  if (route && route.examples.includes(text)) return;
+
+  learned[routeId].push({ text, embedding });
+
+  // FIFO eviction
+  if (learned[routeId].length > MAX_LEARNED_PER_ROUTE) {
+    learned[routeId] = learned[routeId].slice(-MAX_LEARNED_PER_ROUTE);
+  }
+
+  saveLearned();
+  await recomputeRouteEmbedding(routeId);
+  renderLearnLog();
+  updateStats();
+}
+
+function saveLearned() {
+  // Strip embeddings for storage size — we'll re-embed on load
+  const forStorage = {};
+  for (const [rid, entries] of Object.entries(learned)) {
+    forStorage[rid] = entries.map(e => ({ text: e.text }));
+  }
+  localStorage.setItem(LS_LEARNED, JSON.stringify(forStorage));
+}
+
+function saveRoutes() {
+  localStorage.setItem(LS_ROUTES, JSON.stringify(routes));
+}
+
+function saveLearnedKeywords() {
+  localStorage.setItem(LS_LEARNED_KW, JSON.stringify(learnedKeywords));
+}
+
+/* ═══════════════════════════════════════════
+   Math
+   ═══════════════════════════════════════════ */
+function cosine(a, b) {
+  let dot = 0, na = 0, nb = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    na += a[i] * a[i];
+    nb += b[i] * b[i];
+  }
+  return dot / (Math.sqrt(na) * Math.sqrt(nb) + 1e-8);
+}
+
+function averageVectors(vecs) {
+  if (vecs.length === 0) return null;
+  const dim = vecs[0].length;
+  const avg = new Array(dim).fill(0);
+  for (const v of vecs) {
+    for (let i = 0; i < dim; i++) avg[i] += v[i];
+  }
+  for (let i = 0; i < dim; i++) avg[i] /= vecs.length;
+  return avg;
+}
+
+/* ═══════════════════════════════════════════
+   UI Helpers
+   ═══════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+function handleProgress(p) {
+  if (p.status === 'progress' && p.progress != null) {
+    $('progress-fill').style.width = `${Math.round(p.progress)}%`;
+    $('progress-label').textContent = `Loading ${p.file || 'model'}… ${Math.round(p.progress)}%`;
+  } else if (p.status === 'initiate') {
+    $('progress-label').textContent = `Downloading ${p.file || 'model'}…`;
+  } else if (p.status === 'done') {
+    $('progress-fill').style.width = '100%';
+  }
+}
+
+function showProgress(show) {
+  $('progress-wrap').classList.toggle('active', show);
+}
+
+function resetLanes() {
+  for (const id of ['lane-keyword', 'lane-memory', 'lane-embed', 'lane-llm']) {
+    const el = $(id);
+    el.className = 'lane';
+    $(id + '-status').innerHTML = '';
+  }
+  $('lane-embed-detail').innerHTML = 'ONNX cosine similarity';
+}
+
+function activateLane(name) {
+  $(`lane-${name}`).className = 'lane active pulsing';
+}
+
+function hitLane(name, detail) {
+  const el = $(`lane-${name}`);
+  el.className = 'lane active hit';
+  $(`lane-${name}-status`).innerHTML = `<span class="hit-label">HIT</span>`;
+  if (detail) $(`lane-${name}-detail`).textContent = detail;
+}
+
+function missLane(name) {
+  const el = $(`lane-${name}`);
+  el.className = 'lane miss';
+  $(`lane-${name}-status`).innerHTML = `<span class="miss-label">MISS</span>`;
+}
+
+function skipLane(name) {
+  $(`lane-${name}`).className = 'lane';
+  $(`lane-${name}-status`).innerHTML = `<span class="skip-label">SKIP</span>`;
+}
+
+function renderSimBars(scores) {
+  const maxScore = Math.max(...scores.map(s => s.score), 0.01);
+  const html = scores.map(({ route, score }, i) => {
+    const pct = Math.max(0, (score / maxScore) * 100);
+    const isWinner = i === 0 && score >= route.threshold;
+    return `<div class="sim-row ${isWinner ? 'winner' : ''}">
+      <span class="name">${route.icon} ${route.name}</span>
+      <div class="sim-track"><div class="sim-fill" style="width:${pct}%"></div></div>
+      <span class="score">${(score * 100).toFixed(1)}%</span>
+    </div>`;
+  }).join('');
+  $('lane-embed-detail').innerHTML = `<div class="sim-bars">${html}</div>`;
+}
+
+function showResult(route, tier, score, latencyMs, query) {
+  const card = $('result-card');
+  $('result-icon').textContent = route.icon;
+  $('result-route').textContent = route.name;
+
+  const tierEl = $('result-tier');
+  tierEl.textContent = tier;
+  tierEl.className = 'result-tier tier-' + tier;
+
+  const filled = route.promptTemplate.replace('{query}', query);
+  $('result-template').innerHTML = filled.replace(query, `<span class="query-highlight">${escHtml(query)}</span>`);
+
+  if (score && typeof score === 'object') {
+    $('result-conf').textContent = `${(score.score * 100).toFixed(1)}% (gap: ${(score.gap * 100).toFixed(1)}%)`;
+  } else {
+    $('result-conf').textContent = score != null ? `${(score * 100).toFixed(1)}%` : 'n/a';
+  }
+  $('result-latency').textContent = `${Math.round(latencyMs)}ms`;
+
+  card.classList.add('show');
+}
+
+function hideResult() {
+  $('result-card').classList.remove('show');
+}
+
+function showManual(text, queryEmb) {
+  const grid = $('manual-grid');
+  grid.innerHTML = routes.map(r =>
+    `<button class="manual-btn" data-id="${r.id}">${r.icon} ${r.name}</button>`
+  ).join('');
+
+  grid.onclick = async (e) => {
+    const btn = e.target.closest('.manual-btn');
+    if (!btn) return;
+    const routeId = btn.dataset.id;
+    const route = routes.find(r => r.id === routeId);
+    hideManual();
+    hitLane('llm', `manual: ${route.name}`);
+    $('lane-llm-status').innerHTML = '<span class="hit-label">MANUAL</span>';
+    await learnExample(routeId, text, queryEmb);
+    autoLearnKeywords(routeId, text);
+    showResult(route, 'manual', null, 0, text);
+    stats.queries++;
+    updateStats();
+  };
+
+  $('manual-select').classList.add('show');
+}
+
+function hideManual() {
+  $('manual-select').classList.remove('show');
+}
+
+function finishQuery(latencyMs) {
+  stats.queries++;
+  stats.totalLatency += latencyMs;
+  updateStats();
+}
+
+function updateStats() {
+  $('stat-queries').textContent = stats.queries;
+  $('stat-hits').textContent = stats.queries > 0
+    ? `${Math.round((stats.memoryHits / stats.queries) * 100)}%`
+    : '0%';
+  const totalLearned = Object.values(learned).reduce((s, arr) => s + arr.length, 0)
+    + Object.values(learnedKeywords).reduce((s, arr) => s + arr.length, 0);
+  $('stat-learned').textContent = totalLearned;
+  $('stat-latency').textContent = stats.queries > 0
+    ? `${Math.round(stats.totalLatency / stats.queries)}ms`
+    : '—';
+  $('route-count-badge').textContent = `${routes.length} routes`;
+  $('learn-count-badge').textContent = `${totalLearned} learned`;
+}
+
+/* ═══════════════════════════════════════════
+   Route editor
+   ═══════════════════════════════════════════ */
+function renderRouteEditor() {
+  const list = $('route-list');
+  list.innerHTML = routes.map((r, i) => {
+    const learnedCount = (learned[r.id] || []).length;
+    const learnedKwCount = (learnedKeywords[r.id] || []).length;
+    const baseKwTags = (r.keywords || []).map(kw =>
+      `<span class="example-tag">${escHtml(kw)} <span class="remove" data-route="${i}" data-kw="${escAttr(kw)}" data-type="base-kw">×</span></span>`
+    ).join('');
+    const learnedKwTags = (learnedKeywords[r.id] || []).map(kw =>
+      `<span class="example-tag learned">${escHtml(kw)} <span class="remove" data-route-id="${r.id}" data-kw="${escAttr(kw)}" data-type="learned-kw">×</span></span>`
+    ).join('');
+    const exTags = r.examples.map(ex =>
+      `<span class="example-tag">${escHtml(truncate(ex, 40))} <span class="remove" data-route="${i}" data-ex="${escAttr(ex)}" data-type="base">×</span></span>`
+    ).join('');
+    const learnedTags = (learned[r.id] || []).map(l =>
+      `<span class="example-tag learned">${escHtml(truncate(l.text, 40))} <span class="remove" data-route-id="${r.id}" data-text="${escAttr(l.text)}" data-type="learned">×</span></span>`
+    ).join('');
+
+    return `<div class="route-card" id="rc-${i}">
+      <div class="route-header" onclick="document.getElementById('rc-${i}').classList.toggle('open')">
+        <span class="icon">${r.icon}</span>
+        <span class="name">${escHtml(r.name)}</span>
+        <span class="count">${(r.keywords||[]).length + learnedKwCount} kw · ${r.examples.length + learnedCount} ex</span>
+      </div>
+      <div class="route-body">
+        <div class="field-label">Name</div>
+        <input class="field-input" value="${escAttr(r.name)}" onchange="updateRouteField(${i},'name',this.value)">
+        <div class="field-label">Icon (emoji)</div>
+        <input class="field-input" value="${escAttr(r.icon)}" onchange="updateRouteField(${i},'icon',this.value)" style="width:60px">
+        <div class="field-label">Prompt Template</div>
+        <textarea class="field-input" onchange="updateRouteField(${i},'promptTemplate',this.value)">${escHtml(r.promptTemplate)}</textarea>
+        <div class="field-label">Threshold</div>
+        <div class="threshold-row">
+          <input type="range" min="0.3" max="0.95" step="0.01" value="${r.threshold}" oninput="updateRouteField(${i},'threshold',parseFloat(this.value));this.nextElementSibling.textContent=this.value">
+          <span class="threshold-val">${r.threshold}</span>
+        </div>
+        <div class="field-label">Keywords</div>
+        <div>${baseKwTags}${learnedKwTags}</div>
+        <div style="margin-top:6px;display:flex;gap:6px">
+          <input class="field-input" placeholder="Add keyword…" id="new-kw-${i}" style="flex:1">
+          <button class="btn btn-sm btn-ghost" onclick="addKeyword(${i})">Add</button>
+        </div>
+        <div class="field-label">Base Examples</div>
+        <div>${exTags}</div>
+        <div style="margin-top:6px;display:flex;gap:6px">
+          <input class="field-input" placeholder="Add example…" id="new-ex-${i}" style="flex:1">
+          <button class="btn btn-sm btn-ghost" onclick="addExample(${i})">Add</button>
+        </div>
+        ${learnedTags ? `<div class="field-label">Learned Examples</div><div>${learnedTags}</div>` : ''}
+        <div class="route-actions">
+          <button class="btn btn-sm btn-red" onclick="deleteRoute(${i})">Delete Route</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Wire up remove buttons
+  list.querySelectorAll('.remove').forEach(el => {
+    el.onclick = (e) => {
+      e.stopPropagation();
+      const type = el.dataset.type;
+      if (type === 'base') {
+        const idx = parseInt(el.dataset.route);
+        routes[idx].examples = routes[idx].examples.filter(x => x !== el.dataset.ex);
+        saveRoutes();
+        renderRouteEditor();
+        if (modelReady) recomputeRouteEmbedding(routes[idx].id);
+      } else if (type === 'base-kw') {
+        const idx = parseInt(el.dataset.route);
+        routes[idx].keywords = (routes[idx].keywords || []).filter(k => k !== el.dataset.kw);
+        saveRoutes();
+        renderRouteEditor();
+      } else if (type === 'learned-kw') {
+        const rid = el.dataset.routeId;
+        learnedKeywords[rid] = (learnedKeywords[rid] || []).filter(k => k !== el.dataset.kw);
+        saveLearnedKeywords();
+        renderRouteEditor();
+        renderLearnLog();
+        updateStats();
+      } else {
+        const rid = el.dataset.routeId;
+        learned[rid] = (learned[rid] || []).filter(l => l.text !== el.dataset.text);
+        saveLearned();
+        renderRouteEditor();
+        renderLearnLog();
+        updateStats();
+        if (modelReady) recomputeRouteEmbedding(rid);
+      }
+    };
+  });
+}
+
+function renderLearnLog() {
+  const log = $('learn-log');
+  const entries = [];
+  const allRouteIds = new Set([...Object.keys(learned), ...Object.keys(learnedKeywords)]);
+  for (const rid of allRouteIds) {
+    const route = routes.find(r => r.id === rid);
+    if (!route) continue;
+    const items = learned[rid] || [];
+    const kws = learnedKeywords[rid] || [];
+    if (items.length === 0 && kws.length === 0) continue;
+    const kwHtml = kws.length > 0
+      ? `<div style="margin-bottom:4px">${kws.map(k => `<span class="example-tag learned" style="font-size:.62rem">${escHtml(k)}</span>`).join('')}</div>`
+      : '';
+    const exHtml = items.map(l => `<span class="example-tag learned">${escHtml(truncate(l.text, 50))}</span>`).join('');
+    entries.push(`<div style="margin-bottom:12px">
+      <div style="font-size:.78rem;font-weight:500;margin-bottom:4px">${route.icon} ${escHtml(route.name)} <span style="color:var(--text3);font-family:var(--mono);font-size:.62rem">${kws.length} kw · ${items.length} ex</span></div>
+      ${kwHtml}${exHtml}
+    </div>`);
+  }
+  log.innerHTML = entries.length > 0 ? entries.join('') : '<div style="color:var(--text3);font-size:.8rem">No learned data yet. Route some queries and the router will learn.</div>';
+}
+
+// Expose functions to global scope for onclick handlers
+window.togglePanel = (id) => $(id).classList.toggle('open');
+
+window.updateRouteField = (idx, field, value) => {
+  routes[idx][field] = value;
+  saveRoutes();
+  if (field === 'name' || field === 'icon') renderRouteEditor();
+};
+
+window.addKeyword = (idx) => {
+  const input = $(`new-kw-${idx}`);
+  const kw = input.value.trim().toLowerCase();
+  if (!kw) return;
+  if (!routes[idx].keywords) routes[idx].keywords = [];
+  if (routes[idx].keywords.includes(kw)) return;
+  routes[idx].keywords.push(kw);
+  input.value = '';
+  saveRoutes();
+  renderRouteEditor();
+};
+
+window.addExample = (idx) => {
+  const input = $(`new-ex-${idx}`);
+  const text = input.value.trim();
+  if (!text) return;
+  routes[idx].examples.push(text);
+  input.value = '';
+  saveRoutes();
+  renderRouteEditor();
+  if (modelReady) recomputeRouteEmbedding(routes[idx].id);
+};
+
+window.deleteRoute = (idx) => {
+  const rid = routes[idx].id;
+  routes.splice(idx, 1);
+  delete learned[rid];
+  delete learnedKeywords[rid];
+  delete routeEmbeddings[rid];
+  saveRoutes();
+  saveLearned();
+  saveLearnedKeywords();
+  renderRouteEditor();
+  renderLearnLog();
+  updateStats();
+};
+
+window.addNewRoute = () => {
+  const id = 'route_' + Date.now();
+  routes.push({
+    id,
+    name: 'New Route',
+    icon: '🔹',
+    keywords: [],
+    examples: [],
+    promptTemplate: 'You are a helpful assistant.\n\n{query}',
+    threshold: 0.40,
+  });
+  saveRoutes();
+  renderRouteEditor();
+  updateStats();
+};
+
+window.resetRoutes = async () => {
+  routes = structuredClone(defaultRoutes);
+  learned = {};
+  learnedKeywords = {};
+  localStorage.removeItem(LS_ROUTES);
+  localStorage.removeItem(LS_LEARNED);
+  localStorage.removeItem(LS_LEARNED_KW);
+  saveRoutes();
+  saveLearned();
+  saveLearnedKeywords();
+  renderRouteEditor();
+  renderLearnLog();
+  updateStats();
+  if (modelReady) await recomputeAllEmbeddings();
+};
+
+window.exportRoutes = () => {
+  const blob = new Blob([JSON.stringify(routes, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'routes.json';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.clearLearned = async () => {
+  learned = {};
+  learnedKeywords = {};
+  saveLearned();
+  saveLearnedKeywords();
+  renderRouteEditor();
+  renderLearnLog();
+  updateStats();
+  if (modelReady) await recomputeAllEmbeddings();
+};
+
+/* ═══════════════════════════════════════════
+   LLM config
+   ═══════════════════════════════════════════ */
+function loadLlmConfig() {
+  const saved = localStorage.getItem(LS_LLM);
+  if (saved) {
+    llmConfig = JSON.parse(saved);
+  } else {
+    // Auto-load from LLM Farm if available
+    const farmUrl = localStorage.getItem('llmfarm_api_url');
+    const farmKey = localStorage.getItem('llmfarm_api_key');
+    const farmModel = localStorage.getItem('llmfarm_model');
+    if (farmUrl) {
+      llmConfig = { url: farmUrl, key: farmKey || '', model: farmModel || 'local-model' };
+    }
+  }
+  // Populate UI fields
+  $('llm-url').value = llmConfig.url;
+  $('llm-key').value = llmConfig.key;
+  $('llm-model').value = llmConfig.model;
+  updateLlmBadge();
+}
+
+window.saveLlmConfig = () => {
+  llmConfig = {
+    url: $('llm-url').value.trim(),
+    key: $('llm-key').value.trim(),
+    model: $('llm-model').value.trim() || 'local-model',
+  };
+  localStorage.setItem(LS_LLM, JSON.stringify(llmConfig));
+  updateLlmBadge();
+};
+
+function updateLlmBadge() {
+  const badge = $('llm-status-badge');
+  if (llmConfig.url) {
+    badge.textContent = llmConfig.model;
+    badge.style.color = 'var(--green)';
+  } else {
+    badge.textContent = 'not configured';
+    badge.style.color = '';
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Utilities
+   ═══════════════════════════════════════════ */
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function truncate(s, n) { return s.length > n ? s.slice(0, n) + '…' : s; }
+
+/* ═══════════════════════════════════════════
+   Event binding
+   ═══════════════════════════════════════════ */
+$('route-btn').addEventListener('click', () => {
+  const text = $('query-input').value.trim();
+  if (text && modelReady) routeQuery(text);
+});
+
+$('query-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const text = $('query-input').value.trim();
+    if (text && modelReady) routeQuery(text);
+  }
+});
+
+/* ═══════════════════════════════════════════
+   Boot
+   ═══════════════════════════════════════════ */
+init().catch(err => {
+  $('progress-label').textContent = `Error: ${err.message}`;
+  $('progress-label').style.color = 'var(--red)';
+});
+
+</script>
+</body>
+</html>

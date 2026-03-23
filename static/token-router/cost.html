@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost Calculator - Token Router</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0e1a;
+  --surface: #141829;
+  --surface2: #1c2039;
+  --surface3: #252a42;
+  --border: #2a2f4a;
+  --accent: #7c6aef;
+  --accent-dim: #7c6aef33;
+  --accent-glow: #7c6aef66;
+  --green: #34d399;
+  --green-dim: #34d39922;
+  --amber: #fbbf24;
+  --amber-dim: #fbbf2422;
+  --red: #f87171;
+  --red-dim: #f8717122;
+  --cyan: #22d3ee;
+  --cyan-dim: #22d3ee22;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --radius: 10px;
+  --gutter: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+.shell { max-width: 920px; margin: 0 auto; padding: 0 var(--gutter) 80px; }
+
+/* Header */
+.hero {
+  padding: 48px 0 36px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.hero h1 span { color: var(--text3); font-weight: 300; }
+.hero-desc { color: var(--text2); font-size: .9rem; max-width: 540px; }
+.hero-nav {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: .72rem;
+}
+.hero-nav a {
+  color: var(--accent);
+  text-decoration: none;
+  opacity: .8;
+  transition: opacity .15s;
+}
+.hero-nav a:hover { opacity: 1; }
+
+/* Input */
+.input-row {
+  display: flex; gap: 10px;
+  margin-bottom: 20px;
+}
+.input-row input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.input-row input:focus { border-color: var(--accent); }
+.input-row input::placeholder { color: var(--text3); }
+.btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px 28px;
+  font-family: var(--sans);
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: opacity .15s, transform .1s;
+  white-space: nowrap;
+}
+.btn:hover { opacity: .88; }
+.btn:active { transform: scale(.97); }
+
+/* Example buttons */
+.examples {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 28px;
+}
+.example-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--text2);
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.example-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* Result card */
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: none;
+}
+.result-card.visible { display: block; animation: fadeUp .35s ease-out; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.result-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.result-route-icon { font-size: 1.4rem; }
+.result-route-name {
+  font-family: var(--mono);
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.result-model {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--text2);
+  background: var(--surface2);
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+.result-query {
+  font-size: .85rem;
+  color: var(--text2);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  font-style: italic;
+}
+
+/* Cost comparison */
+.cost-compare {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+}
+.cost-box {
+  text-align: center;
+  padding: 16px;
+  border-radius: 8px;
+}
+.cost-box.before { background: var(--red-dim); }
+.cost-box.after { background: var(--green-dim); }
+.cost-label {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+.cost-value {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+.cost-box.before .cost-value { color: var(--red); }
+.cost-box.after .cost-value { color: var(--green); }
+.cost-model-label {
+  font-family: var(--mono);
+  font-size: .6rem;
+  color: var(--text3);
+  margin-top: 4px;
+}
+.cost-arrow {
+  font-size: 1.2rem;
+  color: var(--text3);
+}
+.savings-badge {
+  text-align: center;
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--green);
+  opacity: 0;
+  transition: opacity .4s .3s;
+}
+.savings-badge.visible { opacity: 1; }
+
+/* Running totals */
+.totals {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: none;
+}
+.totals.visible { display: block; }
+.totals-title {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+.totals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.total-item { text-align: center; }
+.total-num {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.total-num.green { color: var(--green); }
+.total-num.red { color: var(--red); }
+.total-num.amber { color: var(--amber); }
+.total-label {
+  font-family: var(--mono);
+  font-size: .58rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* Tier distribution bar */
+.tier-dist { margin-top: 8px; }
+.tier-dist-title {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+.tier-bar-wrap {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: var(--surface2);
+  margin-bottom: 8px;
+}
+.tier-seg {
+  height: 100%;
+  transition: width .4s ease-out;
+}
+.tier-seg.cheap { background: var(--green); }
+.tier-seg.mid { background: var(--amber); }
+.tier-seg.strong { background: var(--red); }
+.tier-legend {
+  display: flex; gap: 16px;
+  font-family: var(--mono);
+  font-size: .6rem;
+  color: var(--text3);
+}
+.tier-legend-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* History log */
+.history { margin-top: 24px; display: none; }
+.history.visible { display: block; }
+.history-title {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+.history-item {
+  display: grid;
+  grid-template-columns: 24px 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: .78rem;
+  animation: fadeUp .25s ease-out;
+}
+.history-item .route-tag {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.history-item .query-text {
+  color: var(--text2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.history-item .cost-tag {
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 500;
+}
+.history-item .cost-tag.green { color: var(--green); }
+.history-item .cost-tag.amber { color: var(--amber); }
+.history-item .cost-tag.red { color: var(--red); }
+.history-item .savings-tag {
+  font-family: var(--mono);
+  font-size: .62rem;
+  color: var(--green);
+  min-width: 50px;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .totals-grid { grid-template-columns: repeat(2, 1fr); }
+  .cost-compare { grid-template-columns: 1fr; gap: 8px; }
+  .cost-arrow { transform: rotate(90deg); text-align: center; }
+  .history-item { grid-template-columns: 24px 1fr auto; }
+  .history-item .savings-tag { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hero">
+    <div class="hero-eyebrow">Token Router</div>
+    <h1>Cost Calculator <span>/ savings simulator</span></h1>
+    <p class="hero-desc">Route queries to the cheapest model that can handle them. See per-query and cumulative savings vs. always using Sonnet.</p>
+    <div class="hero-nav"><a href="/token-router/">&larr; Back to Router Demo</a></div>
+  </div>
+
+  <div class="input-row">
+    <input type="text" id="queryInput" placeholder="Type a query to route..." autocomplete="off">
+    <button class="btn" id="routeBtn" onclick="routeQuery()">Route</button>
+  </div>
+
+  <div class="examples" id="examples"></div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <span class="result-route-icon" id="resultIcon"></span>
+      <div>
+        <div class="result-route-name" id="resultRoute"></div>
+      </div>
+      <div class="result-model" id="resultModel"></div>
+    </div>
+    <div class="result-query" id="resultQuery"></div>
+    <div class="cost-compare">
+      <div class="cost-box before">
+        <div class="cost-label">Before (always Sonnet)</div>
+        <div class="cost-value" id="costBefore">$3.00</div>
+        <div class="cost-model-label">Sonnet</div>
+      </div>
+      <div class="cost-arrow">&rarr;</div>
+      <div class="cost-box after">
+        <div class="cost-label">After (routed)</div>
+        <div class="cost-value" id="costAfter">$0.00</div>
+        <div class="cost-model-label" id="afterModelLabel"></div>
+      </div>
+    </div>
+    <div class="savings-badge" id="savingsBadge"></div>
+  </div>
+
+  <div class="totals" id="totals">
+    <div class="totals-title">Running Totals</div>
+    <div class="totals-grid">
+      <div class="total-item">
+        <div class="total-num" id="totalQueries">0</div>
+        <div class="total-label">Queries</div>
+      </div>
+      <div class="total-item">
+        <div class="total-num red" id="totalBefore">$0.00</div>
+        <div class="total-label">Before</div>
+      </div>
+      <div class="total-item">
+        <div class="total-num green" id="totalAfter">$0.00</div>
+        <div class="total-label">After</div>
+      </div>
+      <div class="total-item">
+        <div class="total-num amber" id="totalSavings">0%</div>
+        <div class="total-label">Savings</div>
+      </div>
+    </div>
+    <div class="tier-dist">
+      <div class="tier-dist-title">Tier Distribution</div>
+      <div class="tier-bar-wrap">
+        <div class="tier-seg cheap" id="segCheap" style="width:0%"></div>
+        <div class="tier-seg mid" id="segMid" style="width:0%"></div>
+        <div class="tier-seg strong" id="segStrong" style="width:0%"></div>
+      </div>
+      <div class="tier-legend">
+        <span><span class="tier-legend-dot" style="background:var(--green)"></span>Haiku $0.80</span>
+        <span><span class="tier-legend-dot" style="background:var(--amber)"></span>Sonnet $3.00</span>
+        <span><span class="tier-legend-dot" style="background:var(--red)"></span>Opus $15.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="history" id="history">
+    <div class="history-title">Query Log</div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<script>
+const TIERS = {
+  cheap:  { model: 'Haiku',  cost: 0.80, color: 'green' },
+  mid:    { model: 'Sonnet', cost: 3.00, color: 'amber' },
+  strong: { model: 'Opus',   cost: 15.00, color: 'red' }
+};
+
+const ROUTE_TIER = {
+  summarize: 'cheap',
+  chat:      'cheap',
+  code:      'mid',
+  data:      'mid',
+  writing:   'strong',
+  devops:    'strong'
+};
+
+const BASELINE_COST = 3.00;
+let routes = [];
+let state = { queries: 0, before: 0, after: 0, tiers: { cheap: 0, mid: 0, strong: 0 } };
+
+const EXAMPLES = [
+  { label: 'summarize', query: 'summarize this article for me' },
+  { label: 'code',      query: 'write a python function to sort a list' },
+  { label: 'data',      query: 'create a SQL query to find top customers' },
+  { label: 'writing',   query: 'write a short story about a time traveler' },
+  { label: 'devops',    query: 'write a dockerfile for a node app' },
+  { label: 'chat',      query: 'hello how are you' }
+];
+
+async function init() {
+  try {
+    const resp = await fetch('/token-router/routes.json');
+    routes = await resp.json();
+  } catch {
+    routes = [];
+  }
+  const container = document.getElementById('examples');
+  EXAMPLES.forEach(function(ex) {
+    const btn = document.createElement('button');
+    btn.className = 'example-btn';
+    btn.textContent = ex.query;
+    btn.onclick = function() {
+      document.getElementById('queryInput').value = ex.query;
+      routeQuery();
+    };
+    container.appendChild(btn);
+  });
+  document.getElementById('queryInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') routeQuery();
+  });
+}
+
+function matchRoute(query) {
+  var lower = query.toLowerCase();
+  var bestId = 'chat';
+  var bestScore = 0;
+
+  for (var i = 0; i < routes.length; i++) {
+    var route = routes[i];
+    var score = 0;
+    for (var j = 0; j < route.keywords.length; j++) {
+      if (lower.includes(route.keywords[j].toLowerCase())) score++;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestId = route.id;
+    }
+  }
+  return routes.find(function(r) { return r.id === bestId; }) || routes[routes.length - 1];
+}
+
+function animateValue(el, start, end, prefix, suffix, duration) {
+  var startTime = performance.now();
+  function tick(now) {
+    var t = Math.min((now - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - t, 3);
+    var val = start + (end - start) * ease;
+    el.textContent = prefix + val.toFixed(2) + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function routeQuery() {
+  var input = document.getElementById('queryInput');
+  var query = input.value.trim();
+  if (!query) return;
+
+  var route = matchRoute(query);
+  var tierKey = ROUTE_TIER[route.id] || 'mid';
+  var tier = TIERS[tierKey];
+  var savings = BASELINE_COST - tier.cost;
+  var savingsPct = (savings / BASELINE_COST) * 100;
+
+  // Update result card
+  var card = document.getElementById('resultCard');
+  card.classList.remove('visible');
+  void card.offsetWidth;
+  card.classList.add('visible');
+
+  document.getElementById('resultIcon').textContent = route.icon;
+  document.getElementById('resultRoute').textContent = route.name;
+  document.getElementById('resultModel').textContent = tier.model + ' / $' + tier.cost.toFixed(2) + ' per 1M tokens';
+  document.getElementById('resultQuery').textContent = '\u201c' + query + '\u201d';
+
+  animateValue(document.getElementById('costBefore'), 0, BASELINE_COST, '$', '', 500);
+  animateValue(document.getElementById('costAfter'), 0, tier.cost, '$', '', 500);
+  document.getElementById('afterModelLabel').textContent = tier.model;
+
+  var badge = document.getElementById('savingsBadge');
+  badge.classList.remove('visible');
+  if (savings > 0) {
+    badge.textContent = 'You save ' + savingsPct.toFixed(0) + '% on this query';
+  } else {
+    badge.textContent = 'Same cost (already optimal tier)';
+  }
+  setTimeout(function() { badge.classList.add('visible'); }, 100);
+
+  // Update running totals
+  state.queries++;
+  state.before += BASELINE_COST;
+  state.after += tier.cost;
+  state.tiers[tierKey]++;
+
+  var totals = document.getElementById('totals');
+  totals.classList.add('visible');
+
+  document.getElementById('totalQueries').textContent = state.queries;
+  document.getElementById('totalBefore').textContent = '$' + state.before.toFixed(2);
+  document.getElementById('totalAfter').textContent = '$' + state.after.toFixed(2);
+  var runSavings = (state.before - state.after) / state.before * 100;
+  document.getElementById('totalSavings').textContent = runSavings.toFixed(0) + '%';
+
+  // Tier distribution bar
+  var total = state.queries;
+  document.getElementById('segCheap').style.width = (state.tiers.cheap / total * 100) + '%';
+  document.getElementById('segMid').style.width = (state.tiers.mid / total * 100) + '%';
+  document.getElementById('segStrong').style.width = (state.tiers.strong / total * 100) + '%';
+
+  // History
+  var hist = document.getElementById('history');
+  hist.classList.add('visible');
+  var list = document.getElementById('historyList');
+  var item = document.createElement('div');
+  item.className = 'history-item';
+  item.innerHTML =
+    '<span>' + route.icon + '</span>' +
+    '<span class="query-text">' + escapeHtml(query) + '</span>' +
+    '<span class="cost-tag ' + tier.color + '">$' + tier.cost.toFixed(2) + '</span>' +
+    '<span class="savings-tag">' + (savings > 0 ? '-' + savingsPct.toFixed(0) + '%' : '0%') + '</span>';
+  list.insertBefore(item, list.firstChild);
+
+  input.value = '';
+  input.focus();
+}
+
+function escapeHtml(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+init();
+</script>
+</body>
+</html>
