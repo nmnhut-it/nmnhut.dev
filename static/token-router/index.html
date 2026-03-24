@@ -1496,14 +1496,14 @@ function truncate(s, n) { return s.length > n ? s.slice(0, n) + '…' : s; }
 /* ═══════════════════════════════════════════
    Try example
    ═══════════════════════════════════════════ */
-function tryExample(btn) {
+window.tryExample = function(btn) {
   if (!modelReady) return;
   const text = btn.textContent.trim();
   $('query-input').value = text;
   btn.style.borderColor = 'var(--accent)';
   btn.style.color = 'var(--text)';
   routeQuery(text);
-}
+};
 
 /* ═══════════════════════════════════════════
    Event binding
