@@ -3,7 +3,7 @@
     "id": "code",
     "name": "Code Helper",
     "icon": "⌨",
-    "keywords": ["python", "javascript", "typescript", "function", "class", "bug", "error", "code", "refactor", "compile", "syntax", "algorithm", "debug", "api", "import"],
+    "keywords": ["python", "javascript", "typescript", "function", "class", "bug", "error", "code", "refactor", "compile", "syntax", "algorithm", "debug", "api", "import", "owasp", "vulnerability", "exception", "java"],
     "examples": [
       "write a python function to sort a list",
       "fix this null pointer exception",
@@ -48,7 +48,7 @@
     "id": "writing",
     "name": "Creative Writer",
     "icon": "✍",
-    "keywords": ["story", "poem", "write", "draft", "creative", "tagline", "narrative", "fiction", "essay", "rewrite", "engaging", "compelling"],
+    "keywords": ["story", "poem", "haiku", "compose", "draft", "creative", "tagline", "narrative", "fiction", "essay", "rewrite", "engaging", "compelling"],
     "examples": [
       "write a short story about a time traveler",
       "help me draft a compelling introduction",
