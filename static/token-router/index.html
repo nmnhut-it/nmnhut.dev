@@ -458,6 +458,24 @@ textarea.field-input {
   justify-content: flex-end;
 }
 
+/* ─── Try buttons ─── */
+.try-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: .68rem;
+  font-family: var(--mono);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.try-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--accent-dim);
+}
+
 /* ─── Utilities ─── */
 @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
@@ -478,6 +496,12 @@ textarea.field-input {
   <div class="hero-eyebrow">nmnhut.dev · interactive demo</div>
   <h1>Token Router <span>/ self-learning</span></h1>
   <p class="hero-desc">Type a request and watch it get routed through three tiers: memory cache, semantic embeddings (ONNX), and small-LLM fallback. The router learns from every query.</p>
+  <nav style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+    <a href="index.html" style="padding:6px 16px;border-radius:6px;background:var(--accent);color:#fff;text-decoration:none;font-size:13px;font-weight:500">Router</a>
+    <a href="context.html" style="padding:6px 16px;border-radius:6px;background:var(--surface2);color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;border:1px solid var(--border)">Context Window</a>
+    <a href="cost.html" style="padding:6px 16px;border-radius:6px;background:var(--surface2);color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;border:1px solid var(--border)">Cost Calculator</a>
+    <a href="prompt.html" style="padding:6px 16px;border-radius:6px;background:var(--surface2);color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;border:1px solid var(--border)">Prompt Structure</a>
+  </nav>
 </div>
 
 <!-- Stats -->
@@ -499,6 +523,23 @@ textarea.field-input {
 <div class="input-row">
   <input type="text" id="query-input" placeholder="e.g. write a python script to parse CSV files" disabled>
   <button class="btn" id="route-btn" disabled>Route</button>
+</div>
+
+<!-- Try these examples -->
+<div id="try-examples" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+  <span style="font-size:.7rem;color:var(--text3);font-family:var(--mono);margin-right:4px">try:</span>
+  <button class="try-btn" onclick="tryExample(this)">write a python function to merge two sorted lists</button>
+  <button class="try-btn" onclick="tryExample(this)">summarize this 10-page report into 3 bullet points</button>
+  <button class="try-btn" onclick="tryExample(this)">create a SQL query to find users who churned last month</button>
+  <button class="try-btn" onclick="tryExample(this)">write a haiku about debugging at 3am</button>
+  <button class="try-btn" onclick="tryExample(this)">my docker container exits with code 137</button>
+  <button class="try-btn" onclick="tryExample(this)">hey, what can you do?</button>
+  <button class="try-btn" onclick="tryExample(this)">explain OWASP top 10 vulnerabilities</button>
+  <button class="try-btn" onclick="tryExample(this)">build a dashboard to track API latency metrics</button>
+  <button class="try-btn" onclick="tryExample(this)">rewrite this paragraph to sound more professional</button>
+  <button class="try-btn" onclick="tryExample(this)">set up a github actions CI/CD pipeline for a node app</button>
+  <button class="try-btn" onclick="tryExample(this)">what's the average revenue per user from this csv</button>
+  <button class="try-btn" onclick="tryExample(this)">fix this null pointer exception in my Java code</button>
 </div>
 
 <!-- Pipeline -->
@@ -1451,6 +1492,18 @@ function updateLlmBadge() {
 function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escAttr(s) { return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function truncate(s, n) { return s.length > n ? s.slice(0, n) + '…' : s; }
+
+/* ═══════════════════════════════════════════
+   Try example
+   ═══════════════════════════════════════════ */
+function tryExample(btn) {
+  if (!modelReady) return;
+  const text = btn.textContent.trim();
+  $('query-input').value = text;
+  btn.style.borderColor = 'var(--accent)';
+  btn.style.color = 'var(--text)';
+  routeQuery(text);
+}
 
 /* ═══════════════════════════════════════════
    Event binding
