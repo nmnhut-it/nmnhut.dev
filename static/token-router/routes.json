@@ -12,7 +12,7 @@
       "convert this javascript to typescript"
     ],
     "promptTemplate": "You are an expert programming assistant. Help with the following:\n\n{query}",
-    "threshold": 0.40
+    "threshold": 0.30
   },
   {
     "id": "summarize",
@@ -27,7 +27,7 @@
       "what are the main takeaways from this paper"
     ],
     "promptTemplate": "You are a concise summarizer. Extract the key points:\n\n{query}",
-    "threshold": 0.40
+    "threshold": 0.30
   },
   {
     "id": "data",
@@ -42,7 +42,7 @@
       "build a pivot table from this dataset"
     ],
     "promptTemplate": "You are a data analyst. Analyze and interpret:\n\n{query}",
-    "threshold": 0.40
+    "threshold": 0.30
   },
   {
     "id": "writing",
@@ -57,7 +57,7 @@
       "write a poem about the ocean"
     ],
     "promptTemplate": "You are a creative writing assistant with a vivid imagination:\n\n{query}",
-    "threshold": 0.40
+    "threshold": 0.30
   },
   {
     "id": "devops",
@@ -72,7 +72,7 @@
       "how do I monitor memory usage on linux"
     ],
     "promptTemplate": "You are a DevOps engineer. Help with infrastructure and deployment:\n\n{query}",
-    "threshold": 0.40
+    "threshold": 0.30
   },
   {
     "id": "chat",
@@ -87,6 +87,6 @@
       "what do you think about this"
     ],
     "promptTemplate": "You are a friendly assistant. Respond naturally:\n\n{query}",
-    "threshold": 0.40
+    "threshold": 0.30
   }
 ]
