@@ -527,13 +527,15 @@ textarea.field-input {
 
 <!-- Try these examples -->
 <div id="try-examples" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-  <span style="font-size:.7rem;color:var(--text3);font-family:var(--mono);margin-right:4px">try:</span>
+  <span style="font-size:.7rem;color:var(--text3);font-family:var(--mono);margin-right:4px">keyword:</span>
   <button class="try-btn" onclick="tryExample(this)" title="⌨ keyword: python, function">write a python function to merge two sorted lists</button>
   <button class="try-btn" onclick="tryExample(this)" title="📋 keyword: summarize">summarize this 10-page report into 3 bullet points</button>
   <button class="try-btn" onclick="tryExample(this)" title="🔧 keyword: docker">my docker container exits with code 137</button>
-  <button class="try-btn" onclick="tryExample(this)" title="✍ keyword: haiku, poem">compose a haiku poem about debugging at 3am</button>
-  <button class="try-btn" onclick="tryExample(this)" title="🔧 semantic: no keywords, ONNX matches to DevOps">my pod keeps restarting with OOMKilled status</button>
-  <button class="try-btn" onclick="tryExample(this)" title="💬 keyword: hey">hey, what can you do?</button>
+  <span style="font-size:.7rem;color:var(--accent);font-family:var(--mono);margin-left:8px;margin-right:4px">semantic:</span>
+  <button class="try-btn" style="border-color:var(--accent-dim)" onclick="tryExample(this)" title="⌨ semantic → Code (no keywords match)">why is my loop running forever and eating all memory</button>
+  <button class="try-btn" style="border-color:var(--accent-dim)" onclick="tryExample(this)" title="🔧 semantic → DevOps (no keywords match)">my pod keeps restarting with OOMKilled status</button>
+  <button class="try-btn" style="border-color:var(--accent-dim)" onclick="tryExample(this)" title="📊 semantic → Data (no keywords match)">show me revenue breakdown by region for last quarter</button>
+  <button class="try-btn" style="border-color:var(--accent-dim)" onclick="tryExample(this)" title="✍ semantic → Writing (no keywords match)">make this paragraph sound less boring and more punchy</button>
 </div>
 
 <!-- Pipeline -->
