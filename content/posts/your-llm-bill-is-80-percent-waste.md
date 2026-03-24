@@ -50,11 +50,17 @@ Three layers, like human memory:
 - **Consolidation** — at milestones, summarize into "meeting minutes" and restart fresh. Same knowledge, 5% of the tokens
 - **Retrieval** — search past conversations by semantic similarity instead of replaying them. Knowledge graphs for structured recall
 
+For RAG-heavy apps, consider **prompt compression** tools like [LLMLingua](https://github.com/microsoft/LLMLingua) — they strip low-information tokens from retrieved context with minimal quality loss, particularly effective when you're stuffing long documents into prompts.
+
 **Result:** 35% context cost reduction. Quality stays at baseline.
 
 ---
 
-## Lever 3: Cache the Instructions
+## Lever 3: Cache at Every Layer
+
+Two kinds of caching slash your bill in different ways.
+
+### Prefix caching (instruction-level)
 
 **Every API call re-sends your full system prompt.** Providers now cache stable prefixes — 75–90% cheaper on the repeated portion.
 
@@ -72,7 +78,25 @@ Three layers, like human memory:
 - Don't embed timestamps/usernames in instructions — breaks the cache
 - Routing (Lever 1) gives each category a stable prefix → near-100% hit rate
 
-**Result:** 60–90% off input costs from the second call onward.
+### Semantic caching (query-level)
+
+Prefix caching saves on *instructions*. Semantic caching saves on *entire LLM calls*.
+
+Store query embeddings alongside LLM responses. When a new query arrives, vector-search your cache — if a semantically similar query already has an answer, return it directly. No model call at all.
+
+```
+"What's the weather like today?"  ──┐
+                                    ├── cosine sim = 0.96 → cache hit
+"How's the weather right now?"   ──┘
+```
+
+- **Exact match layer** — identical queries, sub-millisecond. Handles bots, retries, popular questions
+- **Semantic match layer** — embeddings + similarity threshold. Catches rephrasings and near-duplicates
+- **Session context layer** — conversation state management to avoid re-sending history
+
+Production workloads have more repetition than you'd expect. Customer support, FAQ bots, and common user intents see the biggest wins — every cache hit eliminates the inference call entirely.
+
+**Result:** Prefix caching: 60–90% off input costs. Semantic caching: up to 73% total cost reduction in high-repetition workloads, with cache hits returning in milliseconds vs. seconds for fresh inference.
 
 ---
 
@@ -192,7 +216,7 @@ Before     ███████████████████████
            ├── Input (40%) ──┤── Output (60%) ───┤
 
 Levers 1-4 ██████                                   $1,200–$2,000
-           routing + cache + context + caps
+           routing + prefix/semantic cache + context + caps
 
 +Lever 5   ████                                     $600–$1,000
            materialize top 30% workflows to scripts
@@ -212,7 +236,7 @@ Each lever targets a different cost driver. They don't compete — they **compou
 |---|---|---|---|
 | 1. Route by difficulty | Model price | Medium | 65% of traffic 3.75x cheaper |
 | 2. Manage context | Input volume | Medium | 35% less history |
-| 3. Cache instructions | Input rate | Low | 60-90% off cached prefix |
+| 3. Cache at every layer | Input rate + call volume | Low–Medium | 60-90% off prefix; up to 73% total via semantic cache |
 | 4. Cap output | Output volume | Low | 50-90% fewer output tokens |
 | 5. Materialize solutions | Call volume | Medium | 100% on each solved task |
 | 6. LoRA fine-tuning | Model price | High | 10-20x on known categories |
@@ -224,6 +248,6 @@ Each lever targets a different cost driver. They don't compete — they **compou
 
 - **This week** — Log 1,000 queries, classify manually. Most teams find 60–70% are simple. Switch async tasks to batch API (instant 50% off)
 - **Next sprint** — Set output caps per task type. Reorder prompts (static first). Zero code changes
-- **Next month** — Deploy [Semantic Router](https://github.com/aurelio-labs/semantic-router). 4–5 categories, 2–3 model tiers. Identify top 5 repetitive workflows and script them
+- **Next month** — Deploy [Semantic Router](https://github.com/aurelio-labs/semantic-router). 4–5 categories, 2–3 model tiers. Identify top 5 repetitive workflows and script them. Add semantic caching for your highest-repetition query patterns (FAQ, support, common intents)
 - **Next quarter** — Build context memory layer. Auto-summarize at 70% utilization. Start LoRA fine-tuning on your highest-volume category using your logged query-response pairs
 - **Ongoing** — Every solved workflow graduates from LLM to script. The LLM handles fewer and fewer tasks over time — each one genuinely worth the tokens
