@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs | nmnhut</title>
+<meta name="keywords" content="ai, remotion, elevenlabs, claude, typescript, video">
+<meta name="description" content="How I built a pipeline that turns any article, blog post, or PowerPoint into a narrated educational video — and packaged it as a Claude Code skill anyone can use.">
+<meta name="author" content="Minh-Nhut Nguyen">
+<link rel="canonical" href="../../posts/educational-video-pipeline/">
+<link crossorigin="anonymous" href="../../assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="../../favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="mask-icon" href="../../safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="../../posts/educational-video-pipeline/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="/posts/educational-video-pipeline/">
+  <meta property="og:site_name" content="nmnhut">
+  <meta property="og:title" content="Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs">
+  <meta property="og:description" content="How I built a pipeline that turns any article, blog post, or PowerPoint into a narrated educational video — and packaged it as a Claude Code skill anyone can use.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-07T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-07T00:00:00+00:00">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Remotion">
+    <meta property="article:tag" content="Elevenlabs">
+    <meta property="article:tag" content="Claude">
+    <meta property="article:tag" content="Typescript">
+    <meta property="article:tag" content="Video">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs">
+<meta name="twitter:description" content="How I built a pipeline that turns any article, blog post, or PowerPoint into a narrated educational video — and packaged it as a Claude Code skill anyone can use.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "/posts/"
+    }
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs",
+      "item": "/posts/educational-video-pipeline/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs",
+  "name": "Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs",
+  "description": "How I built a pipeline that turns any article, blog post, or PowerPoint into a narrated educational video — and packaged it as a Claude Code skill anyone can use.",
+  "keywords": [
+    "ai", "remotion", "elevenlabs", "claude", "typescript", "video"
+  ],
+  "articleBody": "I wanted a way to turn my blog posts into narrated videos without spending hours in video editors. What I ended up building was a full pipeline: give it an article, a URL, or a PowerPoint file — get back a 1080p MP4 with animated slides, syntax-highlighted code blocks, and an AI voiceover in any language.\nThe whole thing is open source: github.com/nmnhut-it/educational-video-pipeline.\nThis post walks through how it works and how you can build your own.\nThe architecture Three tools do the heavy lifting:\nRemotion — renders React components to video frames. You write slides as React components; Remotion turns them into MP4. ElevenLabs — generates voice narration from text with character-level timestamps, so the video knows exactly how long each slide’s audio lasts. Claude Code — orchestrates the whole thing conversationally. You say “make me a video about X”, Claude writes the slide script, runs the audio generation, and fires the renderer. The data flow is:\nsource content → Claude generates video-script.json → ElevenLabs generates per-slide MP3s + timing manifest → Remotion renders slides sequenced to audio timing → output/.mp4 Step 1: Set up Remotion Bootstrap a new project:\nnpm init video cd my-video-pipeline npm install The key file is src/Root.tsx — this is where you register your compositions with Remotion:\nimport { Composition } from 'remotion'; import { EducationalVideo } from './compositions/EducationalVideo'; import videoScript from '../content/video-script.json'; import audioManifest from '../public/audio/manifest.json'; export const RemotionRoot = () =\u003e ( \u003cComposition id=\"EducationalVideo\" component={EducationalVideo} fps={30} width={1920} height={1080} durationInFrames={computeTotalFrames(audioManifest)} defaultProps={{ audioManifest }} /\u003e ); The durationInFrames is computed from the audio manifest — each slide gets exactly as many frames as its narration takes, plus a small tail padding.\nStep 2: Design the slide schema Define a typed JSON schema for your video scripts. Every slide has a type, an id, a section, and narration. Different types add their own fields:\nexport enum SlideType { TITLE = \"title\", SECTION_HEADER = \"section-header\", CONCEPT = \"concept\", CODE = \"code\", DIAGRAM = \"diagram\", FLOW = \"flow\", TABLE = \"table\", OUTRO = \"outro\", IMAGE = \"image\", // for PPTX-sourced slides } interface SlideBase { id: string; // \"slide-01\", \"slide-02\", ... type: SlideType; section: string; // groups slides for transition effects narration: string; // text sent to ElevenLabs } export interface ConceptSlideData extends SlideBase { type: SlideType.CONCEPT; heading: string; bullets: string[]; highlight?: string; } // ... one interface per slide type A minimal video script looks like:\n{ \"title\": \"How REST APIs Work\", \"slides\": [ { \"id\": \"slide-01\", \"type\": \"title\", \"section\": \"Introduction\", \"narration\": \"Welcome. Today we're building a REST API from scratch.\", \"title\": \"How REST APIs Work\", \"subtitle\": \"A practical guide\" }, { \"id\": \"slide-02\", \"type\": \"concept\", \"section\": \"Concepts\", \"narration\": \"REST APIs communicate over HTTP using a few standard verbs.\", \"heading\": \"The Four HTTP Methods\", \"bullets\": [\"GET — read\", \"POST — create\", \"PUT — update\", \"DELETE — remove\"] } ] } Step 3: Build the slide components Each slide type is a React component that renders into a 1920×1080 canvas. The key pattern is a SlideLayout wrapper that handles the background, padding, and progress bar:\nexport const ConceptSlide: React.FC\u003cConceptSlideProps\u003e = ({ data, slideIndex, totalSlides, }) =\u003e { return ( \u003cSlideLayout slideIndex={slideIndex} totalSlides={totalSlides}\u003e \u003cAnimatedText delay={0}\u003e \u003ch2 style={{ fontSize: FONT_SIZES.HEADING, color: COLORS.TEXT_PRIMARY }}\u003e {data.heading} \u003c/h2\u003e \u003c/AnimatedText\u003e {data.bullets.map((bullet, i) =\u003e ( \u003cAnimatedText key={i} delay={i * 8}\u003e \u003cp\u003e• {bullet}\u003c/p\u003e \u003c/AnimatedText\u003e ))} \u003c/SlideLayout\u003e ); }; AnimatedText uses Remotion’s spring() to fade and slide content in with staggered delays. COLORS and FONT_SIZES come from a central constants.ts — never hardcode values in components.\nThe top-level EducationalVideo composition sequences all slides using Remotion’s :\n{slides.map((slide, index) =\u003e { const duration = slideDurations[index]; // from audio manifest const offset = frameOffset; frameOffset += duration; return ( \u003cSequence key={slide.id} from={offset} durationInFrames={duration}\u003e \u003cSlideRenderer slide={slide} slideIndex={index} totalSlides={totalSlides} /\u003e \u003cAudioTrack src={`audio/${slide.id}.mp3`} /\u003e \u003c/Sequence\u003e ); })} Step 4: Generate voice narration with ElevenLabs ElevenLabs has a /text-to-speech/{voiceId}/with-timestamps endpoint that returns both the MP3 audio and character-level timing data. This is the key to tight audio-video sync.\nconst response = await fetch( `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/with-timestamps`, { method: 'POST', headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ text: slide.narration, model_id: 'eleven_v3', output_format: 'mp3_44100_128', voice_settings: { stability: 0.6, similarity_boost: 0.8, style: 0.2 }, }), } ); const { audio_base64, alignment } = await response.json(); fs.writeFileSync(`public/audio/${slide.id}.mp3`, Buffer.from(audio_base64, 'base64')); // alignment.character_end_times_seconds[-1] gives total duration const durationMs = Math.round(alignment.character_end_times_seconds.at(-1) * 1000); After processing all slides, write a manifest:\n{ \"totalDurationMs\": 423500, \"slides\": [ { \"slideId\": \"slide-01\", \"durationMs\": 8200 }, { \"slideId\": \"slide-02\", \"durationMs\": 12400 } ] } Remotion reads this manifest to compute durationInFrames per slide: Math.ceil(durationMs / 1000 * fps) + tailPadding.\nAdd a 1.5 second delay between API calls to stay within ElevenLabs rate limits.\nStep 5: Add a config system Hard-coding paths and voice IDs breaks reusability. Add a video.config.json:\n{ \"narration\": { \"language\": \"en\", \"voiceId\": \"\", \"modelId\": \"eleven_v3\", \"voiceSettings\": { \"stability\": 0.6, \"similarityBoost\": 0.8, \"style\": 0.2 } }, \"theme\": \"light\", \"scriptPath\": \"content/video-script.json\", \"outputPath\": \"output\", \"audioDir\": \"public/audio\" } A config-loader.ts merges this with defaults and falls back to .env for the voice ID. Every script reads config through this loader, never directly from files.\nStep 6: Add PowerPoint support For PPTX files, skip the Remotion components entirely — use the original slide images directly. Export each slide as a PNG, then reference them as image-type slides:\n{ \"id\": \"slide-03\", \"type\": \"image\", \"section\": \"Architecture\", \"narration\": \"This diagram shows the three-layer architecture...\", \"imagePath\": \"pptx-slides/Slide3.PNG\" } Critical: Remotion can only serve assets from public/. Use staticFile() to resolve paths:\nimport { staticFile } from 'remotion'; \u003cimg src={staticFile(data.imagePath)} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /\u003e Export PNGs using LibreOffice (cross-platform, free):\nsoffice --headless --convert-to png --outdir public/pptx-slides/ file.pptx Or with PowerShell COM (requires Microsoft Office) — this also extracts speaker notes, which you can use as narration instead of generating new text:\n$deck = $ppt.Presentations.Open($pptxPath) $deck.Export($outDir, \"PNG\") # Extract speaker notes foreach ($slide in $deck.Slides) { $noteShape = $slide.NotesPage.Shapes | Where-Object { $_.PlaceholderFormat.Type -eq 2 } | Select-Object -First 1 $noteText = $noteShape?.TextFrame.TextRange.Text.Trim() } Step 7: Package it as a Claude Code skill The whole pipeline becomes dramatically more useful when Claude orchestrates it. A Claude Code skill is just a SKILL.md file that tells Claude when to activate and exactly what to do.\nInstall location:\n~/.claude/plugins/educational-video/ .claude-plugin/plugin.json # metadata and trigger phrases skills/educational-video/ SKILL.md # the full workflow instructions references/ video-script-schema.json # Claude uses this when generating scripts slide-examples.json # one example per slide type The SKILL.md defines a 7-phase conversational flow:\nResolve pipeline location — check env var, current dir, saved config, common paths, or ask Setup check — Node.js, npm packages, API key, voice ID (guide through any gaps) Get content — URL, file, PPTX, pasted text, or topic description Ask two questions — narration language + light/dark theme Generate script — Claude writes video-script.json using the schema; user never touches JSON Preview + review loop — show slide plan and full script; accept plain-language change requests Generate audio + render — run in background, poll logs for progress, show plain-English errors The key design principle: Claude does the JSON. The user never sees video-script.json unless they want to. They just say what they want in natural language.\nOne important detail — never hardcode the pipeline path in SKILL.md. Use a $PIPELINE_DIR variable resolved at runtime, and save it to ~/.claude/plugins/educational-video/config.json after first use so it is never asked again.\nThe result Once set up, creating a video from any Claude Code session is just:\n“Make me a video about how TCP/IP works”\nClaude finds the pipeline, generates a 20-slide script, asks for language preference, shows a preview, then runs audio generation and rendering — reporting frame progress the whole time.\nThe full pipeline with PPTX support, speaker notes extraction and write-back, config system, and Claude skill is at:\ngithub.com/nmnhut-it/educational-video-pipeline\nClone it, install the skill, add your ElevenLabs API key, and you’re one sentence away from a narrated video.\n",
+  "wordCount" : "1306",
+  "inLanguage": "en",
+  "datePublished": "2026-03-07T00:00:00Z",
+  "dateModified": "2026-03-07T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Minh-Nhut Nguyen"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/posts/educational-video-pipeline/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "nmnhut",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="../../" accesskey="h" title="nmnhut (Alt + H)">nmnhut</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="../../posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../farm/" title="LLM Farm">
+                    <span>LLM Farm</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../rag/" title="RAG Demo">
+                    <span>RAG Demo</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../transcribe/" title="Transcribe">
+                    <span>Transcribe</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../token-router/" title="Router">
+                    <span>Router</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="../../">Home</a>&nbsp;»&nbsp;<a href="../../posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs
+    </h1>
+    <div class="post-description">
+      How I built a pipeline that turns any article, blog post, or PowerPoint into a narrated educational video — and packaged it as a Claude Code skill anyone can use.
+    </div>
+    <div class="post-meta"><span title='2026-03-07 00:00:00 +0000 UTC'>March 7, 2026</span>&nbsp;·&nbsp;<span>7 min</span>&nbsp;·&nbsp;<span>Minh-Nhut Nguyen</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#the-architecture" aria-label="The architecture">The architecture</a></li>
+                <li>
+                    <a href="#step-1-set-up-remotion" aria-label="Step 1: Set up Remotion">Step 1: Set up Remotion</a></li>
+                <li>
+                    <a href="#step-2-design-the-slide-schema" aria-label="Step 2: Design the slide schema">Step 2: Design the slide schema</a></li>
+                <li>
+                    <a href="#step-3-build-the-slide-components" aria-label="Step 3: Build the slide components">Step 3: Build the slide components</a></li>
+                <li>
+                    <a href="#step-4-generate-voice-narration-with-elevenlabs" aria-label="Step 4: Generate voice narration with ElevenLabs">Step 4: Generate voice narration with ElevenLabs</a></li>
+                <li>
+                    <a href="#step-5-add-a-config-system" aria-label="Step 5: Add a config system">Step 5: Add a config system</a></li>
+                <li>
+                    <a href="#step-6-add-powerpoint-support" aria-label="Step 6: Add PowerPoint support">Step 6: Add PowerPoint support</a></li>
+                <li>
+                    <a href="#step-7-package-it-as-a-claude-code-skill" aria-label="Step 7: Package it as a Claude Code skill">Step 7: Package it as a Claude Code skill</a></li>
+                <li>
+                    <a href="#the-result" aria-label="The result">The result</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>I wanted a way to turn my blog posts into narrated videos without spending hours in video editors. What I ended up building was a full pipeline: give it an article, a URL, or a PowerPoint file — get back a 1080p MP4 with animated slides, syntax-highlighted code blocks, and an AI voiceover in any language.</p>
+<p>The whole thing is open source: <a href="https://github.com/nmnhut-it/educational-video-pipeline">github.com/nmnhut-it/educational-video-pipeline</a>.</p>
+<p>This post walks through how it works and how you can build your own.</p>
+<hr>
+<h2 id="the-architecture">The architecture<a hidden class="anchor" aria-hidden="true" href="#the-architecture">#</a></h2>
+<p>Three tools do the heavy lifting:</p>
+<ul>
+<li><strong><a href="https://remotion.dev">Remotion</a></strong> — renders React components to video frames. You write slides as React components; Remotion turns them into MP4.</li>
+<li><strong><a href="https://elevenlabs.io">ElevenLabs</a></strong> — generates voice narration from text with character-level timestamps, so the video knows exactly how long each slide&rsquo;s audio lasts.</li>
+<li><strong><a href="https://claude.ai/code">Claude Code</a></strong> — orchestrates the whole thing conversationally. You say &ldquo;make me a video about X&rdquo;, Claude writes the slide script, runs the audio generation, and fires the renderer.</li>
+</ul>
+<p>The data flow is:</p>
+<pre tabindex="0"><code>source content
+  → Claude generates video-script.json
+    → ElevenLabs generates per-slide MP3s + timing manifest
+      → Remotion renders slides sequenced to audio timing
+        → output/&lt;slug&gt;.mp4
+</code></pre><hr>
+<h2 id="step-1-set-up-remotion">Step 1: Set up Remotion<a hidden class="anchor" aria-hidden="true" href="#step-1-set-up-remotion">#</a></h2>
+<p>Bootstrap a new project:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>npm init video
+</span></span><span style="display:flex;"><span>cd my-video-pipeline
+</span></span><span style="display:flex;"><span>npm install
+</span></span></code></pre></div><p>The key file is <code>src/Root.tsx</code> — this is where you register your compositions with Remotion:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Composition</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;remotion&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">EducationalVideo</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;./compositions/EducationalVideo&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">videoScript</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;../content/video-script.json&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">audioManifest</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;../public/audio/manifest.json&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">RemotionRoot</span> <span style="color:#f92672">=</span> () <span style="color:#f92672">=&gt;</span> (
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">Composition</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;EducationalVideo&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">component</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">EducationalVideo</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fps</span><span style="color:#f92672">=</span>{<span style="color:#ae81ff">30</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">width</span><span style="color:#f92672">=</span>{<span style="color:#ae81ff">1920</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">height</span><span style="color:#f92672">=</span>{<span style="color:#ae81ff">1080</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">durationInFrames</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">computeTotalFrames</span>(<span style="color:#a6e22e">audioManifest</span>)}
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">defaultProps</span><span style="color:#f92672">=</span>{{ <span style="color:#a6e22e">audioManifest</span> }}
+</span></span><span style="display:flex;"><span>  /&gt;
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>The <code>durationInFrames</code> is computed from the audio manifest — each slide gets exactly as many frames as its narration takes, plus a small tail padding.</p>
+<hr>
+<h2 id="step-2-design-the-slide-schema">Step 2: Design the slide schema<a hidden class="anchor" aria-hidden="true" href="#step-2-design-the-slide-schema">#</a></h2>
+<p>Define a typed JSON schema for your video scripts. Every slide has a <code>type</code>, an <code>id</code>, a <code>section</code>, and <code>narration</code>. Different types add their own fields:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">SlideType</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">TITLE</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;title&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">SECTION_HEADER</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;section-header&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CONCEPT</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;concept&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">CODE</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;code&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">DIAGRAM</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;diagram&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">FLOW</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;flow&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">TABLE</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;table&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">OUTRO</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;outro&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">IMAGE</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;image&#34;</span>, <span style="color:#75715e">// for PPTX-sourced slides
+</span></span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">SlideBase</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">id</span>: <span style="color:#66d9ef">string</span>;        <span style="color:#75715e">// &#34;slide-01&#34;, &#34;slide-02&#34;, ...
+</span></span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">SlideType</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">section</span>: <span style="color:#66d9ef">string</span>;   <span style="color:#75715e">// groups slides for transition effects
+</span></span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">narration</span>: <span style="color:#66d9ef">string</span>; <span style="color:#75715e">// text sent to ElevenLabs
+</span></span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ConceptSlideData</span> <span style="color:#66d9ef">extends</span> <span style="color:#a6e22e">SlideBase</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">SlideType</span>.<span style="color:#a6e22e">CONCEPT</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">heading</span>: <span style="color:#66d9ef">string</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">bullets</span>: <span style="color:#66d9ef">string</span>[];
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">highlight?</span>: <span style="color:#66d9ef">string</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ... one interface per slide type
+</span></span></span></code></pre></div><p>A minimal video script looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;How REST APIs Work&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;slides&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;slide-01&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;title&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;section&#34;</span>: <span style="color:#e6db74">&#34;Introduction&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;narration&#34;</span>: <span style="color:#e6db74">&#34;Welcome. Today we&#39;re building a REST API from scratch.&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;How REST APIs Work&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;subtitle&#34;</span>: <span style="color:#e6db74">&#34;A practical guide&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;slide-02&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;concept&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;section&#34;</span>: <span style="color:#e6db74">&#34;Concepts&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;narration&#34;</span>: <span style="color:#e6db74">&#34;REST APIs communicate over HTTP using a few standard verbs.&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;heading&#34;</span>: <span style="color:#e6db74">&#34;The Four HTTP Methods&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;bullets&#34;</span>: [<span style="color:#e6db74">&#34;GET — read&#34;</span>, <span style="color:#e6db74">&#34;POST — create&#34;</span>, <span style="color:#e6db74">&#34;PUT — update&#34;</span>, <span style="color:#e6db74">&#34;DELETE — remove&#34;</span>]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<h2 id="step-3-build-the-slide-components">Step 3: Build the slide components<a hidden class="anchor" aria-hidden="true" href="#step-3-build-the-slide-components">#</a></h2>
+<p>Each slide type is a React component that renders into a 1920×1080 canvas. The key pattern is a <code>SlideLayout</code> wrapper that handles the background, padding, and progress bar:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">ConceptSlide</span>: <span style="color:#66d9ef">React.FC</span>&lt;<span style="color:#f92672">ConceptSlideProps</span>&gt; <span style="color:#f92672">=</span> ({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">slideIndex</span>, <span style="color:#a6e22e">totalSlides</span>,
+</span></span><span style="display:flex;"><span>}) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">SlideLayout</span> <span style="color:#a6e22e">slideIndex</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">slideIndex</span>} <span style="color:#a6e22e">totalSlides</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">totalSlides</span>}&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">AnimatedText</span> <span style="color:#a6e22e">delay</span><span style="color:#f92672">=</span>{<span style="color:#ae81ff">0</span>}&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">h2</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span>{{ <span style="color:#a6e22e">fontSize</span>: <span style="color:#66d9ef">FONT_SIZES.HEADING</span>, <span style="color:#a6e22e">color</span>: <span style="color:#66d9ef">COLORS.TEXT_PRIMARY</span> }}&gt;
+</span></span><span style="display:flex;"><span>          {<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">heading</span>}
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#f92672">AnimatedText</span>&gt;
+</span></span><span style="display:flex;"><span>      {<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">bullets</span>.<span style="color:#a6e22e">map</span>((<span style="color:#a6e22e">bullet</span>, <span style="color:#a6e22e">i</span>) <span style="color:#f92672">=&gt;</span> (
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">AnimatedText</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">i</span>} <span style="color:#a6e22e">delay</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">i</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>}&gt;
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#f92672">p</span>&gt;<span style="color:#960050;background-color:#1e0010">•</span> {<span style="color:#a6e22e">bullet</span>}&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">AnimatedText</span>&gt;
+</span></span><span style="display:flex;"><span>      ))}
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">SlideLayout</span>&gt;
+</span></span><span style="display:flex;"><span>  );
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p><code>AnimatedText</code> uses Remotion&rsquo;s <code>spring()</code> to fade and slide content in with staggered delays. <code>COLORS</code> and <code>FONT_SIZES</code> come from a central <code>constants.ts</code> — never hardcode values in components.</p>
+<p>The top-level <code>EducationalVideo</code> composition sequences all slides using Remotion&rsquo;s <code>&lt;Sequence&gt;</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span>{<span style="color:#a6e22e">slides</span>.<span style="color:#a6e22e">map</span>((<span style="color:#a6e22e">slide</span>, <span style="color:#a6e22e">index</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">duration</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">slideDurations</span>[<span style="color:#a6e22e">index</span>]; <span style="color:#75715e">// from audio manifest
+</span></span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">offset</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">frameOffset</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">frameOffset</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">duration</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">Sequence</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">slide</span>.<span style="color:#a6e22e">id</span>} <span style="color:#a6e22e">from</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">offset</span>} <span style="color:#a6e22e">durationInFrames</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">duration</span>}&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">SlideRenderer</span> <span style="color:#a6e22e">slide</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">slide</span>} <span style="color:#a6e22e">slideIndex</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">index</span>} <span style="color:#a6e22e">totalSlides</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">totalSlides</span>} /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">AudioTrack</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span>{<span style="color:#e6db74">`audio/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">slide</span>.<span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">.mp3`</span>} /&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">Sequence</span>&gt;
+</span></span><span style="display:flex;"><span>  );
+</span></span><span style="display:flex;"><span>})}
+</span></span></code></pre></div><hr>
+<h2 id="step-4-generate-voice-narration-with-elevenlabs">Step 4: Generate voice narration with ElevenLabs<a hidden class="anchor" aria-hidden="true" href="#step-4-generate-voice-narration-with-elevenlabs">#</a></h2>
+<p>ElevenLabs has a <code>/text-to-speech/{voiceId}/with-timestamps</code> endpoint that returns both the MP3 audio and character-level timing data. This is the key to tight audio-video sync.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">fetch</span>(
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">`https://api.elevenlabs.io/v1/text-to-speech/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">voiceId</span><span style="color:#e6db74">}</span><span style="color:#e6db74">/with-timestamps`</span>,
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">method</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;POST&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#39;xi-api-key&#39;</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">apiKey</span>, <span style="color:#e6db74">&#39;Content-Type&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;application/json&#39;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">body</span>: <span style="color:#66d9ef">JSON.stringify</span>({
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">text</span>: <span style="color:#66d9ef">slide.narration</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">model_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;eleven_v3&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">output_format</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mp3_44100_128&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">voice_settings</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">stability</span>: <span style="color:#66d9ef">0.6</span>, <span style="color:#a6e22e">similarity_boost</span>: <span style="color:#66d9ef">0.8</span>, <span style="color:#a6e22e">style</span>: <span style="color:#66d9ef">0.2</span> },
+</span></span><span style="display:flex;"><span>    }),
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">audio_base64</span>, <span style="color:#a6e22e">alignment</span> } <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">json</span>();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fs</span>.<span style="color:#a6e22e">writeFileSync</span>(<span style="color:#e6db74">`public/audio/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">slide</span>.<span style="color:#a6e22e">id</span><span style="color:#e6db74">}</span><span style="color:#e6db74">.mp3`</span>, <span style="color:#a6e22e">Buffer</span>.<span style="color:#66d9ef">from</span>(<span style="color:#a6e22e">audio_base64</span>, <span style="color:#e6db74">&#39;base64&#39;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// alignment.character_end_times_seconds[-1] gives total duration
+</span></span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">durationMs</span> <span style="color:#f92672">=</span> Math.<span style="color:#a6e22e">round</span>(<span style="color:#a6e22e">alignment</span>.<span style="color:#a6e22e">character_end_times_seconds</span>.<span style="color:#a6e22e">at</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>);
+</span></span></code></pre></div><p>After processing all slides, write a manifest:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;totalDurationMs&#34;</span>: <span style="color:#ae81ff">423500</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;slides&#34;</span>: [
+</span></span><span style="display:flex;"><span>    { <span style="color:#f92672">&#34;slideId&#34;</span>: <span style="color:#e6db74">&#34;slide-01&#34;</span>, <span style="color:#f92672">&#34;durationMs&#34;</span>: <span style="color:#ae81ff">8200</span> },
+</span></span><span style="display:flex;"><span>    { <span style="color:#f92672">&#34;slideId&#34;</span>: <span style="color:#e6db74">&#34;slide-02&#34;</span>, <span style="color:#f92672">&#34;durationMs&#34;</span>: <span style="color:#ae81ff">12400</span> }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Remotion reads this manifest to compute <code>durationInFrames</code> per slide: <code>Math.ceil(durationMs / 1000 * fps) + tailPadding</code>.</p>
+<p>Add a 1.5 second delay between API calls to stay within ElevenLabs rate limits.</p>
+<hr>
+<h2 id="step-5-add-a-config-system">Step 5: Add a config system<a hidden class="anchor" aria-hidden="true" href="#step-5-add-a-config-system">#</a></h2>
+<p>Hard-coding paths and voice IDs breaks reusability. Add a <code>video.config.json</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;narration&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;language&#34;</span>: <span style="color:#e6db74">&#34;en&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;voiceId&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;modelId&#34;</span>: <span style="color:#e6db74">&#34;eleven_v3&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;voiceSettings&#34;</span>: { <span style="color:#f92672">&#34;stability&#34;</span>: <span style="color:#ae81ff">0.6</span>, <span style="color:#f92672">&#34;similarityBoost&#34;</span>: <span style="color:#ae81ff">0.8</span>, <span style="color:#f92672">&#34;style&#34;</span>: <span style="color:#ae81ff">0.2</span> }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;theme&#34;</span>: <span style="color:#e6db74">&#34;light&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;scriptPath&#34;</span>: <span style="color:#e6db74">&#34;content/video-script.json&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;outputPath&#34;</span>: <span style="color:#e6db74">&#34;output&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;audioDir&#34;</span>: <span style="color:#e6db74">&#34;public/audio&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>A <code>config-loader.ts</code> merges this with defaults and falls back to <code>.env</code> for the voice ID. Every script reads config through this loader, never directly from files.</p>
+<hr>
+<h2 id="step-6-add-powerpoint-support">Step 6: Add PowerPoint support<a hidden class="anchor" aria-hidden="true" href="#step-6-add-powerpoint-support">#</a></h2>
+<p>For PPTX files, skip the Remotion components entirely — use the original slide images directly. Export each slide as a PNG, then reference them as <code>image</code>-type slides:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;slide-03&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;image&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;section&#34;</span>: <span style="color:#e6db74">&#34;Architecture&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;narration&#34;</span>: <span style="color:#e6db74">&#34;This diagram shows the three-layer architecture...&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;imagePath&#34;</span>: <span style="color:#e6db74">&#34;pptx-slides/Slide3.PNG&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Critical:</strong> Remotion can only serve assets from <code>public/</code>. Use <code>staticFile()</code> to resolve paths:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">staticFile</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#39;remotion&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">img</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">staticFile</span>(<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">imagePath</span>)} <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span>{{ <span style="color:#a6e22e">width</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;100%&#39;</span>, <span style="color:#a6e22e">height</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;100%&#39;</span>, <span style="color:#a6e22e">objectFit</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;contain&#39;</span> }} /&gt;
+</span></span></code></pre></div><p>Export PNGs using LibreOffice (cross-platform, free):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>soffice --headless --convert-to png --outdir public/pptx-slides/ file.pptx
+</span></span></code></pre></div><p>Or with PowerShell COM (requires Microsoft Office) — this also extracts speaker notes, which you can use as narration instead of generating new text:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>$deck = $ppt.Presentations.Open($pptxPath)
+</span></span><span style="display:flex;"><span>$deck.Export($outDir, <span style="color:#e6db74">&#34;PNG&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Extract speaker notes</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> ($slide <span style="color:#66d9ef">in</span> $deck.Slides) {
+</span></span><span style="display:flex;"><span>  $noteShape = $slide.NotesPage.Shapes |
+</span></span><span style="display:flex;"><span>    Where-Object { $_.PlaceholderFormat.Type <span style="color:#f92672">-eq</span> <span style="color:#ae81ff">2</span> } |
+</span></span><span style="display:flex;"><span>    Select-Object -First <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  $noteText = $noteShape?.TextFrame.TextRange.Text.Trim()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<h2 id="step-7-package-it-as-a-claude-code-skill">Step 7: Package it as a Claude Code skill<a hidden class="anchor" aria-hidden="true" href="#step-7-package-it-as-a-claude-code-skill">#</a></h2>
+<p>The whole pipeline becomes dramatically more useful when Claude orchestrates it. A Claude Code skill is just a <code>SKILL.md</code> file that tells Claude when to activate and exactly what to do.</p>
+<p>Install location:</p>
+<pre tabindex="0"><code>~/.claude/plugins/educational-video/
+  .claude-plugin/plugin.json   # metadata and trigger phrases
+  skills/educational-video/
+    SKILL.md                   # the full workflow instructions
+    references/
+      video-script-schema.json # Claude uses this when generating scripts
+      slide-examples.json      # one example per slide type
+</code></pre><p>The <code>SKILL.md</code> defines a 7-phase conversational flow:</p>
+<ol>
+<li><strong>Resolve pipeline location</strong> — check env var, current dir, saved config, common paths, or ask</li>
+<li><strong>Setup check</strong> — Node.js, npm packages, API key, voice ID (guide through any gaps)</li>
+<li><strong>Get content</strong> — URL, file, PPTX, pasted text, or topic description</li>
+<li><strong>Ask two questions</strong> — narration language + light/dark theme</li>
+<li><strong>Generate script</strong> — Claude writes <code>video-script.json</code> using the schema; user never touches JSON</li>
+<li><strong>Preview + review loop</strong> — show slide plan and full script; accept plain-language change requests</li>
+<li><strong>Generate audio + render</strong> — run in background, poll logs for progress, show plain-English errors</li>
+</ol>
+<p>The key design principle: <strong>Claude does the JSON</strong>. The user never sees <code>video-script.json</code> unless they want to. They just say what they want in natural language.</p>
+<p>One important detail — never hardcode the pipeline path in <code>SKILL.md</code>. Use a <code>$PIPELINE_DIR</code> variable resolved at runtime, and save it to <code>~/.claude/plugins/educational-video/config.json</code> after first use so it is never asked again.</p>
+<hr>
+<h2 id="the-result">The result<a hidden class="anchor" aria-hidden="true" href="#the-result">#</a></h2>
+<p>Once set up, creating a video from any Claude Code session is just:</p>
+<blockquote>
+<p>&ldquo;Make me a video about how TCP/IP works&rdquo;</p>
+</blockquote>
+<p>Claude finds the pipeline, generates a 20-slide script, asks for language preference, shows a preview, then runs audio generation and rendering — reporting frame progress the whole time.</p>
+<p>The full pipeline with PPTX support, speaker notes extraction and write-back, config system, and Claude skill is at:</p>
+<p><strong><a href="https://github.com/nmnhut-it/educational-video-pipeline">github.com/nmnhut-it/educational-video-pipeline</a></strong></p>
+<p>Clone it, install the skill, add your ElevenLabs API key, and you&rsquo;re one sentence away from a narrated video.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="../../tags/ai/">Ai</a></li>
+      <li><a href="../../tags/remotion/">Remotion</a></li>
+      <li><a href="../../tags/elevenlabs/">Elevenlabs</a></li>
+      <li><a href="../../tags/claude/">Claude</a></li>
+      <li><a href="../../tags/typescript/">Typescript</a></li>
+      <li><a href="../../tags/video/">Video</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="../../posts/your-llm-bill-is-80-percent-waste/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Your LLM Bill Is 80% Waste. Here Are 7 Fixes.</span>
+  </a>
+  <a class="next" href="../../posts/llm-tools-evolution/">
+    <span class="title">Next »</span>
+    <br>
+    <span>From Raw Text to Agent Teams: How LLM Tooling Evolved</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs on x"
+            href="https://x.com/intent/tweet/?text=Building%20an%20AI%20Video%20Pipeline%3a%20From%20Text%20to%20Narrated%20MP4%20with%20Remotion%20and%20ElevenLabs&amp;url=%2fposts%2feducational-video-pipeline%2f&amp;hashtags=ai%2cremotion%2celevenlabs%2cclaude%2ctypescript%2cvideo">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fposts%2feducational-video-pipeline%2f&amp;title=Building%20an%20AI%20Video%20Pipeline%3a%20From%20Text%20to%20Narrated%20MP4%20with%20Remotion%20and%20ElevenLabs&amp;summary=Building%20an%20AI%20Video%20Pipeline%3a%20From%20Text%20to%20Narrated%20MP4%20with%20Remotion%20and%20ElevenLabs&amp;source=%2fposts%2feducational-video-pipeline%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs on reddit"
+            href="https://reddit.com/submit?url=%2fposts%2feducational-video-pipeline%2f&title=Building%20an%20AI%20Video%20Pipeline%3a%20From%20Text%20to%20Narrated%20MP4%20with%20Remotion%20and%20ElevenLabs">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=%2fposts%2feducational-video-pipeline%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs on whatsapp"
+            href="https://api.whatsapp.com/send?text=Building%20an%20AI%20Video%20Pipeline%3a%20From%20Text%20to%20Narrated%20MP4%20with%20Remotion%20and%20ElevenLabs%20-%20%2fposts%2feducational-video-pipeline%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs on telegram"
+            href="https://telegram.me/share/url?text=Building%20an%20AI%20Video%20Pipeline%3a%20From%20Text%20to%20Narrated%20MP4%20with%20Remotion%20and%20ElevenLabs&amp;url=%2fposts%2feducational-video-pipeline%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=Building%20an%20AI%20Video%20Pipeline%3a%20From%20Text%20to%20Narrated%20MP4%20with%20Remotion%20and%20ElevenLabs&u=%2fposts%2feducational-video-pipeline%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="../../">nmnhut</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

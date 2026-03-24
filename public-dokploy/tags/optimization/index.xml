@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Optimization on nmnhut</title>
+    <link>/tags/optimization/</link>
+    <description>Recent content in Optimization on nmnhut</description>
+    <generator>Hugo -- 0.157.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 23 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/tags/optimization/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Build a Token Router with Embeddings and Prompt Templates</title>
+      <link>/posts/build-a-token-router/</link>
+      <pubDate>Mon, 23 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>/posts/build-a-token-router/</guid>
+      <description>No training pipeline. No GPU. Just embeddings, cosine similarity, and structured prompts that cut your LLM bill by 80%.</description>
+    </item>
+    <item>
+      <title>Your LLM Bill Is 80% Waste. Here Are 7 Fixes.</title>
+      <link>/posts/your-llm-bill-is-80-percent-waste/</link>
+      <pubDate>Mon, 23 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>/posts/your-llm-bill-is-80-percent-waste/</guid>
+      <description>Route by difficulty, manage context, cache instructions, cap output, materialize solutions, fine-tune with LoRA, and batch async work — 80-95% savings.</description>
+    </item>
+  </channel>
+</rss>

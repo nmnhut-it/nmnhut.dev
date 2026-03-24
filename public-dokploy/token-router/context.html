@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Context Window Simulator - nmnhut.dev</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0e1a;
+  --surface: #141829;
+  --surface2: #1c2039;
+  --surface3: #252a42;
+  --border: #2a2f4a;
+  --accent: #7c6aef;
+  --accent-dim: #7c6aef33;
+  --accent-glow: #7c6aef66;
+  --green: #34d399;
+  --green-dim: #34d39922;
+  --amber: #fbbf24;
+  --amber-dim: #fbbf2422;
+  --red: #f87171;
+  --red-dim: #f8717122;
+  --cyan: #22d3ee;
+  --cyan-dim: #22d3ee22;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --radius: 10px;
+  --gutter: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+
+.shell { max-width: 960px; margin: 0 auto; padding: 0 var(--gutter) 80px; }
+
+/* Hero */
+.hero {
+  padding: 48px 0 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.hero-eyebrow a { color: var(--accent); text-decoration: none; }
+.hero-eyebrow a:hover { text-decoration: underline; }
+.hero h1 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.hero h1 span { color: var(--text3); font-weight: 300; }
+.hero-desc { color: var(--text2); font-size: .88rem; max-width: 560px; }
+
+/* Buttons */
+.btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: opacity .15s, transform .1s;
+  white-space: nowrap;
+}
+.btn:hover { opacity: .88; }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-sm { padding: 6px 14px; font-size: .72rem; border-radius: 6px; }
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.btn-ghost:hover { border-color: var(--text3); color: var(--text); }
+.btn-green { background: var(--green); color: var(--bg); }
+.btn-amber { background: var(--amber); color: var(--bg); }
+.btn-red { background: var(--red-dim); color: var(--red); border: 1px solid transparent; }
+.btn-red:hover { border-color: var(--red); }
+
+/* Controls bar */
+.controls {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 20px; align-items: center;
+}
+.controls .label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--text3);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+/* Fill meter */
+.meter-wrap { margin-bottom: 20px; }
+.meter-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.meter-label {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--text3);
+  letter-spacing: .04em;
+}
+.meter-pct {
+  font-family: var(--mono);
+  font-size: .8rem;
+  font-weight: 600;
+  transition: color .3s;
+}
+.meter-bar {
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.meter-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 4px;
+  transition: width .5s ease, background .3s;
+}
+.meter-fill.green { background: var(--green); }
+.meter-fill.amber { background: var(--amber); }
+.meter-fill.red { background: var(--red); }
+.meter-fill.flash { animation: flash-bar .4s ease infinite alternate; }
+@keyframes flash-bar {
+  from { opacity: 1; }
+  to { opacity: .5; }
+}
+
+/* Warning banner */
+.warning-banner {
+  display: none;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: .75rem;
+  margin-bottom: 16px;
+  align-items: center;
+  gap: 10px;
+  animation: slide-in .3s ease;
+}
+.warning-banner.visible { display: flex; }
+.warning-banner.amber-warn { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+.warning-banner.red-warn { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Memory zones */
+.zones { display: flex; flex-direction: column; gap: 2px; margin-bottom: 20px; }
+.zone {
+  background: var(--surface);
+  padding: 16px;
+  border-left: 3px solid var(--border);
+  transition: all .3s;
+  min-height: 80px;
+}
+.zone:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+.zone:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+.zone-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.zone-icon { font-size: 1rem; }
+.zone-title {
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.zone-count {
+  font-family: var(--mono);
+  font-size: .6rem;
+  color: var(--text3);
+  margin-left: auto;
+}
+
+.zone-working { border-left-color: var(--cyan); }
+.zone-working .zone-title { color: var(--cyan); }
+.zone-session { border-left-color: var(--amber); }
+.zone-session .zone-title { color: var(--amber); }
+.zone-longterm { border-left-color: var(--accent); }
+.zone-longterm .zone-title { color: var(--accent); }
+
+.zone-items {
+  display: flex; flex-direction: column; gap: 4px;
+  max-height: 260px; overflow-y: auto;
+}
+.zone-items::-webkit-scrollbar { width: 4px; }
+.zone-items::-webkit-scrollbar-track { background: transparent; }
+.zone-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Message cards */
+.msg {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: .78rem;
+  line-height: 1.4;
+  animation: msg-in .35s ease;
+  transition: opacity .5s, transform .5s;
+}
+.msg-user {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.msg-ai {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-glow);
+  color: var(--text);
+}
+.msg-role {
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.msg-user .msg-role { color: var(--cyan); }
+.msg-ai .msg-role { color: var(--accent); }
+.msg.fading { opacity: .2; transform: scale(.96); }
+.msg.contradicting {
+  border-color: var(--red);
+  background: var(--red-dim);
+  animation: shake .4s ease;
+}
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-3px); }
+  40%, 80% { transform: translateX(3px); }
+}
+
+/* Summary cards */
+.summary-card {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: .75rem;
+  color: var(--text2);
+  animation: msg-in .35s ease;
+}
+.summary-card .summary-label {
+  font-family: var(--mono);
+  font-size: .58rem;
+  color: var(--amber);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+/* Long-term fact cards */
+.fact-card {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-glow);
+  font-size: .75rem;
+  color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+  animation: msg-in .35s ease;
+}
+.fact-card.promoting {
+  animation: promote-glow 1s ease;
+}
+.fact-card .brain-icon { font-size: .9rem; flex-shrink: 0; }
+.fact-card .fact-text { flex: 1; }
+.fact-card .fact-count {
+  font-family: var(--mono);
+  font-size: .58rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+@keyframes promote-glow {
+  0% { box-shadow: 0 0 0 0 var(--accent-glow); transform: scale(1); }
+  50% { box-shadow: 0 0 20px 4px var(--accent-glow); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+}
+
+/* Cost tracker */
+.cost-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.cost-card {
+  flex: 1; min-width: 200px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.cost-label {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+.cost-val {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.cost-val.no-mgmt { color: var(--red); }
+.cost-val.with-mgmt { color: var(--green); }
+.cost-detail {
+  font-family: var(--mono);
+  font-size: .6rem;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* Consolidation hint */
+.consolidation-hint {
+  display: none;
+  background: var(--surface2);
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: .78rem;
+  color: var(--text2);
+  margin-bottom: 20px;
+  animation: slide-in .3s ease;
+}
+.consolidation-hint.visible { display: block; }
+.consolidation-hint strong { color: var(--accent); }
+
+/* Log */
+.event-log {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  max-height: 140px;
+  overflow-y: auto;
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--text3);
+  line-height: 1.7;
+}
+.event-log::-webkit-scrollbar { width: 4px; }
+.event-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.log-entry { animation: msg-in .2s ease; }
+.log-entry .log-time { color: var(--text3); margin-right: 6px; }
+.log-entry .log-green { color: var(--green); }
+.log-entry .log-amber { color: var(--amber); }
+.log-entry .log-red { color: var(--red); }
+.log-entry .log-cyan { color: var(--cyan); }
+.log-entry .log-accent { color: var(--accent); }
+
+/* Summarize button special */
+.summarize-btn-wrap {
+  display: none;
+  margin-bottom: 12px;
+  animation: slide-in .3s ease;
+}
+.summarize-btn-wrap.visible { display: block; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-eyebrow"><a href="/token-router/">Token Router</a> / Context Window</div>
+    <h1>Context Window <span>Simulator</span></h1>
+    <p class="hero-desc">Watch a conversation fill its context window, degrade, and recover through brain-like memory consolidation. Every LLM call carries its full history — managing that history is the lever.</p>
+    <nav style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+      <a href="index.html" style="padding:6px 16px;border-radius:6px;background:var(--surface2);color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;border:1px solid var(--border)">Router</a>
+      <a href="context.html" style="padding:6px 16px;border-radius:6px;background:var(--accent);color:#fff;text-decoration:none;font-size:13px;font-weight:500">Context Window</a>
+      <a href="cost.html" style="padding:6px 16px;border-radius:6px;background:var(--surface2);color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;border:1px solid var(--border)">Cost Calculator</a>
+      <a href="prompt.html" style="padding:6px 16px;border-radius:6px;background:var(--surface2);color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;border:1px solid var(--border)">Prompt Structure</a>
+    </nav>
+  </header>
+
+  <!-- Scenario buttons -->
+  <div class="controls">
+    <span class="label">Scenario</span>
+    <button class="btn btn-sm btn-ghost" onclick="loadScenario('api')">API Design</button>
+    <button class="btn btn-sm btn-ghost" onclick="loadScenario('debug')">Debug Marathon</button>
+    <button class="btn btn-sm btn-ghost" onclick="loadScenario('fork')">Multi-topic Fork</button>
+    <span style="flex:1"></span>
+    <button class="btn btn-sm" id="runBtn" onclick="runConversation()">Run Conversation</button>
+    <button class="btn btn-sm btn-ghost" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- Fill meter -->
+  <div class="meter-wrap">
+    <div class="meter-header">
+      <span class="meter-label">CONTEXT WINDOW USAGE</span>
+      <span class="meter-pct" id="meterPct">0%</span>
+    </div>
+    <div class="meter-bar">
+      <div class="meter-fill green" id="meterFill"></div>
+    </div>
+  </div>
+
+  <!-- Warning banners -->
+  <div class="warning-banner amber-warn" id="warnAmber">
+    <span>&#9888;</span>
+    <span>Quality starting to degrade — model re-reading old context, slower and less accurate</span>
+  </div>
+  <div class="warning-banner red-warn" id="warnRed">
+    <span>&#9888;</span>
+    <span>Critical fill — earlier context being dropped. Model may contradict itself.</span>
+  </div>
+
+  <!-- Summarize button -->
+  <div class="summarize-btn-wrap" id="summarizeWrap">
+    <button class="btn btn-green btn-sm" onclick="doSummarize()">&#10024; Summarize &amp; Reset Context</button>
+    <span style="font-size:.72rem;color:var(--text3);margin-left:8px;">Compress conversation, keep knowledge</span>
+  </div>
+
+  <!-- Memory zones -->
+  <div class="zones">
+    <div class="zone zone-working">
+      <div class="zone-header">
+        <span class="zone-icon">&#128172;</span>
+        <span class="zone-title">Working Memory</span>
+        <span class="zone-count" id="workingCount">0 messages</span>
+      </div>
+      <div class="zone-items" id="workingItems"></div>
+    </div>
+    <div class="zone zone-session">
+      <div class="zone-header">
+        <span class="zone-icon">&#128203;</span>
+        <span class="zone-title">Session Memory</span>
+        <span class="zone-count" id="sessionCount">0 summaries</span>
+      </div>
+      <div class="zone-items" id="sessionItems"></div>
+    </div>
+    <div class="zone zone-longterm">
+      <div class="zone-header">
+        <span class="zone-icon">&#129504;</span>
+        <span class="zone-title">Long-Term Memory</span>
+        <span class="zone-count" id="ltCount">0 facts</span>
+      </div>
+      <div class="zone-items" id="ltItems"></div>
+    </div>
+  </div>
+
+  <!-- Consolidation hint -->
+  <div class="consolidation-hint" id="consolidationHint">
+    <strong>&#129504; Memory consolidation:</strong> Like flashcard repetition — facts reviewed 3+ times get promoted to permanent long-term memory. One-off details stay in session summaries and fade.
+  </div>
+
+  <!-- Cost tracker -->
+  <div class="cost-row">
+    <div class="cost-card">
+      <div class="cost-label">Without management</div>
+      <div class="cost-val no-mgmt" id="costNo">$0.000</div>
+      <div class="cost-detail" id="costNoDetail">0 tokens sent</div>
+    </div>
+    <div class="cost-card">
+      <div class="cost-label">With management</div>
+      <div class="cost-val with-mgmt" id="costYes">$0.000</div>
+      <div class="cost-detail" id="costYesDetail">0 tokens sent</div>
+    </div>
+  </div>
+
+  <!-- Event log -->
+  <div class="event-log" id="eventLog"></div>
+
+</div>
+
+<script>
+/* ── Scenario data ── */
+const SCENARIOS = {
+  api: {
+    name: "API Design",
+    messages: [
+      { role: "user", text: "I need to design a REST API for a task management app." },
+      { role: "ai", text: "Great. Let's start with the core resources: /tasks, /projects, /users. REST convention means nouns, not verbs." },
+      { role: "user", text: "Should I use UUIDs or auto-increment IDs?" },
+      { role: "ai", text: "UUIDs are better for distributed systems. They avoid enumeration attacks and work across microservices.", facts: ["Uses UUIDs for IDs"] },
+      { role: "user", text: "What about pagination?" },
+      { role: "ai", text: "Cursor-based pagination scales better than offset. Use ?cursor=abc&limit=20." },
+      { role: "user", text: "Let me add authentication. JWT or sessions?" },
+      { role: "ai", text: "For an API: JWT with short-lived access tokens + refresh tokens. Store refresh tokens server-side.", facts: ["Auth: JWT with refresh tokens"] },
+      { role: "user", text: "How should I handle errors?" },
+      { role: "ai", text: "Use RFC 7807 Problem Details. Consistent error shape: {type, title, status, detail}.", facts: ["Error format: RFC 7807"] },
+      { role: "user", text: "Can you remind me — are we using UUIDs?" },
+      { role: "ai", text: "Yes, we decided on UUIDs for all resource IDs across the API.", facts: ["Uses UUIDs for IDs"] },
+      { role: "user", text: "Now let's add rate limiting." },
+      { role: "ai", text: "Token bucket algorithm. Return X-RateLimit-Remaining and Retry-After headers." },
+      { role: "user", text: "What about versioning?" },
+      { role: "ai", text: "URL versioning (/v1/tasks) is the clearest. Header-based versioning is more pure but harder to debug." },
+      { role: "user", text: "Let's design the task schema." },
+      { role: "ai", text: "Task: {id: UUID, title, description, status: enum, project_id: UUID, assignee_id: UUID, created_at, updated_at}.", facts: ["Uses UUIDs for IDs"] },
+      { role: "user", text: "What auth approach are we using again?" },
+      { role: "ai", text: "JWT with short-lived access tokens and server-side refresh tokens. We decided this earlier.", facts: ["Auth: JWT with refresh tokens"] },
+      { role: "user", text: "OK let's add webhooks for task updates." },
+      { role: "ai", text: "POST callback URL with HMAC signature. Include event type, timestamp, and the changed resource." },
+    ],
+    autoSummarize: true,
+    summarizeAt: 14
+  },
+  debug: {
+    name: "Debug Marathon",
+    messages: [
+      { role: "user", text: "My Node.js app crashes on startup. Error: EADDRINUSE port 3000." },
+      { role: "ai", text: "Port 3000 is in use. Run `lsof -i :3000` to find the process, then kill it." },
+      { role: "user", text: "Fixed. Now I get 'Cannot find module dotenv'." },
+      { role: "ai", text: "Run `npm install dotenv`. Make sure it's in dependencies, not just devDependencies.", facts: ["Stack: Node.js"] },
+      { role: "user", text: "Now the DB connection fails. Using Postgres." },
+      { role: "ai", text: "Check your DATABASE_URL env var. Ensure Postgres is running: `pg_isready`.", facts: ["Database: Postgres"] },
+      { role: "user", text: "Postgres is up but wrong password." },
+      { role: "ai", text: "Update .env with the correct password. Restart the app." },
+      { role: "user", text: "Connected! But migrations fail — relation 'users' doesn't exist." },
+      { role: "ai", text: "Run `npx prisma migrate deploy` or your migration tool. Tables haven't been created yet.", facts: ["Stack: Node.js"] },
+      { role: "user", text: "Migrations ran. Now API returns 500 on POST /users." },
+      { role: "ai", text: "Check the error log. Likely a validation issue or missing required field in the request body." },
+      { role: "user", text: "It's a unique constraint on email. Duplicate entry." },
+      { role: "ai", text: "Add proper error handling: catch unique violations and return 409 Conflict." },
+      { role: "user", text: "Done. Now GET /users is really slow. Takes 4 seconds." },
+      { role: "ai", text: "Check if you have an index on queried columns. Run EXPLAIN ANALYZE on the query.", facts: ["Database: Postgres"] },
+      { role: "user", text: "No index on email column. Adding it now." },
+      { role: "ai", text: "CREATE INDEX CONCURRENTLY idx_users_email ON users(email); — use CONCURRENTLY to avoid locking." },
+      { role: "user", text: "Index helped. But now another endpoint leaks memory." },
+      { role: "ai", text: "Use `node --inspect` and Chrome DevTools to take heap snapshots. Look for growing arrays or event listeners." },
+      { role: "user", text: "Found it — unclosed DB connections in a loop." },
+      { role: "ai", text: "Use connection pooling. With Prisma it's automatic. Close connections in finally blocks.", facts: ["Database: Postgres"] },
+      { role: "user", text: "What database are we using again?" },
+      { role: "ai", text: "We're using PostgreSQL. You mentioned it earlier when the connection failed." },
+      { role: "user", text: "Now there's a CORS error from the frontend." },
+      { role: "ai", text: "Add cors middleware: `app.use(cors({ origin: 'http://localhost:5173' }))`." },
+      { role: "user", text: "Wait, is this a Node app or Python?" },
+      { role: "ai", text: "It's Node.js. We've been debugging Node-specific issues throughout this session.", facts: ["Stack: Node.js"] },
+      { role: "user", text: "Right. Now websockets aren't connecting." },
+      { role: "ai", text: "Check if your reverse proxy (nginx?) supports WebSocket upgrade. Add proxy_set_header Upgrade." },
+      { role: "user", text: "Using nginx. Updated config but still failing." },
+      { role: "ai", text: "Also need: proxy_set_header Connection 'upgrade' and proxy_http_version 1.1." },
+      { role: "user", text: "That fixed it. But now messages are duplicated." },
+      { role: "ai", text: "You're likely subscribing to events multiple times. Unsubscribe in useEffect cleanup (React) or onUnmounted (Vue)." },
+      { role: "user", text: "This app uses Express right?" },
+      { role: "ai", text: "You haven't specified the framework — just Node.js. Could be Express, Fastify, or something else." },
+      { role: "user", text: "I said Express earlier... or did I?" },
+      { role: "ai", text: "Actually, you didn't mention a specific framework. With this much context, details get fuzzy. This is why context management matters." },
+      { role: "user", text: "What port was the original error on?" },
+      { role: "ai", text: "Port 3000. That was the very first issue — EADDRINUSE." },
+      { role: "user", text: "OK now the app segfaults when uploading large files." },
+      { role: "ai", text: "Set body-parser limits: `app.use(express.json({ limit: '50mb' }))`. Or better, stream large uploads to S3." },
+      { role: "user", text: "Wait, are we using Postgres or MySQL?" },
+      { role: "ai", text: "Postgres — we established this multiple times. (Notice: this is the context window struggling.)" },
+      { role: "user", text: "Let me add Redis for caching." },
+      { role: "ai", text: "Use ioredis. Cache frequently-read data with TTL. Invalidate on writes." },
+      { role: "user", text: "Now the app has 3 datastores. Hard to keep track." },
+      { role: "ai", text: "Postgres (primary), Redis (cache), and file storage. Document your architecture." },
+    ],
+    autoSummarize: false,
+    summarizeAt: null
+  },
+  fork: {
+    name: "Multi-topic Fork",
+    messages: [
+      { role: "user", text: "I'm building two features: a search bar and a notification system." },
+      { role: "ai", text: "Those are independent features. Let's design them separately to keep context clean.", facts: ["Two features: search + notifications"] },
+      { role: "user", text: "For search — should I use Elasticsearch or Postgres full-text?" },
+      { role: "ai", text: "For < 1M records, Postgres tsvector is simpler. Elasticsearch for larger scale or complex faceting.", facts: ["Search: evaluating ES vs Postgres FTS"] },
+      { role: "user", text: "Let's go with Postgres FTS for now." },
+      { role: "ai", text: "Add a tsvector column with a GIN index. Use ts_rank for relevance sorting.", facts: ["Search: Postgres FTS chosen"] },
+      { role: "user", text: "Now switching to notifications. Real-time or polling?" },
+      { role: "ai", text: "Real-time via WebSockets (or SSE for simpler setup). Polling wastes resources.", facts: ["Notifications: real-time"] },
+      { role: "user", text: "Using SSE. How do I structure the notification model?" },
+      { role: "ai", text: "Notification: {id, user_id, type: enum, title, body, read: bool, created_at}. Use an enum for types.", facts: ["Notifications: SSE delivery"] },
+      { role: "user", text: "Back to search — should I add autocomplete?" },
+      { role: "ai", text: "Yes, use trigram similarity (pg_trgm extension) for fuzzy matching as the user types." },
+      { role: "user", text: "What search approach did we pick?" },
+      { role: "ai", text: "Postgres full-text search with tsvector + GIN index. We chose it over Elasticsearch.", facts: ["Search: Postgres FTS chosen"] },
+      { role: "user", text: "Now notifications — how do I handle unread counts?" },
+      { role: "ai", text: "Maintain a counter cache on the user record. Decrement on read. Or count(*) where read=false if scale is small." },
+      { role: "user", text: "These two features are getting tangled in one conversation." },
+      { role: "ai", text: "Exactly the problem. Ideally you'd fork into two context windows — one per feature. Each stays focused.", facts: ["Two features: search + notifications"] },
+      { role: "user", text: "Can the model still remember both contexts?" },
+      { role: "ai", text: "With management: key decisions go to long-term memory, shared across forks. Without: everything competes for the same window.", facts: ["Two features: search + notifications"] },
+      { role: "user", text: "Show me the benefit of forking." },
+      { role: "ai", text: "Fork A (search): 6 msgs, focused. Fork B (notifications): 5 msgs, focused. Combined: 12+ msgs, cross-contaminating." },
+      { role: "user", text: "Let me add a third feature — user profiles." },
+      { role: "ai", text: "Now the context is managing 3 topics. Without summarization, earlier search/notification decisions will be pushed out." },
+      { role: "user", text: "What notification approach did we pick?" },
+      { role: "ai", text: "SSE (Server-Sent Events) for real-time delivery. Stored in a notifications table with read/unread tracking.", facts: ["Notifications: SSE delivery"] },
+      { role: "user", text: "And the search?" },
+      { role: "ai", text: "Postgres FTS with tsvector, GIN index, and pg_trgm for autocomplete.", facts: ["Search: Postgres FTS chosen"] },
+    ],
+    autoSummarize: true,
+    summarizeAt: 10
+  }
+};
+
+/* ── State ── */
+let state = {
+  messages: [],
+  scenario: null,
+  step: 0,
+  running: false,
+  fill: 0,
+  costNo: 0,
+  costYes: 0,
+  tokensNo: 0,
+  tokensYes: 0,
+  sessionSummaries: [],
+  longTermFacts: {},
+  factMentions: {},
+  hasSummarized: false,
+  degrading: false,
+  intervalId: null,
+};
+
+const COST_PER_1K = 0.003;
+const TOKENS_PER_MSG = 150;
+const FILL_PER_MSG_BASE = 3.2;
+
+/* ── DOM helpers ── */
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, html) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html) e.innerHTML = html;
+  return e;
+};
+
+function log(html) {
+  const logEl = $('eventLog');
+  const t = new Date().toLocaleTimeString('en', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const entry = el('div', 'log-entry', `<span class="log-time">${t}</span>${html}`);
+  logEl.prepend(entry);
+}
+
+function updateCounts() {
+  $('workingCount').textContent = `${$('workingItems').children.length} messages`;
+  $('sessionCount').textContent = `${$('sessionItems').children.length} summaries`;
+  $('ltCount').textContent = `${$('ltItems').children.length} facts`;
+}
+
+function updateMeter() {
+  const pct = Math.min(state.fill, 100);
+  const fill = $('meterFill');
+  const pctEl = $('meterPct');
+  fill.style.width = pct + '%';
+  pctEl.textContent = Math.round(pct) + '%';
+
+  fill.classList.remove('green', 'amber', 'red', 'flash');
+  if (pct < 50) {
+    fill.classList.add('green');
+    pctEl.style.color = 'var(--green)';
+  } else if (pct < 70) {
+    fill.classList.add('amber');
+    pctEl.style.color = 'var(--amber)';
+  } else {
+    fill.classList.add('red');
+    pctEl.style.color = 'var(--red)';
+  }
+  if (pct > 85) fill.classList.add('flash');
+}
+
+function updateCost() {
+  $('costNo').textContent = '$' + state.costNo.toFixed(3);
+  $('costYes').textContent = '$' + state.costYes.toFixed(3);
+  $('costNoDetail').textContent = state.tokensNo.toLocaleString() + ' tokens sent';
+  $('costYesDetail').textContent = state.tokensYes.toLocaleString() + ' tokens sent';
+}
+
+function addWorkingMsg(msg) {
+  const card = el('div', `msg msg-${msg.role}`,
+    `<div class="msg-role">${msg.role === 'user' ? 'You' : 'Assistant'}</div>
+     <div>${msg.text}</div>`
+  );
+  $('workingItems').appendChild(card);
+  $('workingItems').scrollTop = $('workingItems').scrollHeight;
+}
+
+function addSessionSummary(text) {
+  const card = el('div', 'summary-card',
+    `<div class="summary-label">Summary</div><div>${text}</div>`
+  );
+  $('sessionItems').appendChild(card);
+}
+
+function addLongTermFact(fact) {
+  if (document.querySelector(`[data-fact="${CSS.escape(fact)}"]`)) return;
+  const card = el('div', 'fact-card promoting',
+    `<span class="brain-icon">&#129504;</span>
+     <span class="fact-text">${fact}</span>
+     <span class="fact-count">3x &#10003;</span>`
+  );
+  card.setAttribute('data-fact', fact);
+  $('ltItems').appendChild(card);
+  setTimeout(() => card.classList.remove('promoting'), 1100);
+}
+
+/* ── Core simulation ── */
+function processStep() {
+  if (!state.scenario || state.step >= state.scenario.messages.length) {
+    stopConversation();
+    log('<span class="log-green">Simulation complete.</span>');
+    return;
+  }
+
+  const msg = state.scenario.messages[state.step];
+  state.step++;
+
+  /* Add to working memory */
+  addWorkingMsg(msg);
+
+  /* Track facts */
+  if (msg.facts) {
+    msg.facts.forEach(f => {
+      state.factMentions[f] = (state.factMentions[f] || 0) + 1;
+      if (state.factMentions[f] >= 3) {
+        addLongTermFact(f);
+        log(`<span class="log-accent">&#129504; Fact promoted to long-term: "${f}"</span>`);
+        $('consolidationHint').classList.add('visible');
+      }
+    });
+  }
+
+  /* Cost: without management always sends full history */
+  const historyTokensNo = state.step * TOKENS_PER_MSG * state.step;
+  state.tokensNo += state.step * TOKENS_PER_MSG;
+  state.costNo = state.tokensNo / 1000 * COST_PER_1K;
+
+  /* Cost: with management sends compressed if summarized */
+  const managedMsgs = state.hasSummarized
+    ? Math.min(state.step - (state.scenario.summarizeAt || 0), state.step) + 2
+    : state.step;
+  state.tokensYes += managedMsgs * TOKENS_PER_MSG;
+  state.costYes = state.tokensYes / 1000 * COST_PER_1K;
+
+  updateCost();
+
+  /* Fill meter */
+  const fillRate = state.hasSummarized ? FILL_PER_MSG_BASE * 0.6 : FILL_PER_MSG_BASE;
+  state.fill += fillRate;
+  updateMeter();
+
+  log(`<span class="log-cyan">${msg.role === 'user' ? 'User' : 'AI'}:</span> ${msg.text.slice(0, 60)}${msg.text.length > 60 ? '...' : ''}`);
+
+  /* Warnings */
+  if (state.fill >= 50 && state.fill < 70) {
+    $('warnAmber').classList.add('visible');
+  }
+  if (state.fill >= 70) {
+    $('warnAmber').classList.remove('visible');
+    $('warnRed').classList.add('visible');
+    if (!state.hasSummarized && state.scenario.autoSummarize) {
+      $('summarizeWrap').classList.add('visible');
+    }
+  }
+
+  /* Auto-summarize for scripted scenarios */
+  if (state.scenario.autoSummarize && state.scenario.summarizeAt &&
+      state.step === state.scenario.summarizeAt && !state.hasSummarized) {
+    stopConversation();
+    $('summarizeWrap').classList.add('visible');
+    log('<span class="log-amber">&#9888; Context at 70% — summarization recommended. Click the button to continue.</span>');
+    return;
+  }
+
+  /* Degradation if no summarization and fill > 85% */
+  if (state.fill > 85 && !state.hasSummarized) {
+    if (!state.degrading) {
+      state.degrading = true;
+      log('<span class="log-red">&#9888; Model contradicting itself — earlier context lost</span>');
+    }
+    /* Fade old messages */
+    const items = $('workingItems').children;
+    const fadeCount = Math.max(0, items.length - 6);
+    for (let i = 0; i < fadeCount; i++) {
+      items[i].classList.add('fading');
+    }
+    /* Mark occasional contradiction */
+    if (state.step % 5 === 0 && items.length > 2) {
+      items[items.length - 1].classList.add('contradicting');
+    }
+  }
+
+  updateCounts();
+}
+
+function doSummarize() {
+  $('summarizeWrap').classList.remove('visible');
+  log('<span class="log-green">&#10024; Compressing conversation into summary...</span>');
+
+  /* Compress animation — fade all working memory */
+  const items = Array.from($('workingItems').children);
+  items.forEach((el, i) => {
+    setTimeout(() => el.classList.add('fading'), i * 40);
+  });
+
+  setTimeout(() => {
+    /* Clear working memory */
+    $('workingItems').innerHTML = '';
+
+    /* Add summary to session */
+    const summaryTexts = {
+      api: "Designed REST API: /tasks, /projects, /users with UUIDs, JWT auth, RFC 7807 errors, cursor pagination, rate limiting, URL versioning.",
+      debug: "Debugged Node.js app: fixed port conflict, installed deps, connected Postgres, ran migrations, added error handling, indexes, connection pooling.",
+      fork: "Evaluated search (Postgres FTS chosen) and notifications (SSE chosen). Identified context cross-contamination with multi-topic conversations."
+    };
+    const key = Object.keys(SCENARIOS).find(k => SCENARIOS[k] === state.scenario) || 'api';
+    addSessionSummary(summaryTexts[key] || "Conversation summarized.");
+
+    /* Move repeated facts to session as faded if not yet in LT */
+    Object.keys(state.factMentions).forEach(f => {
+      if (state.factMentions[f] < 3 && !document.querySelector(`[data-fact="${CSS.escape(f)}"]`)) {
+        const card = el('div', 'summary-card',
+          `<div class="summary-label">Fact (${state.factMentions[f]}x)</div><div>${f}</div>`
+        );
+        card.style.opacity = '0.5';
+        $('sessionItems').appendChild(card);
+      }
+    });
+
+    /* Reset fill */
+    state.fill = 15;
+    state.hasSummarized = true;
+    updateMeter();
+    $('warnAmber').classList.remove('visible');
+    $('warnRed').classList.remove('visible');
+    updateCounts();
+
+    log('<span class="log-green">Context reset to ~15%. Conversation can continue fresh with full knowledge retained.</span>');
+
+    /* Resume if there are more messages */
+    if (state.step < state.scenario.messages.length) {
+      setTimeout(() => {
+        $('runBtn').disabled = false;
+        runConversation();
+      }, 600);
+    }
+  }, items.length * 40 + 400);
+}
+
+function runConversation() {
+  if (state.running) return;
+  if (!state.scenario) {
+    loadScenario('api');
+    return;
+  }
+  state.running = true;
+  $('runBtn').disabled = true;
+  $('runBtn').textContent = 'Running...';
+  state.intervalId = setInterval(() => {
+    processStep();
+  }, 900);
+}
+
+function stopConversation() {
+  state.running = false;
+  clearInterval(state.intervalId);
+  $('runBtn').disabled = false;
+  $('runBtn').textContent = state.step >= (state.scenario?.messages.length || 0) ? 'Done' : 'Resume';
+}
+
+function loadScenario(key) {
+  resetAll();
+  state.scenario = SCENARIOS[key];
+  log(`<span class="log-accent">Loaded scenario: ${state.scenario.name}</span>`);
+
+  /* Highlight active button */
+  document.querySelectorAll('.controls .btn-ghost').forEach(b => {
+    b.style.borderColor = '';
+    b.style.color = '';
+  });
+  const btns = document.querySelectorAll('.controls .btn-ghost');
+  const idx = { api: 0, debug: 1, fork: 2 }[key];
+  if (btns[idx]) {
+    btns[idx].style.borderColor = 'var(--accent)';
+    btns[idx].style.color = 'var(--text)';
+  }
+}
+
+function resetAll() {
+  stopConversation();
+  state = {
+    messages: [],
+    scenario: state.scenario,
+    step: 0,
+    running: false,
+    fill: 0,
+    costNo: 0,
+    costYes: 0,
+    tokensNo: 0,
+    tokensYes: 0,
+    sessionSummaries: [],
+    longTermFacts: {},
+    factMentions: {},
+    hasSummarized: false,
+    degrading: false,
+    intervalId: null,
+  };
+  $('workingItems').innerHTML = '';
+  $('sessionItems').innerHTML = '';
+  $('ltItems').innerHTML = '';
+  $('eventLog').innerHTML = '';
+  $('warnAmber').classList.remove('visible');
+  $('warnRed').classList.remove('visible');
+  $('summarizeWrap').classList.remove('visible');
+  $('consolidationHint').classList.remove('visible');
+  $('runBtn').textContent = 'Run Conversation';
+  $('runBtn').disabled = false;
+  updateMeter();
+  updateCost();
+  updateCounts();
+}
+
+/* Init */
+loadScenario('api');
+</script>
+</body>
+</html>

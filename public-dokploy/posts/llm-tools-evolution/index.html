@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>From Raw Text to Agent Teams: How LLM Tooling Evolved | nmnhut</title>
+<meta name="keywords" content="ai, llm, agents, mcp">
+<meta name="description" content="The full evolution of LLM tool use — from hardcoded functions to MCP, skills, agent teams, and communication protocols.">
+<meta name="author" content="Minh-Nhut Nguyen">
+<link rel="canonical" href="../../posts/llm-tools-evolution/">
+<link crossorigin="anonymous" href="../../assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="../../favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="mask-icon" href="../../safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="../../posts/llm-tools-evolution/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="/posts/llm-tools-evolution/">
+  <meta property="og:site_name" content="nmnhut">
+  <meta property="og:title" content="From Raw Text to Agent Teams: How LLM Tooling Evolved">
+  <meta property="og:description" content="The full evolution of LLM tool use — from hardcoded functions to MCP, skills, agent teams, and communication protocols.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-03T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-03T00:00:00+00:00">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Llm">
+    <meta property="article:tag" content="Agents">
+    <meta property="article:tag" content="Mcp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="From Raw Text to Agent Teams: How LLM Tooling Evolved">
+<meta name="twitter:description" content="The full evolution of LLM tool use — from hardcoded functions to MCP, skills, agent teams, and communication protocols.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "/posts/"
+    }
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "From Raw Text to Agent Teams: How LLM Tooling Evolved",
+      "item": "/posts/llm-tools-evolution/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "From Raw Text to Agent Teams: How LLM Tooling Evolved",
+  "name": "From Raw Text to Agent Teams: How LLM Tooling Evolved",
+  "description": "The full evolution of LLM tool use — from hardcoded functions to MCP, skills, agent teams, and communication protocols.",
+  "keywords": [
+    "ai", "llm", "agents", "mcp"
+  ],
+  "articleBody": "LLMs Don’t Actually “Call” Tools Here is a fact that surprises most people: LLMs cannot run code. They cannot call APIs. They cannot read files. All they do is predict the next token — they output raw text, one piece at a time.\nSo how do they “use tools”?\nThe trick: structured wishes During training, models are fine-tuned on augmented datasets that include tool call examples. The training pipeline works roughly like this:\nTake existing text corpora Use prompts to generate synthetic tool calls within that text — e.g., [Calculator(400 / 1400)] -\u003e 0.29 Filter: only keep examples where the tool call improved prediction of subsequent tokens Fine-tune the model on this augmented dataset This is the approach behind Toolformer — the model learns “when I’m about to produce a factual number, inserting a calculator call here makes my next tokens more accurate.” Over many such examples, it develops the instinct: when in doubt, call a tool rather than guess.\nThe result? Instead of guessing an answer, a trained model outputs something like:\n{\"name\": \"get_weather\", \"arguments\": {\"city\": \"Tokyo\"}}\rThe model does not run this. It just writes it.\nThe loop: five steps, not one A host application — ordinary software sitting between the model and the outside world — orchestrates the full cycle:\nApp sends tool definitions + user message. The tool schemas (name, description, JSON Schema for parameters) are injected into the system prompt as tokens — they consume context window space just like any other text. Model analyzes whether calling a tool would help fulfill the request. Model outputs a structured tool_calls array — potentially multiple calls in parallel, not just one at a time. App executes each function locally, captures the results. App sends results back to the model as new messages, referencing each call by ID. The model reads them and generates a final response. To the end user, it looks like the AI “called a function.” In reality, the AI wrote a structured wish, and the system granted it.\nOne subtlety worth noting: since tool definitions are injected as tokens, every tool you register costs context window space — even if the model never calls it. This becomes important later.\nThis is the foundation. Everything that follows is about making this loop better.\nStage 1: Functions Hardcoded on the Server The earliest tool-use systems were dead simple. You, the developer, would:\nWrite a Python function (e.g., def get_weather(city): ...) Describe that function in the system prompt — “You have access to get_weather(city). Call it when the user asks about weather.” Build a parser to catch the model’s output and route it to your function This worked. But it had problems:\nEvery tool lived in your codebase. Want to add a database lookup? Write the function, redeploy. The system prompt grew with every tool. Ten tools meant a wall of text describing each one’s name, parameters, and usage rules — all eating into the model’s context window. No sharing. Your weather function was yours alone. Another developer building a similar app had to write their own from scratch. Still, this was the moment LLMs went from “chat assistants” to “agents that can act.” OpenAI formalized this as Function Calling in June 2023, giving it a structured JSON schema instead of freeform text in the system prompt. But the architecture remained the same: functions lived on your server, described in your prompt.\nStage 2: Tool Servers — Moving Tools Out The next step was obvious: why keep tools in your app? If a tool is just a function with inputs and outputs, it can live anywhere. Run it as a separate service. Call it over HTTP.\nThis gave rise to tool servers — standalone services that expose tools via APIs. Your app no longer needs to contain the tool code. It just needs to know the tool’s URL, its schema, and how to call it.\nBenefits:\nSeparation of concerns. The AI app handles conversation. The tool server handles actions. Reusability. One tool server can serve many AI apps. Independent scaling. A heavy tool (like image generation) can run on beefy hardware while the chat app stays lightweight. But there was no standard. Every tool server had its own API format, its own auth scheme, its own way of describing capabilities. Connecting your AI app to three different tool servers meant writing three different integrations.\nStage 3: MCP — A Universal Plug for Tools In late 2024, Anthropic released the Model Context Protocol (MCP). The idea: a single, open standard for connecting AI models to tools, data sources, and external systems.\nThink of it like USB for AI. Before USB, every device had its own cable. MCP does the same thing for tools — one protocol, any tool, any model.\nAn MCP server exposes:\nTools — functions the model can call Resources — data the model can read (files, database rows, API responses, documentation) Prompts — reusable prompt templates that can embed domain knowledge, task workflows, and usage guidelines This means an MCP server is not just a function registry. It can carry rich context: a database MCP server can include a schema overview and query best practices; a codebase MCP server can expose architecture docs alongside the file-reading tools. The model receives both the capability and the knowledge needed to use it correctly.\nAny AI app that speaks MCP can connect to any MCP server. A developer builds a Slack MCP server once, and every MCP-compatible AI app can use it. No custom integration needed.\nMCP gained traction fast. GitHub, Postgres, Slack, Google Drive — community-built MCP servers popped up for everything. The ecosystem exploded.\nBut then came a new problem.\nStage 4: The Context Window Problem MCP made it easy to add tools. Too easy.\nEach MCP server comes with instructions: “Here is what I can do. Here is how to call me. Here are the rules.” And since MCP servers can also carry resources and domain knowledge, the payload per server can be substantial. When you connect five MCP servers, the model’s context window fills up with tool descriptions, domain docs, usage guidelines, and server metadata — even when most of them are irrelevant to the current task.\nImagine a developer asking the AI to fix a bug in a Python file. The model’s context already contains instructions for:\nA Slack MCP server (not needed right now) A database MCP server (not needed right now) A Jira MCP server (not needed right now) A browser automation MCP server (not needed right now) A file system MCP server (finally, the one it needs) 80% of the context window is wasted on tools the model won’t use for this task. And context window space is precious — it is the model’s working memory. Every token spent on irrelevant tool descriptions is a token not available for understanding the actual problem.\nThis is the scaling curse of MCP: the more capable your agent becomes, the less room it has to think.\nStage 5: Skills — Tools on Demand, Knowledge on Demand The solution? Don’t load everything upfront. Load what you need, when you need it.\nThis is the idea behind skills. A skill is a bundle of tools, instructions, and domain knowledge that gets injected into the model’s context only when triggered. Think of it as a lazy-loaded capability — and more than that, a lazy-loaded expert.\nThe key insight: a skill is not just a tool schema. It is a workflow guide.\nA Jira skill, for example, doesn’t just say “here is how to call the Jira API.” It says:\nWhen creating a bug ticket, always include steps to reproduce and the affected version. Search for an existing ticket before creating a new one. Link the new ticket to its parent epic. Use the fix-version field only after confirming with the project lead. This is embedded know-how — the kind of knowledge a senior engineer carries in their head. The skill packages both the tool access and the procedural knowledge for using it correctly.\nA full skill payload typically contains:\nTool schemas — the API calls or functions the model can make Domain knowledge — facts about the system, constraints, naming conventions Task workflows — step-by-step guidance for common operations (e.g., “how to do a code review”, “how to open a PR”) Examples — sample inputs and outputs that show correct behavior Error handling — what to do when things go wrong Instead of permanently stuffing the context with all of this, you register a skill:\nName: jira Trigger: When the user mentions Jira, tickets, or sprint planning Payload: Tool schemas + domain knowledge + task workflows + examples When the model encounters a Jira-related request, the skill activates and its full payload enters the context. When the task is done, the payload leaves. The context stays clean.\nSkills solve the scaling problem:\nApproach Context cost 10 tools 100 tools Raw MCP All tools always loaded Heavy Unworkable Skills Only active tools loaded Light Still light Now an agent can have access to hundreds of capabilities without choking its context window. The shift is from “know everything” to “know how to find what you need — and know how to use it once you find it.”\nStage 6: One Agent = Memory + Skills With skills in place, we can define what a modern AI agent actually is:\nAn agent = a model + memory + a set of skills\nModel: The LLM brain that reasons and generates text Memory: Persistent knowledge that survives across conversations — user preferences, project context, past decisions Skills: On-demand capabilities that activate when needed — each carrying its own tools, domain knowledge, and task workflows Memory is what makes an agent yours. Without memory, every conversation starts from zero. With memory, the agent remembers that you prefer TypeScript over JavaScript, that your database is Postgres, that your team uses conventional commits.\nSkills are what makes an agent capable and knowledgeable. Without skills, the agent can only chat. With skills, it can commit code, manage PRs, query databases, browse the web — and it knows how to do each of those things correctly, not just that the tools exist. A commit skill doesn’t just provide git access; it carries the team’s commit message conventions, branching strategy, and review checklist.\nThis is a clean, scalable architecture. One agent, focused context, relevant tools loaded on demand, persistent knowledge.\nBut one agent has limits.\nStage 7: Teams of Agents Some tasks are too big for one agent. Not because the model isn’t smart enough, but because:\nContext windows are finite. A single agent working on a large codebase will eventually run out of room. Sequential work is slow. One agent reading 50 files, then planning, then coding, then testing — that is a long chain. Different tasks need different focus. Research requires broad exploration. Coding requires deep file-level attention. Testing requires running commands and reading output. One agent juggling all three loses focus. The answer: teams of agents, each with their own context window, their own memory, and their own skills.\nA typical team might look like:\nAgent Role Skills Lead Coordinates work, synthesizes results Task management, messaging Researcher Explores the codebase, reads docs Search, web browsing Coder Writes and edits code File editing, code generation Tester Runs tests, reports results Test execution, log analysis Each agent runs as an independent process. They don’t share a context window. They each start clean and focused on their assigned task.\nBut this creates a new problem: how do they talk to each other?\nStage 8: The Communication Problem The moment you have multiple agents, you need answers to hard questions:\nHow does Agent A tell Agent B what to do? How does Agent B report results back? How do they avoid stepping on each other’s work? How does the team know when everything is done? Different systems answer these questions differently. Here are the main approaches that exist today.\nApproach 1: Shared Conversation Thread Used by: Microsoft AutoGen\nThe simplest model. All agents share one message thread. Every agent can see what every other agent has said. A selector (either round-robin or model-based) picks who speaks next.\nAgent A: \"I found the bug in auth.py line 42.\"\rAgent B: \"I'll write a fix.\"\rAgent C: \"I'll write a test for the fix.\" Pros: Simple. Full visibility. Easy to debug.\nCons: Context grows fast. With 5 agents and 100 messages, every agent carries the full conversation — even the parts that don’t concern it. Expensive and wasteful at scale.\nApproach 2: LLM-Driven Delegation Used by: CrewAI\nAgents don’t share a thread. Instead, when Agent A needs help, it uses a delegation tool — essentially asking the LLM to compose a message to a specific teammate.\nAgent A calls: delegate_work(task=\"fix the bug\", coworker=\"Coder\", context=\"bug is in auth.py line 42\") The framework routes this to the Coder agent, which works on it and returns a result.\nPros: Natural. Agents decide when and what to delegate.\nCons: Unpredictable. The LLM decides when to delegate, so you can’t guarantee it will. No structured lifecycle — you can’t track whether a delegated task is pending, in-progress, or done.\nApproach 3: State Graph Used by: LangGraph\nThe developer defines a graph where each node is an agent and each edge is an allowed transition. State flows through the graph as typed data. Agents hand off control explicitly using Command objects that specify both a state update and the next agent to run.\nResearcher → Planner → Coder → Tester → (back to Planner if tests fail) Pros: Deterministic. Auditable. You know exactly what happens and in what order.\nCons: Rigid. You must design the graph upfront. Agents can’t self-organize or adapt the workflow at runtime.\nApproach 4: Task List + Direct Messages Used by: Claude Code Agent Teams\nEach team has a shared task list stored on disk. Agents claim tasks, work on them, and mark them done. For direct communication, agents use a message tool to send messages to specific teammates.\nLead creates task: \"Fix auth bug\" → status: pending\rCoder claims task → status: in_progress\rCoder finishes → status: completed → sends message to Lead: \"Fixed. See commit abc123.\"\rLead reads message, checks task list, assigns next work. Tasks support dependencies — Task B can be blocked by Task A, and automatically unblocks when A completes.\nPros: Structured and flexible. Tasks track lifecycle. Agents work independently without a shared context. The lead doesn’t bottleneck communication — agents can message each other directly.\nCons: Requires discipline. Agents must remember to update task status. An agent that forgets to mark a task done can block the whole team.\nApproach 5: Queue-Based Actor Model with Mention Parsing Used by: TinyClaw\nWhat if agents could coordinate using natural language mentions — just like humans do on Slack or Discord?\nTinyClaw takes this approach. There is no central orchestrator. Instead, agents communicate by writing mention tags directly in their responses:\nI fixed the bug in auth.ts.\r[@reviewer: Please review the changes in auth.ts for security issues.]\r[@tester: Run the test suite after the review is done.] A parser extracts these tags, and the system enqueues internal messages to the target agents via a shared SQLite queue. Each agent has its own isolated workspace and processes messages sequentially through a promise chain — but different agents run in parallel.\nThe coordination relies on a pending counter. When an agent mentions a teammate, the counter increments. When a teammate finishes (with no further mentions), it decrements. When it hits zero, the conversation is complete and all responses are aggregated.\nUser: \"@dev fix the auth bug\"\r→ Coder (team leader) receives message pending: 1\r→ Coder responds, mentions @reviewer pending: 1\r→ Reviewer responds, mentions @tester pending: 1\r→ Tester responds (no mentions) pending: 0 → COMPLETE\r→ Aggregated response sent back to user Text written outside mention tags becomes shared context — delivered to all mentioned agents. This lets an agent broadcast background information while sending targeted instructions:\nSprint ends Friday. 3 open bugs remain.\r[@coder: Focus on the auth bug first.]\r[@reviewer: Prioritize any open PRs.] Both agents receive the shared context plus their specific message.\nPros: No orchestrator needed. Natural language mentions feel intuitive. SQLite queue is durable (survives crashes, supports retries). Supports fan-out, backflow, and cross-talk — all through the same queue-and-counter mechanism.\nCons: Agents must follow the mention format correctly. No structured task lifecycle — you can’t query whether a piece of work is “pending” or “in progress” like you can with a task list.\nApproach 6: An Open Protocol — Google’s A2A Announced: April 2025 | Governed by: Linux Foundation (since June 2025)\nAll the approaches above work within a single framework. But what if your agents are built by different companies, running on different servers, using different models?\nGoogle’s Agent-to-Agent (A2A) protocol tackles this. It is an open standard for agents to discover each other, authenticate, and exchange work — across organizational boundaries.\nThe key concepts:\nAgent Cards — Every agent publishes a JSON file at /.well-known/agent.json describing what it can do, like a machine-readable resume. Tasks — Structured work units that move through a lifecycle: submitted → working → completed / failed. Messages and Parts — The communication units within a task, supporting text, images, audio, and other modalities. Streaming — Long-running tasks use Server-Sent Events (SSE) for real-time progress updates. A2A is designed to complement MCP, not replace it:\nMCP = how an agent connects to tools (vertical) A2A = how an agent connects to other agents (horizontal) As of early 2026, A2A has strong enterprise backing (AWS, Microsoft, Salesforce, SAP) but MCP has won more grassroots developer adoption. The two may converge over time — tools and agents are just different points on the same spectrum.\nA Note on Hybrid Systems Real-world systems rarely follow a single pattern. They mix and match — deterministic routing for known workflows, LLM-driven delegation for open-ended tasks, and shared infrastructure for discovery and auth. OpenClaw is one example: it uses a gateway for agent routing (LangGraph-like deterministic control), LLM-driven session spawning for dynamic collaboration (CrewAI-like flexibility), and a shared gateway layer for authentication and discovery. As agent architectures mature, expect more hybrids like this rather than pure implementations of any single approach.\nComparing the Approaches Approach Orchestration Context Task Tracking Flexibility Best For Shared Thread (AutoGen) Selector (round-robin / LLM) Shared across all agents None built-in Moderate — selector can adapt Brainstorming, group discussions LLM Delegation (CrewAI) LLM decides when to delegate Isolated per agent None built-in High — agents self-organize Open-ended exploration State Graph (LangGraph) Developer-defined graph Shared typed state Implicit in graph transitions Low — graph is fixed Deterministic pipelines Task List + DMs (Claude Code) Lead assigns via task list Isolated per agent Structured lifecycle (pending → done) High — tasks adapt at runtime Complex multi-step projects Queue + Mentions (TinyClaw) No orchestrator — mention-based Shared context + targeted messages Pending counter only High — agents self-coordinate Decentralized async workflows A2A Protocol (Google) Client agent initiates tasks Isolated across organizations Structured lifecycle (submitted → done) Moderate — protocol-defined Cross-org agent interop The Full Picture Let’s zoom out and see how all the pieces fit together:\n┌─────────────────────────────────────────────────┐\r│ Agent Team │\r│ │\r│ ┌──────────┐ ┌──────────┐ ┌──────────┐ │\r│ │ Agent A │ │ Agent B │ │ Agent C │ │\r│ │ (Lead) │ │ (Coder) │ │ (Tester) │ │\r│ │ │ │ │ │ │ │\r│ │ Memory │ │ Memory │ │ Memory │ │\r│ │ Skills │ │ Skills │ │ Skills │ │\r│ └────┬─────┘ └────┬─────┘ └────┬─────┘ │\r│ │ │ │ │\r│ └──────── Communication ──────┘ │\r│ (Messages / Tasks / A2A) │\r└───────────────────────┬─────────────────────────┘\r│\rSkills activate\ron demand\r│\r┌─────────┼─────────┐\r│ │ │\r┌───┴───┐ ┌───┴───┐ ┌──┴────┐\r│ MCP │ │ MCP │ │ MCP │\r│Server │ │Server │ │Server │\r│(Slack)│ │(DB) │ │(Git) │\r└───────┘ └───────┘ └───────┘ The evolution, in one line:\nHardcoded functions → Tool servers → MCP (standard plug) → Skills (on-demand loading) → Agents (memory + skills) → Teams (multiple agents) → Communication protocols (how they coordinate)\nEach layer solved the previous layer’s problem. Each layer created a new one. And that is how we got here.\nThe LLM is still just predicting the next token. Everything else — tools, skills, memory, teams, protocols — is scaffolding we built around that one simple trick.\nSources Function calling and other API updates — OpenAI, June 2023 Function calling guide — OpenAI API docs, explains the parse-execute-return loop How LLMs are trained for function calling — deep dive on how models learn to produce tool call tokens Toolformer: Language Models Can Teach Themselves to Use Tools — Schick et al., 2023 Introducing the Model Context Protocol — Anthropic, November 2024 MCP Specification — Model Context Protocol official docs AutoGen — Microsoft multi-agent framework CrewAI — Multi-agent orchestration framework LangGraph — LangChain agent state graph framework Announcing the Agent2Agent Protocol (A2A) — Google, April 2025 Linux Foundation launches A2A Protocol project — Linux Foundation, June 2025 OpenClaw — Gateway-based AI agent with multi-agent routing ",
+  "wordCount" : "3529",
+  "inLanguage": "en",
+  "datePublished": "2026-03-03T00:00:00Z",
+  "dateModified": "2026-03-03T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Minh-Nhut Nguyen"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/posts/llm-tools-evolution/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "nmnhut",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="../../" accesskey="h" title="nmnhut (Alt + H)">nmnhut</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="../../posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../farm/" title="LLM Farm">
+                    <span>LLM Farm</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../rag/" title="RAG Demo">
+                    <span>RAG Demo</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../transcribe/" title="Transcribe">
+                    <span>Transcribe</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../token-router/" title="Router">
+                    <span>Router</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="../../">Home</a>&nbsp;»&nbsp;<a href="../../posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      From Raw Text to Agent Teams: How LLM Tooling Evolved
+    </h1>
+    <div class="post-description">
+      The full evolution of LLM tool use — from hardcoded functions to MCP, skills, agent teams, and communication protocols.
+    </div>
+    <div class="post-meta"><span title='2026-03-03 00:00:00 +0000 UTC'>March 3, 2026</span>&nbsp;·&nbsp;<span>17 min</span>&nbsp;·&nbsp;<span>Minh-Nhut Nguyen</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#llms-dont-actually-call-tools" aria-label="LLMs Don&rsquo;t Actually &ldquo;Call&rdquo; Tools">LLMs Don&rsquo;t Actually &ldquo;Call&rdquo; Tools</a><ul>
+                        
+                <li>
+                    <a href="#the-trick-structured-wishes" aria-label="The trick: structured wishes">The trick: structured wishes</a></li>
+                <li>
+                    <a href="#the-loop-five-steps-not-one" aria-label="The loop: five steps, not one">The loop: five steps, not one</a></li></ul>
+                </li>
+                <li>
+                    <a href="#stage-1-functions-hardcoded-on-the-server" aria-label="Stage 1: Functions Hardcoded on the Server">Stage 1: Functions Hardcoded on the Server</a></li>
+                <li>
+                    <a href="#stage-2-tool-servers--moving-tools-out" aria-label="Stage 2: Tool Servers — Moving Tools Out">Stage 2: Tool Servers — Moving Tools Out</a></li>
+                <li>
+                    <a href="#stage-3-mcp--a-universal-plug-for-tools" aria-label="Stage 3: MCP — A Universal Plug for Tools">Stage 3: MCP — A Universal Plug for Tools</a></li>
+                <li>
+                    <a href="#stage-4-the-context-window-problem" aria-label="Stage 4: The Context Window Problem">Stage 4: The Context Window Problem</a></li>
+                <li>
+                    <a href="#stage-5-skills--tools-on-demand-knowledge-on-demand" aria-label="Stage 5: Skills — Tools on Demand, Knowledge on Demand">Stage 5: Skills — Tools on Demand, Knowledge on Demand</a></li>
+                <li>
+                    <a href="#stage-6-one-agent--memory--skills" aria-label="Stage 6: One Agent = Memory &#43; Skills">Stage 6: One Agent = Memory + Skills</a></li>
+                <li>
+                    <a href="#stage-7-teams-of-agents" aria-label="Stage 7: Teams of Agents">Stage 7: Teams of Agents</a></li>
+                <li>
+                    <a href="#stage-8-the-communication-problem" aria-label="Stage 8: The Communication Problem">Stage 8: The Communication Problem</a><ul>
+                        
+                <li>
+                    <a href="#approach-1-shared-conversation-thread" aria-label="Approach 1: Shared Conversation Thread">Approach 1: Shared Conversation Thread</a></li>
+                <li>
+                    <a href="#approach-2-llm-driven-delegation" aria-label="Approach 2: LLM-Driven Delegation">Approach 2: LLM-Driven Delegation</a></li>
+                <li>
+                    <a href="#approach-3-state-graph" aria-label="Approach 3: State Graph">Approach 3: State Graph</a></li>
+                <li>
+                    <a href="#approach-4-task-list--direct-messages" aria-label="Approach 4: Task List &#43; Direct Messages">Approach 4: Task List + Direct Messages</a></li>
+                <li>
+                    <a href="#approach-5-queue-based-actor-model-with-mention-parsing" aria-label="Approach 5: Queue-Based Actor Model with Mention Parsing">Approach 5: Queue-Based Actor Model with Mention Parsing</a></li>
+                <li>
+                    <a href="#approach-6-an-open-protocol--googles-a2a" aria-label="Approach 6: An Open Protocol — Google&rsquo;s A2A">Approach 6: An Open Protocol — Google&rsquo;s A2A</a></li>
+                <li>
+                    <a href="#a-note-on-hybrid-systems" aria-label="A Note on Hybrid Systems">A Note on Hybrid Systems</a></li>
+                <li>
+                    <a href="#comparing-the-approaches" aria-label="Comparing the Approaches">Comparing the Approaches</a></li></ul>
+                </li>
+                <li>
+                    <a href="#the-full-picture" aria-label="The Full Picture">The Full Picture</a></li>
+                <li>
+                    <a href="#sources" aria-label="Sources">Sources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="llms-dont-actually-call-tools">LLMs Don&rsquo;t Actually &ldquo;Call&rdquo; Tools<a hidden class="anchor" aria-hidden="true" href="#llms-dont-actually-call-tools">#</a></h2>
+<p>Here is a fact that surprises most people: LLMs cannot run code. They cannot call APIs. They cannot read files. All they do is <strong>predict the next token</strong> — they output raw text, one piece at a time.</p>
+<p>So how do they &ldquo;use tools&rdquo;?</p>
+<h3 id="the-trick-structured-wishes">The trick: structured wishes<a hidden class="anchor" aria-hidden="true" href="#the-trick-structured-wishes">#</a></h3>
+<p>During training, models are <a href="https://simplicityissota.substack.com/p/how-llms-are-trained-for-function">fine-tuned on augmented datasets</a> that include tool call examples. The training pipeline works roughly like this:</p>
+<ol>
+<li>Take existing text corpora</li>
+<li>Use prompts to generate synthetic tool calls within that text — e.g., <code>[Calculator(400 / 1400)] -&gt; 0.29</code></li>
+<li><strong>Filter</strong>: only keep examples where the tool call <em>improved</em> prediction of subsequent tokens</li>
+<li>Fine-tune the model on this augmented dataset</li>
+</ol>
+<p>This is the approach behind <a href="https://arxiv.org/abs/2302.04761">Toolformer</a> — the model learns &ldquo;when I&rsquo;m about to produce a factual number, inserting a calculator call here makes my next tokens more accurate.&rdquo; Over many such examples, it develops the instinct: <strong>when in doubt, call a tool rather than guess.</strong></p>
+<p>The result? Instead of guessing an answer, a trained model outputs something like:</p>
+<pre tabindex="0"><code>&lt;tool_call&gt;
+{&#34;name&#34;: &#34;get_weather&#34;, &#34;arguments&#34;: {&#34;city&#34;: &#34;Tokyo&#34;}}
+&lt;/tool_call&gt;
+</code></pre><p>The model does not run this. It just writes it.</p>
+<h3 id="the-loop-five-steps-not-one">The loop: five steps, not one<a hidden class="anchor" aria-hidden="true" href="#the-loop-five-steps-not-one">#</a></h3>
+<p>A <strong>host application</strong> — ordinary software sitting between the model and the outside world — <a href="https://platform.openai.com/docs/guides/function-calling">orchestrates the full cycle</a>:</p>
+<ol>
+<li><strong>App sends tool definitions + user message.</strong> The tool schemas (name, description, JSON Schema for parameters) are injected into the system prompt as tokens — they consume context window space just like any other text.</li>
+<li><strong>Model analyzes</strong> whether calling a tool would help fulfill the request.</li>
+<li><strong>Model outputs</strong> a structured <code>tool_calls</code> array — potentially <strong>multiple calls in parallel</strong>, not just one at a time.</li>
+<li><strong>App executes</strong> each function locally, captures the results.</li>
+<li><strong>App sends results back</strong> to the model as new messages, referencing each call by ID. The model reads them and generates a final response.</li>
+</ol>
+<p>To the end user, it looks like the AI &ldquo;called a function.&rdquo; In reality, the AI wrote a structured wish, and the system granted it.</p>
+<p>One subtlety worth noting: since tool definitions are injected as tokens, <strong>every tool you register costs context window space</strong> — even if the model never calls it. This becomes important later.</p>
+<p>This is the foundation. Everything that follows is about making this loop better.</p>
+<hr>
+<h2 id="stage-1-functions-hardcoded-on-the-server">Stage 1: Functions Hardcoded on the Server<a hidden class="anchor" aria-hidden="true" href="#stage-1-functions-hardcoded-on-the-server">#</a></h2>
+<p>The earliest tool-use systems were dead simple. You, the developer, would:</p>
+<ol>
+<li>Write a Python function (e.g., <code>def get_weather(city): ...</code>)</li>
+<li>Describe that function in the <strong>system prompt</strong> — &ldquo;You have access to <code>get_weather(city)</code>. Call it when the user asks about weather.&rdquo;</li>
+<li>Build a parser to catch the model&rsquo;s output and route it to your function</li>
+</ol>
+<p>This worked. But it had problems:</p>
+<ul>
+<li><strong>Every tool lived in your codebase.</strong> Want to add a database lookup? Write the function, redeploy.</li>
+<li><strong>The system prompt grew with every tool.</strong> Ten tools meant a wall of text describing each one&rsquo;s name, parameters, and usage rules — all eating into the model&rsquo;s context window.</li>
+<li><strong>No sharing.</strong> Your weather function was yours alone. Another developer building a similar app had to write their own from scratch.</li>
+</ul>
+<p>Still, this was the moment LLMs went from &ldquo;chat assistants&rdquo; to &ldquo;agents that can act.&rdquo; OpenAI formalized this as <strong><a href="https://openai.com/index/function-calling-and-other-api-updates/">Function Calling</a></strong> in June 2023, giving it a structured JSON schema instead of freeform text in the system prompt. But the architecture remained the same: functions lived on your server, described in your prompt.</p>
+<hr>
+<h2 id="stage-2-tool-servers--moving-tools-out">Stage 2: Tool Servers — Moving Tools Out<a hidden class="anchor" aria-hidden="true" href="#stage-2-tool-servers--moving-tools-out">#</a></h2>
+<p>The next step was obvious: <strong>why keep tools in your app?</strong> If a tool is just a function with inputs and outputs, it can live anywhere. Run it as a separate service. Call it over HTTP.</p>
+<p>This gave rise to <strong>tool servers</strong> — standalone services that expose tools via APIs. Your app no longer needs to contain the tool code. It just needs to know the tool&rsquo;s URL, its schema, and how to call it.</p>
+<p>Benefits:</p>
+<ul>
+<li><strong>Separation of concerns.</strong> The AI app handles conversation. The tool server handles actions.</li>
+<li><strong>Reusability.</strong> One tool server can serve many AI apps.</li>
+<li><strong>Independent scaling.</strong> A heavy tool (like image generation) can run on beefy hardware while the chat app stays lightweight.</li>
+</ul>
+<p>But there was no standard. Every tool server had its own API format, its own auth scheme, its own way of describing capabilities. Connecting your AI app to three different tool servers meant writing three different integrations.</p>
+<hr>
+<h2 id="stage-3-mcp--a-universal-plug-for-tools">Stage 3: MCP — A Universal Plug for Tools<a hidden class="anchor" aria-hidden="true" href="#stage-3-mcp--a-universal-plug-for-tools">#</a></h2>
+<p>In late 2024, Anthropic released the <strong><a href="https://www.anthropic.com/news/model-context-protocol">Model Context Protocol (MCP)</a></strong>. The idea: a single, open standard for connecting AI models to tools, data sources, and external systems.</p>
+<p>Think of it like USB for AI. Before USB, every device had its own cable. MCP does the same thing for tools — one protocol, any tool, any model.</p>
+<p>An MCP server exposes:</p>
+<ul>
+<li><strong>Tools</strong> — functions the model can call</li>
+<li><strong>Resources</strong> — data the model can read (files, database rows, API responses, documentation)</li>
+<li><strong>Prompts</strong> — reusable prompt templates that can embed domain knowledge, task workflows, and usage guidelines</li>
+</ul>
+<p>This means an MCP server is not just a function registry. It can carry rich context: a database MCP server can include a schema overview and query best practices; a codebase MCP server can expose architecture docs alongside the file-reading tools. The model receives both the capability and the knowledge needed to use it correctly.</p>
+<p>Any AI app that speaks MCP can connect to any MCP server. A developer builds a Slack MCP server once, and every MCP-compatible AI app can use it. No custom integration needed.</p>
+<p>MCP gained traction fast. GitHub, Postgres, Slack, Google Drive — community-built MCP servers popped up for everything. The ecosystem exploded.</p>
+<p>But then came a new problem.</p>
+<hr>
+<h2 id="stage-4-the-context-window-problem">Stage 4: The Context Window Problem<a hidden class="anchor" aria-hidden="true" href="#stage-4-the-context-window-problem">#</a></h2>
+<p>MCP made it easy to add tools. <em>Too</em> easy.</p>
+<p>Each MCP server comes with instructions: &ldquo;Here is what I can do. Here is how to call me. Here are the rules.&rdquo; And since MCP servers can also carry resources and domain knowledge, the payload per server can be substantial. When you connect five MCP servers, the model&rsquo;s context window fills up with tool descriptions, domain docs, usage guidelines, and server metadata — even when most of them are irrelevant to the current task.</p>
+<p>Imagine a developer asking the AI to fix a bug in a Python file. The model&rsquo;s context already contains instructions for:</p>
+<ul>
+<li>A Slack MCP server (not needed right now)</li>
+<li>A database MCP server (not needed right now)</li>
+<li>A Jira MCP server (not needed right now)</li>
+<li>A browser automation MCP server (not needed right now)</li>
+<li>A file system MCP server (finally, the one it needs)</li>
+</ul>
+<p>80% of the context window is wasted on tools the model won&rsquo;t use for this task. And context window space is precious — it is the model&rsquo;s working memory. Every token spent on irrelevant tool descriptions is a token not available for understanding the actual problem.</p>
+<p>This is the <strong>scaling curse of MCP</strong>: the more capable your agent becomes, the less room it has to think.</p>
+<hr>
+<h2 id="stage-5-skills--tools-on-demand-knowledge-on-demand">Stage 5: Skills — Tools on Demand, Knowledge on Demand<a hidden class="anchor" aria-hidden="true" href="#stage-5-skills--tools-on-demand-knowledge-on-demand">#</a></h2>
+<p>The solution? <strong>Don&rsquo;t load everything upfront. Load what you need, when you need it.</strong></p>
+<p>This is the idea behind <strong>skills</strong>. A skill is a bundle of tools, instructions, and domain knowledge that gets injected into the model&rsquo;s context <strong>only when triggered</strong>. Think of it as a lazy-loaded capability — and more than that, a lazy-loaded <em>expert</em>.</p>
+<p>The key insight: a skill is not just a tool schema. It is a <strong>workflow guide</strong>.</p>
+<p>A Jira skill, for example, doesn&rsquo;t just say &ldquo;here is how to call the Jira API.&rdquo; It says:</p>
+<ul>
+<li>When creating a bug ticket, always include steps to reproduce and the affected version.</li>
+<li>Search for an existing ticket before creating a new one.</li>
+<li>Link the new ticket to its parent epic.</li>
+<li>Use the <code>fix-version</code> field only after confirming with the project lead.</li>
+</ul>
+<p>This is embedded <em>know-how</em> — the kind of knowledge a senior engineer carries in their head. The skill packages both the tool access and the procedural knowledge for using it correctly.</p>
+<p>A full skill payload typically contains:</p>
+<ul>
+<li><strong>Tool schemas</strong> — the API calls or functions the model can make</li>
+<li><strong>Domain knowledge</strong> — facts about the system, constraints, naming conventions</li>
+<li><strong>Task workflows</strong> — step-by-step guidance for common operations (e.g., &ldquo;how to do a code review&rdquo;, &ldquo;how to open a PR&rdquo;)</li>
+<li><strong>Examples</strong> — sample inputs and outputs that show correct behavior</li>
+<li><strong>Error handling</strong> — what to do when things go wrong</li>
+</ul>
+<p>Instead of permanently stuffing the context with all of this, you register a skill:</p>
+<ul>
+<li><strong>Name:</strong> <code>jira</code></li>
+<li><strong>Trigger:</strong> When the user mentions Jira, tickets, or sprint planning</li>
+<li><strong>Payload:</strong> Tool schemas + domain knowledge + task workflows + examples</li>
+</ul>
+<p>When the model encounters a Jira-related request, the skill activates and its full payload enters the context. When the task is done, the payload leaves. The context stays clean.</p>
+<p>Skills solve the scaling problem:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Approach</th>
+          <th>Context cost</th>
+          <th>10 tools</th>
+          <th>100 tools</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Raw MCP</td>
+          <td>All tools always loaded</td>
+          <td>Heavy</td>
+          <td>Unworkable</td>
+      </tr>
+      <tr>
+          <td>Skills</td>
+          <td>Only active tools loaded</td>
+          <td>Light</td>
+          <td>Still light</td>
+      </tr>
+  </tbody>
+</table>
+<p>Now an agent can have access to hundreds of capabilities without choking its context window. The shift is from &ldquo;know everything&rdquo; to &ldquo;know how to find what you need — and know how to use it once you find it.&rdquo;</p>
+<hr>
+<h2 id="stage-6-one-agent--memory--skills">Stage 6: One Agent = Memory + Skills<a hidden class="anchor" aria-hidden="true" href="#stage-6-one-agent--memory--skills">#</a></h2>
+<p>With skills in place, we can define what a modern AI agent actually is:</p>
+<blockquote>
+<p><strong>An agent = a model + memory + a set of skills</strong></p>
+</blockquote>
+<ul>
+<li><strong>Model</strong>: The LLM brain that reasons and generates text</li>
+<li><strong>Memory</strong>: Persistent knowledge that survives across conversations — user preferences, project context, past decisions</li>
+<li><strong>Skills</strong>: On-demand capabilities that activate when needed — each carrying its own tools, domain knowledge, and task workflows</li>
+</ul>
+<p>Memory is what makes an agent <em>yours</em>. Without memory, every conversation starts from zero. With memory, the agent remembers that you prefer TypeScript over JavaScript, that your database is Postgres, that your team uses conventional commits.</p>
+<p>Skills are what makes an agent <em>capable and knowledgeable</em>. Without skills, the agent can only chat. With skills, it can commit code, manage PRs, query databases, browse the web — and it knows <em>how to do each of those things correctly</em>, not just that the tools exist. A commit skill doesn&rsquo;t just provide <code>git</code> access; it carries the team&rsquo;s commit message conventions, branching strategy, and review checklist.</p>
+<p>This is a clean, scalable architecture. One agent, focused context, relevant tools loaded on demand, persistent knowledge.</p>
+<p>But one agent has limits.</p>
+<hr>
+<h2 id="stage-7-teams-of-agents">Stage 7: Teams of Agents<a hidden class="anchor" aria-hidden="true" href="#stage-7-teams-of-agents">#</a></h2>
+<p>Some tasks are too big for one agent. Not because the model isn&rsquo;t smart enough, but because:</p>
+<ul>
+<li><strong>Context windows are finite.</strong> A single agent working on a large codebase will eventually run out of room.</li>
+<li><strong>Sequential work is slow.</strong> One agent reading 50 files, then planning, then coding, then testing — that is a long chain.</li>
+<li><strong>Different tasks need different focus.</strong> Research requires broad exploration. Coding requires deep file-level attention. Testing requires running commands and reading output. One agent juggling all three loses focus.</li>
+</ul>
+<p>The answer: <strong>teams of agents</strong>, each with their own context window, their own memory, and their own skills.</p>
+<p>A typical team might look like:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Agent</th>
+          <th>Role</th>
+          <th>Skills</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Lead</td>
+          <td>Coordinates work, synthesizes results</td>
+          <td>Task management, messaging</td>
+      </tr>
+      <tr>
+          <td>Researcher</td>
+          <td>Explores the codebase, reads docs</td>
+          <td>Search, web browsing</td>
+      </tr>
+      <tr>
+          <td>Coder</td>
+          <td>Writes and edits code</td>
+          <td>File editing, code generation</td>
+      </tr>
+      <tr>
+          <td>Tester</td>
+          <td>Runs tests, reports results</td>
+          <td>Test execution, log analysis</td>
+      </tr>
+  </tbody>
+</table>
+<p>Each agent runs as an independent process. They don&rsquo;t share a context window. They each start clean and focused on their assigned task.</p>
+<p>But this creates a new problem: <strong>how do they talk to each other?</strong></p>
+<hr>
+<h2 id="stage-8-the-communication-problem">Stage 8: The Communication Problem<a hidden class="anchor" aria-hidden="true" href="#stage-8-the-communication-problem">#</a></h2>
+<p>The moment you have multiple agents, you need answers to hard questions:</p>
+<ul>
+<li>How does Agent A tell Agent B what to do?</li>
+<li>How does Agent B report results back?</li>
+<li>How do they avoid stepping on each other&rsquo;s work?</li>
+<li>How does the team know when everything is done?</li>
+</ul>
+<p>Different systems answer these questions differently. Here are the main approaches that exist today.</p>
+<h3 id="approach-1-shared-conversation-thread">Approach 1: Shared Conversation Thread<a hidden class="anchor" aria-hidden="true" href="#approach-1-shared-conversation-thread">#</a></h3>
+<p><strong>Used by:</strong> <a href="https://github.com/microsoft/autogen">Microsoft AutoGen</a></p>
+<p>The simplest model. All agents share one message thread. Every agent can see what every other agent has said. A selector (either round-robin or model-based) picks who speaks next.</p>
+<pre tabindex="0"><code>Agent A: &#34;I found the bug in auth.py line 42.&#34;
+Agent B: &#34;I&#39;ll write a fix.&#34;
+Agent C: &#34;I&#39;ll write a test for the fix.&#34;
+</code></pre><p><strong>Pros:</strong> Simple. Full visibility. Easy to debug.</p>
+<p><strong>Cons:</strong> Context grows fast. With 5 agents and 100 messages, every agent carries the full conversation — even the parts that don&rsquo;t concern it. Expensive and wasteful at scale.</p>
+<h3 id="approach-2-llm-driven-delegation">Approach 2: LLM-Driven Delegation<a hidden class="anchor" aria-hidden="true" href="#approach-2-llm-driven-delegation">#</a></h3>
+<p><strong>Used by:</strong> <a href="https://github.com/crewAIInc/crewAI">CrewAI</a></p>
+<p>Agents don&rsquo;t share a thread. Instead, when Agent A needs help, it uses a delegation tool — essentially asking the LLM to compose a message to a specific teammate.</p>
+<pre tabindex="0"><code>Agent A calls: delegate_work(task=&#34;fix the bug&#34;, coworker=&#34;Coder&#34;, context=&#34;bug is in auth.py line 42&#34;)
+</code></pre><p>The framework routes this to the Coder agent, which works on it and returns a result.</p>
+<p><strong>Pros:</strong> Natural. Agents decide when and what to delegate.</p>
+<p><strong>Cons:</strong> Unpredictable. The LLM decides when to delegate, so you can&rsquo;t guarantee it will. No structured lifecycle — you can&rsquo;t track whether a delegated task is pending, in-progress, or done.</p>
+<h3 id="approach-3-state-graph">Approach 3: State Graph<a hidden class="anchor" aria-hidden="true" href="#approach-3-state-graph">#</a></h3>
+<p><strong>Used by:</strong> <a href="https://github.com/langchain-ai/langgraph">LangGraph</a></p>
+<p>The developer defines a <strong>graph</strong> where each node is an agent and each edge is an allowed transition. State flows through the graph as typed data. Agents hand off control explicitly using <code>Command</code> objects that specify both a state update and the next agent to run.</p>
+<pre tabindex="0"><code>Researcher → Planner → Coder → Tester → (back to Planner if tests fail)
+</code></pre><p><strong>Pros:</strong> Deterministic. Auditable. You know exactly what happens and in what order.</p>
+<p><strong>Cons:</strong> Rigid. You must design the graph upfront. Agents can&rsquo;t self-organize or adapt the workflow at runtime.</p>
+<h3 id="approach-4-task-list--direct-messages">Approach 4: Task List + Direct Messages<a hidden class="anchor" aria-hidden="true" href="#approach-4-task-list--direct-messages">#</a></h3>
+<p><strong>Used by:</strong> <a href="https://docs.anthropic.com/en/docs/claude-code/team">Claude Code Agent Teams</a></p>
+<p>Each team has a <strong>shared task list</strong> stored on disk. Agents claim tasks, work on them, and mark them done. For direct communication, agents use a <strong>message tool</strong> to send messages to specific teammates.</p>
+<pre tabindex="0"><code>Lead creates task: &#34;Fix auth bug&#34; → status: pending
+Coder claims task → status: in_progress
+Coder finishes → status: completed → sends message to Lead: &#34;Fixed. See commit abc123.&#34;
+Lead reads message, checks task list, assigns next work.
+</code></pre><p>Tasks support <strong>dependencies</strong> — Task B can be blocked by Task A, and automatically unblocks when A completes.</p>
+<p><strong>Pros:</strong> Structured and flexible. Tasks track lifecycle. Agents work independently without a shared context. The lead doesn&rsquo;t bottleneck communication — agents can message each other directly.</p>
+<p><strong>Cons:</strong> Requires discipline. Agents must remember to update task status. An agent that forgets to mark a task done can block the whole team.</p>
+<h3 id="approach-5-queue-based-actor-model-with-mention-parsing">Approach 5: Queue-Based Actor Model with Mention Parsing<a hidden class="anchor" aria-hidden="true" href="#approach-5-queue-based-actor-model-with-mention-parsing">#</a></h3>
+<p><strong>Used by:</strong> TinyClaw</p>
+<p>What if agents could coordinate using <strong>natural language mentions</strong> — just like humans do on Slack or Discord?</p>
+<p>TinyClaw takes this approach. There is no central orchestrator. Instead, agents communicate by writing <strong>mention tags</strong> directly in their responses:</p>
+<pre tabindex="0"><code>I fixed the bug in auth.ts.
+[@reviewer: Please review the changes in auth.ts for security issues.]
+[@tester: Run the test suite after the review is done.]
+</code></pre><p>A parser extracts these tags, and the system enqueues internal messages to the target agents via a <strong>shared SQLite queue</strong>. Each agent has its own isolated workspace and processes messages sequentially through a promise chain — but different agents run in parallel.</p>
+<p>The coordination relies on a <strong>pending counter</strong>. When an agent mentions a teammate, the counter increments. When a teammate finishes (with no further mentions), it decrements. When it hits zero, the conversation is complete and all responses are aggregated.</p>
+<pre tabindex="0"><code>User: &#34;@dev fix the auth bug&#34;
+  → Coder (team leader) receives message          pending: 1
+  → Coder responds, mentions @reviewer            pending: 1
+  → Reviewer responds, mentions @tester            pending: 1
+  → Tester responds (no mentions)                  pending: 0 → COMPLETE
+  → Aggregated response sent back to user
+</code></pre><p>Text written <em>outside</em> mention tags becomes <strong>shared context</strong> — delivered to all mentioned agents. This lets an agent broadcast background information while sending targeted instructions:</p>
+<pre tabindex="0"><code>Sprint ends Friday. 3 open bugs remain.
+[@coder: Focus on the auth bug first.]
+[@reviewer: Prioritize any open PRs.]
+</code></pre><p>Both agents receive the shared context plus their specific message.</p>
+<p><strong>Pros:</strong> No orchestrator needed. Natural language mentions feel intuitive. SQLite queue is durable (survives crashes, supports retries). Supports fan-out, backflow, and cross-talk — all through the same queue-and-counter mechanism.</p>
+<p><strong>Cons:</strong> Agents must follow the mention format correctly. No structured task lifecycle — you can&rsquo;t query whether a piece of work is &ldquo;pending&rdquo; or &ldquo;in progress&rdquo; like you can with a task list.</p>
+<h3 id="approach-6-an-open-protocol--googles-a2a">Approach 6: An Open Protocol — Google&rsquo;s A2A<a hidden class="anchor" aria-hidden="true" href="#approach-6-an-open-protocol--googles-a2a">#</a></h3>
+<p><strong>Announced:</strong> April 2025 | <strong>Governed by:</strong> <a href="https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents">Linux Foundation</a> (since June 2025)</p>
+<p>All the approaches above work within a single framework. But what if your agents are built by different companies, running on different servers, using different models?</p>
+<p>Google&rsquo;s <strong><a href="https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/">Agent-to-Agent (A2A)</a></strong> protocol tackles this. It is an open standard for agents to discover each other, authenticate, and exchange work — across organizational boundaries.</p>
+<p>The key concepts:</p>
+<ol>
+<li><strong>Agent Cards</strong> — Every agent publishes a JSON file at <code>/.well-known/agent.json</code> describing what it can do, like a machine-readable resume.</li>
+<li><strong>Tasks</strong> — Structured work units that move through a lifecycle: <code>submitted → working → completed / failed</code>.</li>
+<li><strong>Messages and Parts</strong> — The communication units within a task, supporting text, images, audio, and other modalities.</li>
+<li><strong>Streaming</strong> — Long-running tasks use Server-Sent Events (SSE) for real-time progress updates.</li>
+</ol>
+<p>A2A is designed to complement MCP, not replace it:</p>
+<ul>
+<li><strong>MCP</strong> = how an agent connects to tools (vertical)</li>
+<li><strong>A2A</strong> = how an agent connects to other agents (horizontal)</li>
+</ul>
+<p>As of early 2026, A2A has strong enterprise backing (AWS, Microsoft, Salesforce, SAP) but MCP has won more grassroots developer adoption. The two may converge over time — tools and agents are just different points on the same spectrum.</p>
+<h3 id="a-note-on-hybrid-systems">A Note on Hybrid Systems<a hidden class="anchor" aria-hidden="true" href="#a-note-on-hybrid-systems">#</a></h3>
+<p>Real-world systems rarely follow a single pattern. They mix and match — deterministic routing for known workflows, LLM-driven delegation for open-ended tasks, and shared infrastructure for discovery and auth. <a href="https://github.com/openclaw/openclaw">OpenClaw</a> is one example: it uses a gateway for agent routing (LangGraph-like deterministic control), LLM-driven session spawning for dynamic collaboration (CrewAI-like flexibility), and a shared gateway layer for authentication and discovery. As agent architectures mature, expect more hybrids like this rather than pure implementations of any single approach.</p>
+<h3 id="comparing-the-approaches">Comparing the Approaches<a hidden class="anchor" aria-hidden="true" href="#comparing-the-approaches">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Approach</th>
+          <th>Orchestration</th>
+          <th>Context</th>
+          <th>Task Tracking</th>
+          <th>Flexibility</th>
+          <th>Best For</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Shared Thread (AutoGen)</td>
+          <td>Selector (round-robin / LLM)</td>
+          <td>Shared across all agents</td>
+          <td>None built-in</td>
+          <td>Moderate — selector can adapt</td>
+          <td>Brainstorming, group discussions</td>
+      </tr>
+      <tr>
+          <td>LLM Delegation (CrewAI)</td>
+          <td>LLM decides when to delegate</td>
+          <td>Isolated per agent</td>
+          <td>None built-in</td>
+          <td>High — agents self-organize</td>
+          <td>Open-ended exploration</td>
+      </tr>
+      <tr>
+          <td>State Graph (LangGraph)</td>
+          <td>Developer-defined graph</td>
+          <td>Shared typed state</td>
+          <td>Implicit in graph transitions</td>
+          <td>Low — graph is fixed</td>
+          <td>Deterministic pipelines</td>
+      </tr>
+      <tr>
+          <td>Task List + DMs (Claude Code)</td>
+          <td>Lead assigns via task list</td>
+          <td>Isolated per agent</td>
+          <td>Structured lifecycle (pending → done)</td>
+          <td>High — tasks adapt at runtime</td>
+          <td>Complex multi-step projects</td>
+      </tr>
+      <tr>
+          <td>Queue + Mentions (TinyClaw)</td>
+          <td>No orchestrator — mention-based</td>
+          <td>Shared context + targeted messages</td>
+          <td>Pending counter only</td>
+          <td>High — agents self-coordinate</td>
+          <td>Decentralized async workflows</td>
+      </tr>
+      <tr>
+          <td>A2A Protocol (Google)</td>
+          <td>Client agent initiates tasks</td>
+          <td>Isolated across organizations</td>
+          <td>Structured lifecycle (submitted → done)</td>
+          <td>Moderate — protocol-defined</td>
+          <td>Cross-org agent interop</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="the-full-picture">The Full Picture<a hidden class="anchor" aria-hidden="true" href="#the-full-picture">#</a></h2>
+<p>Let&rsquo;s zoom out and see how all the pieces fit together:</p>
+<pre tabindex="0"><code>┌─────────────────────────────────────────────────┐
+│                  Agent Team                      │
+│                                                  │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
+│  │ Agent A   │  │ Agent B   │  │ Agent C   │      │
+│  │ (Lead)    │  │ (Coder)   │  │ (Tester)  │      │
+│  │          │  │          │  │          │       │
+│  │ Memory   │  │ Memory   │  │ Memory   │       │
+│  │ Skills   │  │ Skills   │  │ Skills   │       │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘       │
+│       │              │              │             │
+│       └──────── Communication ──────┘             │
+│         (Messages / Tasks / A2A)                  │
+└───────────────────────┬─────────────────────────┘
+                        │
+                   Skills activate
+                   on demand
+                        │
+              ┌─────────┼─────────┐
+              │         │         │
+          ┌───┴───┐ ┌───┴───┐ ┌──┴────┐
+          │ MCP   │ │ MCP   │ │ MCP   │
+          │Server │ │Server │ │Server │
+          │(Slack)│ │(DB)   │ │(Git)  │
+          └───────┘ └───────┘ └───────┘
+</code></pre><p>The evolution, in one line:</p>
+<blockquote>
+<p><strong>Hardcoded functions → Tool servers → MCP (standard plug) → Skills (on-demand loading) → Agents (memory + skills) → Teams (multiple agents) → Communication protocols (how they coordinate)</strong></p>
+</blockquote>
+<p>Each layer solved the previous layer&rsquo;s problem. Each layer created a new one. And that is how we got here.</p>
+<hr>
+<p><em>The LLM is still just predicting the next token. Everything else — tools, skills, memory, teams, protocols — is scaffolding we built around that one simple trick.</em></p>
+<hr>
+<h2 id="sources">Sources<a hidden class="anchor" aria-hidden="true" href="#sources">#</a></h2>
+<ul>
+<li><a href="https://openai.com/index/function-calling-and-other-api-updates/">Function calling and other API updates</a> — OpenAI, June 2023</li>
+<li><a href="https://platform.openai.com/docs/guides/function-calling">Function calling guide</a> — OpenAI API docs, explains the parse-execute-return loop</li>
+<li><a href="https://simplicityissota.substack.com/p/how-llms-are-trained-for-function">How LLMs are trained for function calling</a> — deep dive on how models learn to produce tool call tokens</li>
+<li><a href="https://arxiv.org/abs/2302.04761">Toolformer: Language Models Can Teach Themselves to Use Tools</a> — Schick et al., 2023</li>
+<li><a href="https://www.anthropic.com/news/model-context-protocol">Introducing the Model Context Protocol</a> — Anthropic, November 2024</li>
+<li><a href="https://modelcontextprotocol.io">MCP Specification</a> — Model Context Protocol official docs</li>
+<li><a href="https://github.com/microsoft/autogen">AutoGen</a> — Microsoft multi-agent framework</li>
+<li><a href="https://github.com/crewAIInc/crewAI">CrewAI</a> — Multi-agent orchestration framework</li>
+<li><a href="https://github.com/langchain-ai/langgraph">LangGraph</a> — LangChain agent state graph framework</li>
+<li><a href="https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/">Announcing the Agent2Agent Protocol (A2A)</a> — Google, April 2025</li>
+<li><a href="https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents">Linux Foundation launches A2A Protocol project</a> — Linux Foundation, June 2025</li>
+<li><a href="https://github.com/openclaw/openclaw">OpenClaw</a> — Gateway-based AI agent with multi-agent routing</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="../../tags/ai/">Ai</a></li>
+      <li><a href="../../tags/llm/">Llm</a></li>
+      <li><a href="../../tags/agents/">Agents</a></li>
+      <li><a href="../../tags/mcp/">Mcp</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="../../posts/educational-video-pipeline/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share From Raw Text to Agent Teams: How LLM Tooling Evolved on x"
+            href="https://x.com/intent/tweet/?text=From%20Raw%20Text%20to%20Agent%20Teams%3a%20How%20LLM%20Tooling%20Evolved&amp;url=%2fposts%2fllm-tools-evolution%2f&amp;hashtags=ai%2cllm%2cagents%2cmcp">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share From Raw Text to Agent Teams: How LLM Tooling Evolved on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fposts%2fllm-tools-evolution%2f&amp;title=From%20Raw%20Text%20to%20Agent%20Teams%3a%20How%20LLM%20Tooling%20Evolved&amp;summary=From%20Raw%20Text%20to%20Agent%20Teams%3a%20How%20LLM%20Tooling%20Evolved&amp;source=%2fposts%2fllm-tools-evolution%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share From Raw Text to Agent Teams: How LLM Tooling Evolved on reddit"
+            href="https://reddit.com/submit?url=%2fposts%2fllm-tools-evolution%2f&title=From%20Raw%20Text%20to%20Agent%20Teams%3a%20How%20LLM%20Tooling%20Evolved">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share From Raw Text to Agent Teams: How LLM Tooling Evolved on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=%2fposts%2fllm-tools-evolution%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share From Raw Text to Agent Teams: How LLM Tooling Evolved on whatsapp"
+            href="https://api.whatsapp.com/send?text=From%20Raw%20Text%20to%20Agent%20Teams%3a%20How%20LLM%20Tooling%20Evolved%20-%20%2fposts%2fllm-tools-evolution%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share From Raw Text to Agent Teams: How LLM Tooling Evolved on telegram"
+            href="https://telegram.me/share/url?text=From%20Raw%20Text%20to%20Agent%20Teams%3a%20How%20LLM%20Tooling%20Evolved&amp;url=%2fposts%2fllm-tools-evolution%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share From Raw Text to Agent Teams: How LLM Tooling Evolved on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=From%20Raw%20Text%20to%20Agent%20Teams%3a%20How%20LLM%20Tooling%20Evolved&u=%2fposts%2fllm-tools-evolution%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="../../">nmnhut</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

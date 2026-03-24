@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Transcription - nmnhut.dev</title>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --surface2: #0f3460;
+      --accent: #e94560;
+      --accent2: #533483;
+      --text: #eee;
+      --text2: #aaa;
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      background: var(--surface);
+      border-bottom: 2px solid var(--surface2);
+    }
+    header h1 { font-size: 1.5rem; }
+    header p { color: var(--text2); font-size: 0.85rem; margin-top: 4px; }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    /* Shared controls */
+    .section {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .section h3 { margin-bottom: 12px; font-size: 1rem; }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 600px) {
+      .row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .row select, .row .btn {
+        width: 100%;
+      }
+    }
+    select {
+      background: var(--surface2);
+      color: var(--text);
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      min-height: 44px;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-purple { background: var(--accent2); color: #fff; }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--surface2);
+    }
+    .btn-cancel {
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+    .api-key-input {
+      flex: 1;
+      min-width: 150px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--surface2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      min-height: 44px;
+    }
+    .api-key-input:focus { outline: none; border-color: var(--accent); }
+    .api-note {
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin-top: 8px;
+      font-style: italic;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      margin-top: 12px;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 3px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+    .status {
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-top: 8px;
+    }
+
+    /* Tabs - connected to panel */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 4px 4px 0 4px;
+      margin-bottom: 0;
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tab:hover { background: var(--surface2); }
+    .tab.active {
+      background: var(--accent);
+      position: relative;
+    }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    /* Panels */
+    .panel {
+      background: var(--surface);
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 20px;
+      display: none;
+      margin-top: 0;
+      border-top: 2px solid var(--accent);
+      position: relative;
+    }
+    .panel.active { display: block; }
+
+    /* Model-not-loaded overlay */
+    .panel-overlay {
+      position: absolute;
+      inset: 0;
+      background: var(--surface);
+      border-radius: 0 0 var(--radius) var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+      cursor: pointer;
+    }
+    .panel-overlay .overlay-icon {
+      font-size: 2rem;
+      opacity: 0.6;
+    }
+    .panel-overlay .overlay-text {
+      color: var(--text2);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .panel-overlay.hidden { display: none; }
+
+    /* Input section reveal animation */
+    .input-area {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .input-area.model-pending {
+      opacity: 0.5;
+    }
+    .input-area.model-ready {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* File upload / drop zone */
+    .drop-zone {
+      border: 2px dashed var(--surface2);
+      border-radius: var(--radius);
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(233, 69, 96, 0.05);
+    }
+    .drop-zone p { color: var(--text2); margin-top: 8px; font-size: 0.85rem; }
+    .drop-zone .icon { font-size: 2.5rem; opacity: 0.7; }
+    .drop-zone .upload-icon {
+      display: inline-block;
+      width: 48px;
+      height: 48px;
+    }
+    #file-input { display: none; }
+
+    /* File selected state inside drop zone */
+    .drop-zone.file-selected {
+      border-color: var(--accent2);
+      background: rgba(83, 52, 131, 0.08);
+      padding: 20px;
+    }
+    .drop-zone .file-info {
+      display: none;
+    }
+    .drop-zone.file-selected .upload-prompt { display: none; }
+    .drop-zone.file-selected .file-info { display: block; }
+    .file-info .file-detail {
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+    .file-info .file-name-display {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 1rem;
+      word-break: break-all;
+    }
+    #audio-preview {
+      width: 100%;
+      margin-top: 10px;
+      display: none;
+      border-radius: 8px;
+    }
+    .trim-controls {
+      margin-top: 12px;
+      display: none;
+    }
+    .drop-zone.file-selected .trim-controls { display: block; }
+    .trim-label {
+      font-size: 0.85rem;
+      color: var(--text2);
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .trim-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .trim-row label {
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+    .trim-input {
+      width: 70px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--surface2);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 0.85rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      text-align: center;
+    }
+    .trim-input:focus { outline: none; border-color: var(--accent); }
+    .btn-sm { padding: 6px 12px; font-size: 0.8rem; min-height: 32px; }
+    .file-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Real-time mic */
+    .mic-area {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 0;
+    }
+    .mic-instruction {
+      color: var(--text2);
+      font-size: 0.85rem;
+      max-width: 280px;
+    }
+    .mic-btn {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mic-btn:hover { transform: scale(1.05); }
+    .mic-btn.recording {
+      animation: pulse 1.5s infinite;
+      box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.7);
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(233, 69, 96, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); }
+    }
+    .mic-btn:disabled { opacity: 0.4; cursor: not-allowed; animation: none; }
+    .mic-status { font-size: 0.85rem; color: var(--text2); }
+    #visualizer {
+      width: 100%;
+      height: 60px;
+      border-radius: 8px;
+      display: none;
+    }
+    #visualizer.active { display: block; }
+    .mic-chunk-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .mic-chunk-row label {
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
+    /* Transcript */
+    #transcript-section { position: relative; }
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .view-toggle .btn { padding: 6px 14px; font-size: 0.8rem; }
+    .view-toggle .btn.active { background: var(--accent2); color: #fff; }
+
+    #transcript {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 120px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    #transcript .chunk { display: inline; }
+    #transcript .chunk.pending { color: var(--text2); font-style: italic; }
+    #transcript:empty::before {
+      content: 'Transcription will appear here...';
+      color: var(--text2);
+      font-style: italic;
+    }
+
+    /* Timeline view */
+    #transcript.timeline-view {
+      white-space: normal;
+    }
+    #transcript.timeline-view .tl-entry {
+      display: flex;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--surface2);
+      align-items: flex-start;
+    }
+    #transcript.timeline-view .tl-entry:last-child { border-bottom: none; }
+    .tl-time {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--surface2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      min-width: 70px;
+      text-align: center;
+      flex-shrink: 0;
+      cursor: default;
+    }
+    .tl-text { flex: 1; }
+
+    /* Transcript actions — hidden when no content */
+    .transcript-actions {
+      margin-top: 12px;
+      display: none;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    #transcript-section.has-content .transcript-actions {
+      display: flex;
+    }
+
+    /* LLM section — collapsible */
+    #llm-section {
+      border: 2px solid var(--accent2);
+    }
+    .collapsible-header {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      margin-bottom: 0 !important;
+    }
+    .collapsible-header .chevron {
+      margin-left: auto;
+      transition: transform 0.3s;
+      font-size: 0.7rem;
+    }
+    .collapsible-body {
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    #llm-section h3 .badge {
+      font-size: 0.7rem;
+      background: var(--accent2);
+      padding: 2px 8px;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    #llm-prompt {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--surface2);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      margin-top: 10px;
+    }
+    #llm-prompt:focus { outline: none; border-color: var(--accent2); }
+    #llm-output {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 10px;
+      min-height: 80px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      display: none;
+    }
+    #llm-output:empty::before {
+      content: 'LLM output will appear here...';
+      color: var(--text2);
+      font-style: italic;
+    }
+    .llm-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .llm-desc {
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-bottom: 10px;
+    }
+    .llm-hidden { display: none; }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--text2);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Pulse highlight for model section */
+    @keyframes highlight-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.6); }
+      50% { box-shadow: 0 0 0 10px rgba(233, 69, 96, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); }
+    }
+    .highlight-pulse {
+      animation: highlight-pulse 0.8s ease-out 2;
+    }
+
+    /* Mobile timeline stacking */
+    @media (max-width: 600px) {
+      .container { padding: 12px; }
+      .drop-zone { padding: 24px 12px; }
+      #transcript.timeline-view .tl-entry {
+        flex-direction: column;
+        gap: 4px;
+      }
+      .tl-time {
+        min-width: unset;
+        align-self: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Audio Transcription</h1>
+    <p id="subtitle">Runs 100% in your browser using Whisper + LLM (ONNX) &mdash; no server needed</p>
+  </header>
+
+  <div class="container">
+    <!-- Whisper Model Loader -->
+    <div class="section" id="model-section">
+      <div class="row">
+        <label><strong>Mode:</strong></label>
+        <select id="whisper-mode">
+          <option value="local" selected>Local (in-browser)</option>
+          <option value="api">OpenAI API (faster, accurate)</option>
+        </select>
+      </div>
+
+      <!-- Local mode controls -->
+      <div id="local-controls">
+        <div class="row" style="margin-top:10px;">
+          <label><strong>Model:</strong></label>
+          <select id="model-select">
+            <option value="onnx-community/whisper-tiny.en">whisper-tiny.en (~40 MB, fast)</option>
+            <option value="onnx-community/whisper-base.en" selected>whisper-base.en (~75 MB, recommended)</option>
+            <option value="onnx-community/whisper-small.en">whisper-small.en (~250 MB, best)</option>
+          </select>
+          <button type="button" class="btn btn-accent" id="load-btn">Load Model</button>
+          <button type="button" class="btn btn-cancel" id="load-cancel-btn" style="display:none;">Cancel</button>
+        </div>
+        <div class="progress-bar" id="model-progress">
+          <div class="fill" id="model-progress-fill"></div>
+        </div>
+        <div class="status" id="model-status"></div>
+      </div>
+
+      <!-- API mode controls -->
+      <div id="api-controls" style="display:none;">
+        <div class="row" style="margin-top:10px;">
+          <label><strong>API Key:</strong></label>
+          <input type="password" id="api-key" class="api-key-input" placeholder="sk-..." autocomplete="off">
+          <select id="api-model-select">
+            <option value="whisper-1" selected>whisper-1</option>
+          </select>
+          <button type="button" class="btn btn-accent" id="api-ready-btn">Use API</button>
+        </div>
+        <div class="api-note">Your key is stored in this browser only and sent directly to OpenAI. Never stored on any server.</div>
+        <div class="status" id="api-status"></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="input-area model-pending" id="input-area">
+      <div class="tabs">
+        <div class="tab active" data-tab="file">Upload File</div>
+        <div class="tab" data-tab="mic">Real-time Mic</div>
+      </div>
+
+      <!-- File Panel -->
+      <div class="panel active" id="panel-file">
+        <div class="panel-overlay" id="file-overlay">
+          <div class="overlay-icon">&#128274;</div>
+          <div class="overlay-text">Load a model first</div>
+        </div>
+        <div class="drop-zone" id="drop-zone">
+          <div class="upload-prompt">
+            <div class="icon">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <div id="drop-zone-text"><strong>Drop audio file here</strong></div>
+            <p id="drop-zone-subtext">or click to browse &mdash; supports mp3, wav, ogg, webm, m4a, flac</p>
+          </div>
+          <div class="file-info" id="file-info">
+            <div class="file-name-display" id="file-name-display"></div>
+            <div class="file-detail" id="file-detail"></div>
+            <audio id="audio-preview" controls></audio>
+            <div class="trim-controls" id="trim-controls">
+              <label class="trim-label">Trim audio:</label>
+              <div class="trim-row">
+                <label>Start</label>
+                <input type="text" id="trim-start" class="trim-input" placeholder="0:00" value="0:00">
+                <label>End</label>
+                <input type="text" id="trim-end" class="trim-input" placeholder="end">
+                <button type="button" class="btn btn-outline btn-sm" id="trim-reset">Reset</button>
+              </div>
+            </div>
+          </div>
+          <input type="file" id="file-input" accept="audio/*">
+        </div>
+        <div class="file-actions">
+          <button type="button" class="btn btn-accent" id="transcribe-btn" disabled>Transcribe</button>
+          <button type="button" class="btn btn-cancel" id="transcribe-cancel-btn" style="display:none;">Cancel</button>
+        </div>
+        <div class="progress-bar" id="transcribe-progress">
+          <div class="fill" id="transcribe-progress-fill"></div>
+        </div>
+        <div class="status" id="transcribe-status"></div>
+      </div>
+
+      <!-- Mic Panel -->
+      <div class="panel" id="panel-mic">
+        <div class="panel-overlay" id="mic-overlay">
+          <div class="overlay-icon">&#128274;</div>
+          <div class="overlay-text">Load a model first</div>
+        </div>
+        <div class="mic-area">
+          <canvas id="visualizer"></canvas>
+          <p class="mic-instruction" id="mic-instruction">Press the microphone button to begin real-time transcription</p>
+          <button type="button" class="mic-btn" id="mic-btn" disabled title="Start recording">
+            &#127908;
+          </button>
+          <div class="mic-status" id="mic-status">Load a model to start</div>
+          <div class="mic-chunk-row">
+            <label>Update every:</label>
+            <select id="chunk-interval">
+              <option value="2" selected>2s</option>
+              <option value="3">3s</option>
+              <option value="5">5s</option>
+              <option value="10">10s</option>
+              <option value="15">15s</option>
+              <option value="30">30s</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transcript -->
+    <div class="section" id="transcript-section">
+      <h3>Transcript</h3>
+      <div class="view-toggle">
+        <button type="button" class="btn btn-outline active" id="view-plain">Plain</button>
+        <button type="button" class="btn btn-outline" id="view-timeline">Timeline</button>
+      </div>
+      <div id="transcript"></div>
+      <div class="transcript-actions">
+        <button type="button" class="btn btn-outline" id="copy-btn">Copy</button>
+        <button type="button" class="btn btn-outline" id="clear-btn">Clear</button>
+        <button type="button" class="btn btn-outline" id="download-btn">Download .txt</button>
+      </div>
+    </div>
+
+    <!-- LLM Edit Section — collapsible -->
+    <div class="section collapsible" id="llm-section">
+      <h3 class="collapsible-header" id="llm-toggle">
+        AI Edit <span class="badge">Optional</span>
+        <span class="chevron">&#9660;</span>
+      </h3>
+      <div class="collapsible-body" id="llm-body" style="display:none;">
+        <p class="llm-desc">Load a small LLM to clean up, summarize, or reformat your transcript &mdash; runs in-browser.</p>
+        <div class="row">
+          <label><strong>LLM:</strong></label>
+          <select id="llm-select">
+            <option value="onnx-community/Qwen2.5-0.5B-Instruct" selected>Qwen2.5 0.5B (~350 MB, fast)</option>
+            <option value="onnx-community/SmolLM2-1.7B-Instruct">SmolLM2 1.7B (~1 GB, better)</option>
+            <option value="onnx-community/Phi-3.5-mini-instruct">Phi-3.5 Mini 3.8B (~2 GB, best)</option>
+          </select>
+          <button type="button" class="btn btn-purple" id="llm-load-btn">Load LLM</button>
+          <button type="button" class="btn btn-cancel" id="llm-cancel-btn" style="display:none;">Cancel</button>
+        </div>
+        <div class="progress-bar" id="llm-progress">
+          <div class="fill" id="llm-progress-fill"></div>
+        </div>
+        <div class="status" id="llm-status"></div>
+        <textarea id="llm-prompt" placeholder="Enter instructions, e.g.: Fix grammar and punctuation. / Summarize this transcript. / Rewrite as bullet points.">Fix grammar, punctuation, and clean up this transcript while keeping the original meaning.</textarea>
+        <div class="llm-actions">
+          <button type="button" class="btn btn-purple" id="llm-edit-btn" disabled>Edit Transcript with AI</button>
+          <button type="button" class="btn btn-cancel" id="llm-edit-cancel-btn" style="display:none;">Cancel</button>
+          <button type="button" class="btn btn-outline llm-hidden" id="llm-apply-btn">Apply to Transcript</button>
+          <button type="button" class="btn btn-outline llm-hidden" id="llm-copy-btn">Copy Result</button>
+        </div>
+        <div id="llm-output"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Fix #1: Import pipeline for LLM usage in the main thread
+    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3';
+
+    // Fix #7: Extract magic numbers into a constants object
+    const CONFIG = {
+      SILENCE_RMS_THRESHOLD: 0.01,
+      LLM_MAX_TOKENS: 1024,
+      LLM_TEMPERATURE: 0.3,
+      WHISPER_CHUNK_LENGTH_S: 30,
+      WHISPER_STRIDE_LENGTH_S: 5,
+      COPY_FEEDBACK_MS: 1500,
+      SAVE_DEBOUNCE_MS: 500,
+    };
+
+    // ======== TOUCH DEVICE DETECTION ========
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    // ======== WEB WORKER FOR WHISPER ========
+    const whisperWorker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
+
+    let _msgId = 0;
+    const _pending = new Map();
+
+    whisperWorker.onmessage = (e) => {
+      const { type, payload, id } = e.data;
+      if (type === 'progress') {
+        const cb = _pending.get(id);
+        if (cb && cb.onProgress) cb.onProgress(payload);
+        return;
+      }
+      const cb = _pending.get(id);
+      if (!cb) return;
+      _pending.delete(id);
+      if (type === 'error') {
+        cb.reject(new Error(payload));
+      } else {
+        cb.resolve(payload);
+      }
+    };
+
+    function workerCall(type, payload, onProgress) {
+      const id = ++_msgId;
+      return new Promise((resolve, reject) => {
+        _pending.set(id, { resolve, reject, onProgress });
+        if (payload && payload.audio instanceof Float32Array) {
+          whisperWorker.postMessage({ type, payload, id }, [payload.audio.buffer]);
+        } else {
+          whisperWorker.postMessage({ type, payload, id });
+        }
+      });
+    }
+
+    // ======== STATE ========
+    let whisperMode = 'local'; // 'local' or 'api'
+    let apiKey = '';
+    let apiModel = 'whisper-1';
+    let isModelLoaded = false;
+    let isRecording = false;
+    let mediaStream = null;
+    let audioContext = null;
+    let analyserNode = null;
+    let sourceNode = null;
+
+    let animFrameId = null;
+    let selectedFile = null;
+    let micStartTime = 0;
+
+    // Rolling PCM buffer: continuously captures 16kHz mono samples
+    let pcmBuffer = new Float32Array(0);
+    // How many samples have already been transcribed (confirmed)
+    let transcribedSamples = 0;
+
+    // Fix #3: Unique ID counter for timeline entries
+    let _entryIdCounter = 0;
+
+    // Timeline data: array of { id, start, end, text, pending? }
+    let timelineData = [];
+    let currentView = 'plain'; // 'plain' or 'timeline'
+
+    // LLM
+    let llmGenerator = null;
+    let isLlmLoaded = false;
+
+    // Cancel flags
+    let _loadCancelled = false;
+    let _transcribeCancelled = false;
+    let _llmLoadCancelled = false;
+    let _llmEditCancelled = false;
+
+    // ======== LOCAL STORAGE ========
+    const LS_KEY = 'transcribe_state';
+
+    function saveState() {
+      try {
+        const state = {
+          timelineData: timelineData.filter(e => !e.pending),
+          currentView,
+          llmPromptText: llmPrompt ? llmPrompt.value : '',
+          llmOutputText: llmOutput ? llmOutput.textContent : '',
+        };
+        localStorage.setItem(LS_KEY, JSON.stringify(state));
+      } catch (err) {
+        // Fix #9: Log instead of silently swallowing
+        console.warn('saveState failed:', err);
+      }
+    }
+
+    // Fix #8: Debounced saveState for use in renderTranscript
+    let _saveDebounceTimer = null;
+    function debouncedSaveState() {
+      clearTimeout(_saveDebounceTimer);
+      _saveDebounceTimer = setTimeout(saveState, CONFIG.SAVE_DEBOUNCE_MS);
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (state.timelineData && state.timelineData.length > 0) {
+          timelineData = state.timelineData;
+          // Ensure restored entries have IDs
+          for (const entry of timelineData) {
+            if (entry.id == null) entry.id = ++_entryIdCounter;
+          }
+        }
+        if (state.currentView) currentView = state.currentView;
+        if (state.llmPromptText) llmPrompt.value = state.llmPromptText;
+        if (state.llmOutputText) {
+          llmOutput.textContent = state.llmOutputText;
+          llmOutput.style.display = 'block';
+          llmApplyBtn.classList.remove('llm-hidden');
+          llmCopyBtn.classList.remove('llm-hidden');
+        }
+      } catch (err) {
+        // Fix #9: Log instead of silently swallowing
+        console.warn('loadState failed:', err);
+      }
+    }
+
+    function clearState() {
+      localStorage.removeItem(LS_KEY);
+    }
+
+    // ======== DOM ========
+    const modelSelect = document.getElementById('model-select');
+    const loadBtn = document.getElementById('load-btn');
+    const loadCancelBtn = document.getElementById('load-cancel-btn');
+    const modelProgress = document.getElementById('model-progress');
+    const modelProgressFill = document.getElementById('model-progress-fill');
+    const modelStatus = document.getElementById('model-status');
+    const inputArea = document.getElementById('input-area');
+    const fileOverlay = document.getElementById('file-overlay');
+    const micOverlay = document.getElementById('mic-overlay');
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    const dropZone = document.getElementById('drop-zone');
+    const dropZoneText = document.getElementById('drop-zone-text');
+    const dropZoneSubtext = document.getElementById('drop-zone-subtext');
+    const fileInput = document.getElementById('file-input');
+    const fileInfo = document.getElementById('file-info');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const fileDetail = document.getElementById('file-detail');
+    const audioPreview = document.getElementById('audio-preview');
+    const transcribeBtn = document.getElementById('transcribe-btn');
+    const transcribeCancelBtn = document.getElementById('transcribe-cancel-btn');
+    const micBtn = document.getElementById('mic-btn');
+    const micStatus = document.getElementById('mic-status');
+    const micInstruction = document.getElementById('mic-instruction');
+    const chunkIntervalSelect = document.getElementById('chunk-interval');
+    const visualizer = document.getElementById('visualizer');
+    const transcriptEl = document.getElementById('transcript');
+    const transcriptSection = document.getElementById('transcript-section');
+    const copyBtn = document.getElementById('copy-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const viewPlainBtn = document.getElementById('view-plain');
+    const viewTimelineBtn = document.getElementById('view-timeline');
+
+    const llmSelect = document.getElementById('llm-select');
+    const llmLoadBtn = document.getElementById('llm-load-btn');
+    const llmCancelBtn = document.getElementById('llm-cancel-btn');
+    const llmProgress = document.getElementById('llm-progress');
+    const llmProgressFill = document.getElementById('llm-progress-fill');
+    const llmStatusEl = document.getElementById('llm-status');
+    const llmPrompt = document.getElementById('llm-prompt');
+    const llmEditBtn = document.getElementById('llm-edit-btn');
+    const llmEditCancelBtn = document.getElementById('llm-edit-cancel-btn');
+    const llmApplyBtn = document.getElementById('llm-apply-btn');
+    const llmCopyBtn = document.getElementById('llm-copy-btn');
+    const llmOutput = document.getElementById('llm-output');
+    const llmToggle = document.getElementById('llm-toggle');
+    const llmBody = document.getElementById('llm-body');
+    const modelSection = document.getElementById('model-section');
+
+    // ======== TOUCH DEVICE ADJUSTMENTS ========
+    if (isTouchDevice) {
+      dropZoneText.innerHTML = '<strong>Tap to select audio file</strong>';
+      dropZoneSubtext.textContent = 'Supports mp3, wav, ogg, webm, m4a, flac';
+    }
+
+    // ======== LLM COLLAPSIBLE ========
+    llmToggle.addEventListener('click', () => {
+      const chevron = llmToggle.querySelector('.chevron');
+      const isOpen = llmBody.style.display !== 'none';
+      llmBody.style.display = isOpen ? 'none' : 'block';
+      chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+    });
+
+    // Save LLM prompt on change (debounced)
+    let promptSaveTimer = null;
+    llmPrompt.addEventListener('input', () => {
+      clearTimeout(promptSaveTimer);
+      promptSaveTimer = setTimeout(saveState, CONFIG.SAVE_DEBOUNCE_MS);
+    });
+
+    // ======== RESTORE STATE ========
+    loadState();
+    // Sync view toggle buttons with restored state
+    if (currentView === 'timeline') {
+      viewTimelineBtn.classList.add('active');
+      viewPlainBtn.classList.remove('active');
+    }
+    renderTranscript();
+
+    // ======== HELPER: Friendly progress messages ========
+    function friendlyProgressMsg(progress) {
+      if (progress.status === 'progress' && progress.total) {
+        const pct = Math.round((progress.loaded / progress.total) * 100);
+        const sizeMB = (progress.total / 1024 / 1024).toFixed(0);
+        return `Downloading model... ${pct}% (~${sizeMB} MB)`;
+      } else if (progress.status === 'done') {
+        return 'Component loaded';
+      } else if (progress.status === 'initiate') {
+        return 'Preparing download...';
+      }
+      return '';
+    }
+
+    // ======== HELPER: Reveal input area after model loads ========
+    function revealInputArea() {
+      inputArea.classList.remove('model-pending');
+      inputArea.classList.add('model-ready');
+      fileOverlay.classList.add('hidden');
+      micOverlay.classList.add('hidden');
+    }
+
+    // ======== HELPER: Highlight model section ========
+    function pulseModelSection() {
+      modelSection.classList.add('highlight-pulse');
+      modelSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => modelSection.classList.remove('highlight-pulse'), 2000);
+    }
+
+    // ======== WHISPER MODE TOGGLE ========
+    const whisperModeSelect = document.getElementById('whisper-mode');
+    const localControls = document.getElementById('local-controls');
+    const apiControls = document.getElementById('api-controls');
+    const apiKeyInput = document.getElementById('api-key');
+    const apiModelSelect = document.getElementById('api-model-select');
+    const apiReadyBtn = document.getElementById('api-ready-btn');
+    const apiStatusEl = document.getElementById('api-status');
+
+    // Restore saved API key
+    try {
+      const savedKey = localStorage.getItem('transcribe_api_key');
+      if (savedKey) apiKeyInput.value = savedKey;
+    } catch (_) {}
+
+    const subtitle = document.getElementById('subtitle');
+    whisperModeSelect.addEventListener('change', () => {
+      whisperMode = whisperModeSelect.value;
+      if (whisperMode === 'api') {
+        localControls.style.display = 'none';
+        apiControls.style.display = '';
+        subtitle.innerHTML = 'Uses OpenAI Whisper API &mdash; fast &amp; accurate';
+      } else {
+        localControls.style.display = '';
+        apiControls.style.display = 'none';
+        subtitle.innerHTML = 'Runs 100% in your browser using Whisper + LLM (ONNX) &mdash; no server needed';
+      }
+    });
+
+    apiReadyBtn.addEventListener('click', () => {
+      const key = apiKeyInput.value.trim();
+      if (!key) {
+        apiStatusEl.textContent = 'Please enter your OpenAI API key';
+        return;
+      }
+      apiKey = key;
+      apiModel = apiModelSelect.value;
+      try { localStorage.setItem('transcribe_api_key', key); } catch (_) {}
+      isModelLoaded = true;
+      apiStatusEl.textContent = `Ready — using OpenAI ${apiModel}`;
+      transcribeBtn.disabled = !selectedFile;
+      micBtn.disabled = false;
+      micStatus.textContent = 'Click the mic to start real-time transcription';
+      revealInputArea();
+    });
+
+    // ======== OPENAI WHISPER API ========
+    async function transcribeViaApi(audioFloat32, language) {
+      // Convert Float32Array (16kHz mono) to WAV blob
+      const wavBlob = float32ToWav(audioFloat32, 16000);
+
+      const formData = new FormData();
+      formData.append('file', wavBlob, 'audio.wav');
+      formData.append('model', apiModel);
+      formData.append('response_format', 'verbose_json');
+      if (language) formData.append('language', language);
+
+      const resp = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}` },
+        body: formData,
+      });
+
+      if (!resp.ok) {
+        const err = await resp.text();
+        throw new Error(`OpenAI API error ${resp.status}: ${err}`);
+      }
+
+      return await resp.json();
+    }
+
+    function float32ToWav(samples, sampleRate) {
+      const numChannels = 1;
+      const bitsPerSample = 16;
+      const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+      const blockAlign = numChannels * (bitsPerSample / 8);
+      const dataSize = samples.length * (bitsPerSample / 8);
+      const buffer = new ArrayBuffer(44 + dataSize);
+      const view = new DataView(buffer);
+
+      // WAV header
+      const writeStr = (offset, str) => { for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i)); };
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + dataSize, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true); // PCM
+      view.setUint16(22, numChannels, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, byteRate, true);
+      view.setUint16(32, blockAlign, true);
+      view.setUint16(34, bitsPerSample, true);
+      writeStr(36, 'data');
+      view.setUint32(40, dataSize, true);
+
+      // PCM samples
+      let offset = 44;
+      for (let i = 0; i < samples.length; i++) {
+        const s = Math.max(-1, Math.min(1, samples[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        offset += 2;
+      }
+
+      return new Blob([buffer], { type: 'audio/wav' });
+    }
+
+    // ======== WHISPER LOCAL MODEL ========
+    loadBtn.addEventListener('click', async () => {
+      const modelId = modelSelect.value;
+      loadBtn.disabled = true;
+      loadBtn.style.display = 'none';
+      loadCancelBtn.style.display = '';
+      modelSelect.disabled = true;
+      modelProgress.style.display = 'block';
+      modelStatus.textContent = 'Downloading and initializing model...';
+      _loadCancelled = false;
+
+      try {
+        const loadResult = await workerCall('load', { modelId }, (progress) => {
+          if (_loadCancelled) return;
+          if (progress.status === 'progress' && progress.total) {
+            const pct = Math.round((progress.loaded / progress.total) * 100);
+            modelProgressFill.style.width = pct + '%';
+            modelStatus.textContent = friendlyProgressMsg(progress);
+          } else if (progress.status === 'done') {
+            modelStatus.textContent = friendlyProgressMsg(progress);
+          } else if (progress.status === 'initiate') {
+            modelStatus.textContent = friendlyProgressMsg(progress);
+          }
+        });
+
+        if (_loadCancelled) {
+          modelStatus.textContent = 'Model loading cancelled.';
+          return;
+        }
+
+        isModelLoaded = true;
+        modelProgressFill.style.width = '100%';
+        const device = loadResult?.device || 'wasm';
+        const deviceLabel = device === 'webgpu' ? 'WebGPU' : 'CPU (WASM)';
+        modelStatus.textContent = `Model "${modelId.split('/').pop()}" ready — running on ${deviceLabel}`;
+        transcribeBtn.disabled = !selectedFile;
+        micBtn.disabled = false;
+        micStatus.textContent = 'Click the mic to start real-time transcription';
+        revealInputArea();
+      } catch (err) {
+        if (!_loadCancelled) {
+          modelStatus.textContent = 'Error loading model: ' + err.message;
+          console.error(err);
+        }
+      } finally {
+        loadBtn.disabled = false;
+        loadBtn.style.display = '';
+        loadCancelBtn.style.display = 'none';
+        modelSelect.disabled = false;
+      }
+    });
+
+    loadCancelBtn.addEventListener('click', () => {
+      _loadCancelled = true;
+      loadCancelBtn.style.display = 'none';
+      loadBtn.style.display = '';
+      loadBtn.disabled = false;
+      modelSelect.disabled = false;
+      modelStatus.textContent = 'Model loading cancelled.';
+      modelProgress.style.display = 'none';
+    });
+
+    // ======== TABS ========
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // If model not loaded and clicking mic tab, guide user
+        if (tab.dataset.tab === 'mic' && !isModelLoaded) {
+          pulseModelSection();
+        }
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        panels.forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ======== VIEW TOGGLE ========
+    viewPlainBtn.addEventListener('click', () => {
+      currentView = 'plain';
+      viewPlainBtn.classList.add('active');
+      viewTimelineBtn.classList.remove('active');
+      renderTranscript();
+    });
+    viewTimelineBtn.addEventListener('click', () => {
+      currentView = 'timeline';
+      viewTimelineBtn.classList.add('active');
+      viewPlainBtn.classList.remove('active');
+      renderTranscript();
+    });
+
+    // ======== FILE UPLOAD ========
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) handleFile(fileInput.files[0]);
+    });
+
+    // ======== TRIM HELPERS ========
+    const trimStartInput = document.getElementById('trim-start');
+    const trimEndInput = document.getElementById('trim-end');
+    const trimResetBtn = document.getElementById('trim-reset');
+    let audioDurationSec = 0;
+
+    function parseTimeInput(str) {
+      // Accepts "1:23", "1:23:45", "83", "1m23s", etc.
+      str = str.trim();
+      if (!str || str === 'end') return null;
+      // m:ss or h:mm:ss
+      const colons = str.split(':');
+      if (colons.length === 2) return parseInt(colons[0]) * 60 + parseFloat(colons[1]);
+      if (colons.length === 3) return parseInt(colons[0]) * 3600 + parseInt(colons[1]) * 60 + parseFloat(colons[2]);
+      // Plain seconds
+      const num = parseFloat(str);
+      return isNaN(num) ? null : num;
+    }
+
+    function formatTimeInput(sec) {
+      if (sec == null) return '';
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = Math.floor(sec % 60);
+      if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    trimResetBtn.addEventListener('click', () => {
+      trimStartInput.value = '0:00';
+      trimEndInput.value = formatTimeInput(audioDurationSec);
+    });
+
+    function handleFile(file) {
+      selectedFile = file;
+      const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+      fileNameDisplay.textContent = file.name;
+      fileDetail.textContent = `${sizeMB} MB`;
+      dropZone.classList.add('file-selected');
+
+      // Audio preview
+      const objUrl = URL.createObjectURL(file);
+      audioPreview.src = objUrl;
+      audioPreview.style.display = 'block';
+
+      // Set trim end to audio duration once metadata loads
+      audioPreview.addEventListener('loadedmetadata', () => {
+        audioDurationSec = audioPreview.duration;
+        trimEndInput.value = formatTimeInput(audioDurationSec);
+        fileDetail.textContent = `${sizeMB} MB — ${formatTimeInput(audioDurationSec)}`;
+      }, { once: true });
+
+      trimStartInput.value = '0:00';
+      trimEndInput.value = '';
+
+      if (isModelLoaded) transcribeBtn.disabled = false;
+    }
+
+    // ======== CHUNKED STREAMING TRANSCRIPTION ========
+    const transcribeStatus = document.getElementById('transcribe-status');
+    const transcribeProgress = document.getElementById('transcribe-progress');
+    const transcribeProgressFill = document.getElementById('transcribe-progress-fill');
+
+    transcribeBtn.addEventListener('click', async () => {
+      if (!selectedFile || !isModelLoaded) return;
+      transcribeBtn.disabled = true;
+      transcribeBtn.innerHTML = '<span class="spinner"></span>Decoding...';
+      transcribeCancelBtn.style.display = '';
+      transcribeProgress.style.display = 'block';
+      transcribeProgressFill.style.width = '0%';
+      _transcribeCancelled = false;
+
+      try {
+        transcribeStatus.textContent = 'Decoding audio...';
+        const fullAudio = await readFileAsAudioData(selectedFile);
+
+        // Apply trim
+        const trimStart = parseTimeInput(trimStartInput.value) || 0;
+        const trimEnd = parseTimeInput(trimEndInput.value) || (fullAudio.length / 16000);
+        const startSample = Math.max(0, Math.floor(trimStart * 16000));
+        const endSample = Math.min(fullAudio.length, Math.floor(trimEnd * 16000));
+        const audioBuffer = fullAudio.slice(startSample, endSample);
+
+        const totalSec = audioBuffer.length / 16000;
+        const totalStr = formatTimeInput(totalSec);
+
+        // Split into non-overlapping chunks — Whisper handles word boundaries internally
+        const chunkSamples = CONFIG.WHISPER_CHUNK_LENGTH_S * 16000;
+        const chunks = [];
+        for (let offset = 0; offset < audioBuffer.length; offset += chunkSamples) {
+          const end = Math.min(offset + chunkSamples, audioBuffer.length);
+          chunks.push({
+            audio: audioBuffer.slice(offset, end),
+            offsetSec: trimStart + (offset / 16000),
+            endSec: trimStart + (end / 16000),
+          });
+        }
+
+        const startTime = Date.now();
+        transcribeStatus.textContent = `Transcribing ${totalStr} — chunk 0/${chunks.length}`;
+
+        // Process chunks sequentially, streaming results
+        for (let i = 0; i < chunks.length; i++) {
+          if (_transcribeCancelled) break;
+
+          const chunk = chunks[i];
+          const pct = Math.round(((i + 1) / chunks.length) * 100);
+          const elapsed = Math.floor((Date.now() - startTime) / 1000);
+          const elapsedStr = elapsed >= 60
+            ? `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`
+            : `${elapsed}s`;
+          transcribeBtn.innerHTML = `<span class="spinner"></span>${pct}%`;
+          transcribeStatus.textContent = `Transcribing ${totalStr} — chunk ${i + 1}/${chunks.length} (${elapsedStr})`;
+          transcribeProgressFill.style.width = `${Math.round((i / chunks.length) * 100)}%`;
+
+          let text = '';
+          if (whisperMode === 'api') {
+            const apiResult = await transcribeViaApi(chunk.audio);
+            text = (apiResult.text || '').trim();
+          } else {
+            const result = await workerCall('transcribe', {
+              audio: chunk.audio,
+              options: { return_timestamps: true },
+            });
+            text = (result.text || '').trim();
+          }
+
+          if (_transcribeCancelled) break;
+
+          if (text && !isHallucination(text)) {
+            timelineData.push({
+              id: ++_entryIdCounter,
+              start: chunk.offsetSec,
+              end: chunk.endSec,
+              text,
+            });
+            renderTranscript();
+          }
+        }
+
+        transcribeProgressFill.style.width = '100%';
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const elapsedStr = elapsed >= 60
+          ? `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`
+          : `${elapsed}s`;
+        if (!_transcribeCancelled) {
+          transcribeStatus.textContent = `Done — transcribed ${totalStr} in ${elapsedStr}`;
+        }
+      } catch (err) {
+        if (!_transcribeCancelled) {
+          timelineData.push({ id: ++_entryIdCounter, start: 0, end: null, text: '[Error: ' + err.message + ']' });
+          renderTranscript();
+          transcribeStatus.textContent = 'Error: ' + err.message;
+          console.error(err);
+        }
+      } finally {
+        transcribeBtn.disabled = false;
+        transcribeBtn.textContent = 'Transcribe';
+        transcribeCancelBtn.style.display = 'none';
+        setTimeout(() => { transcribeProgress.style.display = 'none'; }, 2000);
+      }
+    });
+
+    transcribeCancelBtn.addEventListener('click', () => {
+      _transcribeCancelled = true;
+      transcribeCancelBtn.style.display = 'none';
+      transcribeBtn.disabled = false;
+      transcribeBtn.textContent = 'Transcribe';
+      transcribeStatus.textContent = 'Cancelled';
+      transcribeProgress.style.display = 'none';
+    });
+
+    async function readFileAsAudioData(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+      const decoded = await ctx.decodeAudioData(arrayBuffer);
+      const float32 = decoded.getChannelData(0);
+      await ctx.close();
+      return float32;
+    }
+
+    // ======== REAL-TIME MIC ========
+    micBtn.addEventListener('click', async () => {
+      if (!isModelLoaded) {
+        pulseModelSection();
+        return;
+      }
+      if (isRecording) await stopRecording();
+      else startRecording();
+    });
+
+    const SAMPLE_RATE = 16000;
+
+    async function startRecording() {
+      if (!isModelLoaded) return;
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          audio: { sampleRate: SAMPLE_RATE, channelCount: 1, echoCancellation: true, noiseSuppression: true }
+        });
+      } catch (err) {
+        micStatus.textContent = 'Microphone access denied: ' + err.message;
+        return;
+      }
+
+      isRecording = true;
+      micStartTime = Date.now();
+      pcmBuffer = new Float32Array(0);
+      transcribedSamples = 0;
+      micBtn.classList.add('recording');
+      micBtn.innerHTML = '&#9209;';
+      micStatus.textContent = 'Listening... speak now';
+      micInstruction.style.display = 'none';
+      visualizer.classList.add('active');
+
+      // Use the mic's actual sample rate, resample to 16kHz in the processor
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      sourceNode = audioContext.createMediaStreamSource(mediaStream);
+      analyserNode = audioContext.createAnalyser();
+      analyserNode.fftSize = 256;
+      sourceNode.connect(analyserNode);
+
+      // Capture raw PCM via ScriptProcessorNode (widely supported)
+      const bufferSize = 4096;
+      const processorNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+      const inputSampleRate = audioContext.sampleRate;
+
+      processorNode.onaudioprocess = (e) => {
+        if (!isRecording) return;
+        const input = e.inputBuffer.getChannelData(0);
+        // Resample to 16kHz if needed
+        let samples;
+        if (inputSampleRate === SAMPLE_RATE) {
+          samples = new Float32Array(input);
+        } else {
+          const ratio = SAMPLE_RATE / inputSampleRate;
+          const newLen = Math.round(input.length * ratio);
+          samples = new Float32Array(newLen);
+          for (let i = 0; i < newLen; i++) {
+            const srcIdx = i / ratio;
+            const lo = Math.floor(srcIdx);
+            const hi = Math.min(lo + 1, input.length - 1);
+            const frac = srcIdx - lo;
+            samples[i] = input[lo] * (1 - frac) + input[hi] * frac;
+          }
+        }
+        // Append to rolling buffer
+        const newBuf = new Float32Array(pcmBuffer.length + samples.length);
+        newBuf.set(pcmBuffer);
+        newBuf.set(samples, pcmBuffer.length);
+        pcmBuffer = newBuf;
+      };
+      sourceNode.connect(processorNode);
+      processorNode.connect(audioContext.destination); // required for ScriptProcessor to fire
+
+      drawVisualizer();
+
+      // Start the transcription loop
+      transcribeLoop();
+    }
+
+    async function transcribeLoop() {
+      while (isRecording) {
+        const intervalSec = parseInt(chunkIntervalSelect.value);
+        // Wait for the chosen interval while audio accumulates
+        await new Promise(r => setTimeout(r, intervalSec * 1000));
+        if (!isRecording) break;
+
+        // Overlap: include 1s of already-transcribed audio for word-boundary context
+        const overlapSamples = SAMPLE_RATE * 1;
+        const windowStart = Math.max(0, transcribedSamples - overlapSamples);
+        const windowAudio = pcmBuffer.slice(windowStart);
+
+        if (windowAudio.length < SAMPLE_RATE * 0.5) continue; // skip if < 0.5s
+
+        const rms = Math.sqrt(windowAudio.reduce((sum, v) => sum + v * v, 0) / windowAudio.length);
+        if (rms < CONFIG.SILENCE_RMS_THRESHOLD) {
+          transcribedSamples = pcmBuffer.length;
+          continue;
+        }
+
+        const chunkStartSec = windowStart / SAMPLE_RATE;
+        const chunkEndSec = pcmBuffer.length / SAMPLE_RATE;
+
+        const entryId = ++_entryIdCounter;
+        timelineData.push({
+          id: entryId,
+          start: chunkStartSec,
+          end: chunkEndSec,
+          text: '...',
+          pending: true,
+        });
+        renderTranscript();
+        micStatus.textContent = 'Transcribing...';
+
+        try {
+          // Copy the audio so the buffer can keep growing
+          const audioToSend = new Float32Array(windowAudio);
+          let text = '';
+          if (whisperMode === 'api') {
+            const apiResult = await transcribeViaApi(audioToSend);
+            text = (apiResult.text || '').trim();
+          } else {
+            const result = await workerCall('transcribe', {
+              audio: audioToSend,
+              options: {
+                chunk_length_s: CONFIG.WHISPER_CHUNK_LENGTH_S,
+                stride_length_s: CONFIG.WHISPER_STRIDE_LENGTH_S,
+              },
+            });
+            text = (result.text || '').trim();
+          }
+
+          const entryIndex = timelineData.findIndex(e => e.id === entryId);
+          if (entryIndex === -1) continue;
+
+          if (text && !isHallucination(text)) {
+            timelineData[entryIndex].text = text;
+            timelineData[entryIndex].pending = false;
+          } else {
+            timelineData.splice(entryIndex, 1);
+          }
+          renderTranscript();
+
+          // Mark these samples as transcribed
+          transcribedSamples = pcmBuffer.length;
+          if (isRecording) micStatus.textContent = 'Listening... speak now';
+        } catch (err) {
+          console.error('Chunk transcription error:', err);
+          const idx = timelineData.findIndex(e => e.id === entryId);
+          if (idx !== -1) timelineData.splice(idx, 1);
+          renderTranscript();
+          if (isRecording) micStatus.textContent = 'Error transcribing, retrying...';
+        }
+      }
+    }
+
+    async function stopRecording() {
+      isRecording = false;
+
+      micBtn.classList.remove('recording');
+      micBtn.innerHTML = '&#127908;';
+      micStatus.textContent = 'Stopped. Click mic to start again.';
+      micInstruction.style.display = '';
+      visualizer.classList.remove('active');
+
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      if (sourceNode) sourceNode.disconnect();
+      if (audioContext) audioContext.close();
+      if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+      mediaStream = null;
+      audioContext = null;
+
+      const ctx2d = visualizer.getContext('2d');
+      ctx2d.clearRect(0, 0, visualizer.width, visualizer.height);
+    }
+
+    // ======== VISUALIZER ========
+    function drawVisualizer() {
+      const canvas = visualizer;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      const bufLen = analyserNode.frequencyBinCount;
+      const dataArray = new Uint8Array(bufLen);
+
+      function draw() {
+        if (!isRecording) return;
+        animFrameId = requestAnimationFrame(draw);
+        analyserNode.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, W, H);
+        const barW = (W / bufLen) * 2.5;
+        let x = 0;
+        for (let i = 0; i < bufLen; i++) {
+          const v = dataArray[i] / 255;
+          const barH = v * H;
+          ctx.fillStyle = `rgb(233,${69 + v * 100},${96 + v * 60})`;
+          ctx.fillRect(x, H - barH, barW, barH);
+          x += barW + 1;
+          if (x > W) break;
+        }
+      }
+      draw();
+    }
+
+    // ======== TRANSCRIPT RENDERING ========
+    function formatTime(seconds) {
+      if (seconds == null) return '??:??';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // Note (#13): scrollTop is set after innerHTML rebuild. This works fine at this scale
+    // and does not need DOM virtualization.
+    function renderTranscript() {
+      transcriptEl.innerHTML = '';
+
+      // Toggle has-content class for showing/hiding transcript actions
+      if (timelineData.length > 0) {
+        transcriptSection.classList.add('has-content');
+      } else {
+        transcriptSection.classList.remove('has-content');
+      }
+
+      if (timelineData.length === 0) return;
+
+      if (currentView === 'timeline') {
+        transcriptEl.classList.add('timeline-view');
+        for (const entry of timelineData) {
+          const div = document.createElement('div');
+          div.className = 'tl-entry';
+
+          const timeSpan = document.createElement('span');
+          timeSpan.className = 'tl-time';
+          const startStr = formatTime(entry.start);
+          const endStr = entry.end != null ? formatTime(entry.end) : '';
+          timeSpan.textContent = endStr ? `${startStr} - ${endStr}` : startStr;
+
+          const textSpan = document.createElement('span');
+          textSpan.className = 'tl-text';
+          if (entry.pending) textSpan.style.cssText = 'color:var(--text2);font-style:italic;';
+          textSpan.textContent = entry.text;
+
+          div.appendChild(timeSpan);
+          div.appendChild(textSpan);
+          transcriptEl.appendChild(div);
+        }
+      } else {
+        transcriptEl.classList.remove('timeline-view');
+        for (let i = 0; i < timelineData.length; i++) {
+          const entry = timelineData[i];
+          if (i > 0) transcriptEl.appendChild(document.createTextNode(' '));
+          const span = document.createElement('span');
+          span.className = 'chunk' + (entry.pending ? ' pending' : '');
+          span.textContent = entry.text;
+          transcriptEl.appendChild(span);
+        }
+      }
+      transcriptEl.scrollTop = transcriptEl.scrollHeight;
+      // Fix #8: Use debounced save instead of direct saveState
+      debouncedSaveState();
+    }
+
+    // Detect Whisper hallucinations: repetitive garbage text from silence
+    function isHallucination(text) {
+      if (!text || text.length < 20) return false;
+      // Check for repeated short patterns (e.g., same 10-50 char sequence repeating)
+      for (let patLen = 10; patLen <= 50; patLen++) {
+        const pat = text.slice(0, patLen);
+        const count = text.split(pat).length - 1;
+        if (count >= 3 && (pat.length * count) > text.length * 0.5) return true;
+      }
+      // Check for very high ratio of non-word characters or no spaces
+      const words = text.split(/\s+/).filter(Boolean);
+      if (text.length > 50 && words.length < 3) return true;
+      return false;
+    }
+
+    function getFullText() {
+      return timelineData
+        .filter(e => !e.pending)
+        .map(e => e.text)
+        .join(' ')
+        .trim();
+    }
+
+    function getTimelineText() {
+      return timelineData
+        .filter(e => !e.pending)
+        .map(e => {
+          const t = formatTime(e.start);
+          const te = e.end != null ? ` - ${formatTime(e.end)}` : '';
+          return `[${t}${te}] ${e.text}`;
+        })
+        .join('\n');
+    }
+
+    copyBtn.addEventListener('click', () => {
+      const text = currentView === 'timeline' ? getTimelineText() : getFullText();
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy', CONFIG.COPY_FEEDBACK_MS);
+      });
+    });
+
+    clearBtn.addEventListener('click', () => {
+      timelineData = [];
+      renderTranscript();
+      clearState();
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const text = currentView === 'timeline' ? getTimelineText() : getFullText();
+      if (!text) return;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'transcript.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // ======== LLM ========
+
+    // Fix #6: Extract LLM pipeline loading into a helper to avoid copy-pasted fallback logic
+    function llmProgressCallback(progress) {
+      if (_llmLoadCancelled) return;
+      if (progress.status === 'progress' && progress.total) {
+        const pct = Math.round((progress.loaded / progress.total) * 100);
+        const sizeMB = (progress.total / 1024 / 1024).toFixed(0);
+        llmProgressFill.style.width = pct + '%';
+        llmStatusEl.textContent = `Downloading model... ${pct}% (~${sizeMB} MB)`;
+      } else if (progress.status === 'done') {
+        llmStatusEl.textContent = 'Component loaded';
+      } else if (progress.status === 'initiate') {
+        llmStatusEl.textContent = 'Preparing download...';
+      }
+    }
+
+    async function loadLlmPipeline(modelId, device, dtype) {
+      return await pipeline('text-generation', modelId, {
+        dtype,
+        device,
+        progress_callback: llmProgressCallback,
+      });
+    }
+
+    llmLoadBtn.addEventListener('click', async () => {
+      const modelId = llmSelect.value;
+      llmLoadBtn.disabled = true;
+      llmLoadBtn.style.display = 'none';
+      llmCancelBtn.style.display = '';
+      llmSelect.disabled = true;
+      llmProgress.style.display = 'block';
+      llmStatusEl.textContent = 'Downloading LLM (this may take a while)...';
+      _llmLoadCancelled = false;
+
+      try {
+        // Fix #6: Use helper, try webgpu first then fallback to wasm
+        llmGenerator = await loadLlmPipeline(modelId, 'webgpu', 'q4f16');
+
+        if (_llmLoadCancelled) {
+          llmStatusEl.textContent = 'LLM loading cancelled.';
+          return;
+        }
+
+        isLlmLoaded = true;
+        llmProgressFill.style.width = '100%';
+        llmStatusEl.textContent = `LLM "${modelId.split('/').pop()}" ready!`;
+        llmEditBtn.disabled = false;
+      } catch (err) {
+        if (_llmLoadCancelled) {
+          llmStatusEl.textContent = 'LLM loading cancelled.';
+          return;
+        }
+        // Fallback to WASM if WebGPU not available
+        if (err.message && /webgpu|WebGPU|GPU/i.test(err.message)) {
+          llmStatusEl.textContent = 'WebGPU not available, trying WASM (slower)...';
+          try {
+            llmGenerator = await loadLlmPipeline(modelId, 'wasm', 'q8');
+            if (_llmLoadCancelled) {
+              llmStatusEl.textContent = 'LLM loading cancelled.';
+              return;
+            }
+            isLlmLoaded = true;
+            llmProgressFill.style.width = '100%';
+            llmStatusEl.textContent = `LLM "${modelId.split('/').pop()}" ready (WASM mode)!`;
+            llmEditBtn.disabled = false;
+          } catch (err2) {
+            if (!_llmLoadCancelled) {
+              llmStatusEl.textContent = 'Error loading LLM: ' + err2.message;
+              console.error(err2);
+            }
+          }
+        } else {
+          llmStatusEl.textContent = 'Error loading LLM: ' + err.message;
+          console.error(err);
+        }
+      } finally {
+        llmLoadBtn.disabled = false;
+        llmLoadBtn.style.display = '';
+        llmCancelBtn.style.display = 'none';
+        llmSelect.disabled = false;
+      }
+    });
+
+    llmCancelBtn.addEventListener('click', () => {
+      _llmLoadCancelled = true;
+      llmCancelBtn.style.display = 'none';
+      llmLoadBtn.style.display = '';
+      llmLoadBtn.disabled = false;
+      llmSelect.disabled = false;
+      llmStatusEl.textContent = 'LLM loading cancelled.';
+      llmProgress.style.display = 'none';
+    });
+
+    llmEditBtn.addEventListener('click', async () => {
+      if (!llmGenerator) return;
+
+      const transcript = getFullText();
+      if (!transcript) {
+        llmStatusEl.textContent = 'No transcript to edit. Transcribe some audio first.';
+        return;
+      }
+
+      const instruction = llmPrompt.value.trim() || 'Fix grammar and punctuation.';
+
+      llmEditBtn.disabled = true;
+      llmEditBtn.innerHTML = '<span class="spinner"></span>Generating...';
+      llmEditBtn.style.display = 'none';
+      llmEditCancelBtn.style.display = '';
+      llmOutput.style.display = 'block';
+      llmOutput.textContent = '';
+      _llmEditCancelled = false;
+
+      try {
+        const messages = [
+          {
+            role: 'user',
+            content: `${instruction}\n\nTranscript:\n${transcript}`
+          }
+        ];
+
+        const result = await llmGenerator(messages, {
+          max_new_tokens: CONFIG.LLM_MAX_TOKENS,
+          temperature: CONFIG.LLM_TEMPERATURE,
+          do_sample: true,
+        });
+
+        if (_llmEditCancelled) return;
+
+        // Fix #11: Wrap LLM response parsing in try/catch with clear error message
+        let assistantMsg;
+        try {
+          const generated = result[0].generated_text;
+          if (Array.isArray(generated)) {
+            assistantMsg = generated[generated.length - 1].content;
+          } else if (typeof generated === 'string') {
+            assistantMsg = generated.slice(messages[0].content.length).trim();
+          } else {
+            throw new Error('Unexpected generated_text format');
+          }
+          if (!assistantMsg) {
+            throw new Error('Empty assistant response');
+          }
+        } catch (parseErr) {
+          throw new Error('Failed to parse LLM response: ' + parseErr.message + '. Raw output: ' + JSON.stringify(result[0]?.generated_text).slice(0, 200));
+        }
+
+        llmOutput.textContent = assistantMsg;
+        llmApplyBtn.classList.remove('llm-hidden');
+        llmCopyBtn.classList.remove('llm-hidden');
+        saveState();
+      } catch (err) {
+        if (!_llmEditCancelled) {
+          llmOutput.textContent = 'Error: ' + err.message;
+          console.error(err);
+        }
+      } finally {
+        llmEditBtn.disabled = false;
+        llmEditBtn.textContent = 'Edit Transcript with AI';
+        llmEditBtn.style.display = '';
+        llmEditCancelBtn.style.display = 'none';
+      }
+    });
+
+    llmEditCancelBtn.addEventListener('click', () => {
+      _llmEditCancelled = true;
+      llmEditCancelBtn.style.display = 'none';
+      llmEditBtn.style.display = '';
+      llmEditBtn.disabled = false;
+      llmEditBtn.textContent = 'Edit Transcript with AI';
+    });
+
+    // Fix #10: Add confirmation before replacing all timeline entries
+    llmApplyBtn.addEventListener('click', () => {
+      const newText = llmOutput.textContent.trim();
+      if (!newText) return;
+      if (!confirm('This will replace all timeline entries with the AI output. Continue?')) return;
+      timelineData = [{ id: ++_entryIdCounter, start: 0, end: null, text: newText }];
+      renderTranscript();
+      llmApplyBtn.classList.add('llm-hidden');
+    });
+
+    llmCopyBtn.addEventListener('click', () => {
+      const text = llmOutput.textContent.trim();
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        llmCopyBtn.textContent = 'Copied!';
+        setTimeout(() => llmCopyBtn.textContent = 'Copy Result', CONFIG.COPY_FEEDBACK_MS);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Build a Token Router with Embeddings and Prompt Templates | nmnhut</title>
+<meta name="keywords" content="ai, llm, routing, optimization, embeddings">
+<meta name="description" content="No training pipeline. No GPU. Just embeddings, cosine similarity, and structured prompts that cut your LLM bill by 80%.">
+<meta name="author" content="Minh-Nhut Nguyen">
+<link rel="canonical" href="../../posts/build-a-token-router/">
+<link crossorigin="anonymous" href="../../assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="../../favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="mask-icon" href="../../safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="../../posts/build-a-token-router/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="/posts/build-a-token-router/">
+  <meta property="og:site_name" content="nmnhut">
+  <meta property="og:title" content="Build a Token Router with Embeddings and Prompt Templates">
+  <meta property="og:description" content="No training pipeline. No GPU. Just embeddings, cosine similarity, and structured prompts that cut your LLM bill by 80%.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-23T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-23T00:00:00+00:00">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Llm">
+    <meta property="article:tag" content="Routing">
+    <meta property="article:tag" content="Optimization">
+    <meta property="article:tag" content="Embeddings">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Build a Token Router with Embeddings and Prompt Templates">
+<meta name="twitter:description" content="No training pipeline. No GPU. Just embeddings, cosine similarity, and structured prompts that cut your LLM bill by 80%.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "/posts/"
+    }
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Build a Token Router with Embeddings and Prompt Templates",
+      "item": "/posts/build-a-token-router/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Build a Token Router with Embeddings and Prompt Templates",
+  "name": "Build a Token Router with Embeddings and Prompt Templates",
+  "description": "No training pipeline. No GPU. Just embeddings, cosine similarity, and structured prompts that cut your LLM bill by 80%.",
+  "keywords": [
+    "ai", "llm", "routing", "optimization", "embeddings"
+  ],
+  "articleBody": "Skip the training pipeline and the GPU — embeddings, cosine similarity, and structured prompts are enough to cut your LLM bill by 80%.\nThe idea Every query has a shape — topic, complexity, expected output format. You can detect that shape in \u003c5ms using embeddings, then:\nPick a prompt template — pre-built system prompt with format constraints, cached by the provider Pick a model — cheap for easy queries, strong for hard ones Cap output tokens — templates define expected length All of this works with pure geometry in embedding space — no model training, no preference data required.\nStep 1: Define your routes A route is a category with example utterances. The examples define a region in embedding space — at runtime, you check which region the query lands in.\nfrom semantic_router import Route, RouteLayer from semantic_router.encoders import HuggingFaceEncoder encoder = HuggingFaceEncoder(name=\"all-MiniLM-L6-v2\") # 384-dim, 80MB, runs on CPU routes = [ Route( name=\"code_review\", utterances=[ \"review this code for bugs\", \"check this function for security issues\", \"what's wrong with this implementation\", \"find the bug in this snippet\", \"is this code production-ready\", ], metadata={\"model\": \"sonnet\", \"max_tokens\": 1024}, ), Route( name=\"summarization\", utterances=[ \"summarize this document\", \"give me the key points\", \"tl;dr of this article\", \"what are the main takeaways\", ], metadata={\"model\": \"haiku\", \"max_tokens\": 256}, ), Route( name=\"architecture\", utterances=[ \"design a system that handles\", \"how should I architect this\", \"what's the best approach for scaling\", \"propose a data model for\", ], metadata={\"model\": \"opus\", \"max_tokens\": 2048}, ), Route( name=\"simple_qa\", utterances=[ \"what is\", \"define\", \"explain the difference between\", \"how does X work\", \"what does this error mean\", ], metadata={\"model\": \"haiku\", \"max_tokens\": 512}, ), ] router = RouteLayer(encoder=encoder, routes=routes) How it works under the hood:\nAt init, the encoder converts every utterance into a 384-dim vector Each route becomes a centroid (average of its utterance vectors) At runtime: encode the query → compute cosine similarity against all centroids → pick the highest above a threshold query: \"check this endpoint for SQL injection\" │ ▼ encode → [0.12, -0.34, 0.81, ...] │ ┌───────────────┼───────────────┐ ▼ ▼ ▼ code_review summarization architecture sim=0.87 sim=0.21 sim=0.34 │ ▼ MATCH → template: code_review, model: sonnet Latency: \u003c5ms. The embedding is a single matrix multiply. Cosine similarity is a dot product. No LLM call, no network round-trip.\nStep 2: Add keyword boosting Embeddings catch semantic similarity but miss domain-specific signals. “OWASP” should always route to code review. “p99 latency” should always route to architecture. Add keyword rules as a fast path:\nKEYWORD_OVERRIDES = { \"code_review\": [\"CVE\", \"OWASP\", \"XSS\", \"injection\", \"vulnerability\", \"lint\"], \"architecture\": [\"p99\", \"throughput\", \"sharding\", \"replication\", \"CAP theorem\"], \"summarization\": [\"tl;dr\", \"tldr\", \"summarize\", \"key points\", \"digest\"], \"simple_qa\": [\"what is\", \"define\", \"meaning of\"], } def classify(query: str) -\u003e tuple[str, float]: q_lower = query.lower() # Fast path: keyword match for route_name, keywords in KEYWORD_OVERRIDES.items(): if any(kw.lower() in q_lower for kw in keywords): return route_name, 1.0 # Slow path: embedding similarity result = router(query) if result.name and result.similarity_score \u003e 0.5: return result.name, result.similarity_score # Fallback: no confident match return \"general\", 0.0 Keywords are checked first — O(1) string matching. Embeddings are the fallback for queries that don’t contain explicit signals. The 0.5 threshold controls how confident the router needs to be before committing to a route.\nStep 3: Complexity scoring within a route Picking the route isn’t enough. Within “code_review”, a 5-line function and a 200-line class with async generators are different beasts. Score complexity with cheap heuristics:\ndef score_complexity(query: str) -\u003e float: \"\"\"0.0 = trivial, 1.0 = complex. No LLM call.\"\"\" score = 0.0 signals = { \"length\": min(len(query) / 2000, 0.3), \"code_blocks\": 0.2 if \"```\" in query else 0.0, \"multi_part\": 0.15 if any(w in query.lower() for w in [\"and also\", \"then\", \"additionally\", \"step by step\"]) else 0.0, \"technical_depth\": 0.2 if any(w in query.lower() for w in [\"async\", \"concurrent\", \"distributed\", \"optimize\", \"deadlock\", \"race condition\", \"memory leak\"]) else 0.0, \"negation\": 0.15 if any(w in query.lower() for w in [\"without\", \"must not\", \"avoid\", \"except\"]) else 0.0, } return min(sum(signals.values()), 1.0) Combine route + complexity to pick the model:\nMODEL_TIERS = { \"haiku\": {\"id\": \"claude-haiku-4-5-20251001\", \"cost\": 1}, \"sonnet\": {\"id\": \"claude-sonnet-4-6\", \"cost\": 5}, \"opus\": {\"id\": \"claude-opus-4-6\", \"cost\": 25}, } def pick_model(route_name: str, complexity: float) -\u003e str: default = SKILL_TEMPLATES[route_name][\"model\"] if complexity \u003e 0.7: # Upgrade one tier if default == \"haiku\": return \"sonnet\" if default == \"sonnet\": return \"opus\" elif complexity \u003c 0.2: # Downgrade one tier if default == \"opus\": return \"sonnet\" if default == \"sonnet\": return \"haiku\" return default “Code review” defaults to Sonnet. But a trivial 3-line function → Haiku. A complex async distributed system → Opus. The route sets the baseline, complexity adjusts it.\nStep 4: Prompt templates with prefix caching Each route maps to a stable system prompt that gets cached by the provider:\nSKILL_TEMPLATES = { \"code_review\": { \"model\": \"sonnet\", \"max_tokens\": 1024, \"system\": \"\"\"You are a code reviewer. Be specific and concise. ## Rules - Flag correctness, security, and maintainability issues - Cite the exact line or pattern - Suggest a concrete fix for each issue - Do not deliberate on format — follow the output format exactly ## Output Return JSON: {\"issues\": [{\"severity\": \"high|medium|low\", \"description\": str, \"fix\": str}]}\"\"\", }, \"summarization\": { \"model\": \"haiku\", \"max_tokens\": 256, \"system\": \"\"\"You are a technical summarizer. ## Rules - 3-5 bullet points maximum - Lead with the most important finding - Include specific numbers when present - No filler phrases, no preamble ## Output Return a markdown bullet list. Nothing else.\"\"\", }, \"simple_qa\": { \"model\": \"haiku\", \"max_tokens\": 512, \"system\": \"\"\"Answer directly and concisely. ## Rules - Lead with the answer, then explain if needed - If you're unsure, say so in one sentence - No unnecessary caveats or disclaimers\"\"\", }, \"architecture\": { \"model\": \"opus\", \"max_tokens\": 2048, \"system\": \"\"\"You are a distributed systems architect. ## Rules - Consider failure modes and recovery - Estimate cost and latency implications - Reference industry-standard patterns by name - Identify the simplest solution that meets requirements ## Output Structured markdown: Overview, Components, Data Flow, Failure Modes, Trade-offs.\"\"\", }, \"general\": { \"model\": \"sonnet\", \"max_tokens\": 1024, \"system\": \"You are a helpful assistant. Be concise.\", }, } Why these templates save money three ways:\nPrefix caching. Every “code_review” call shares the identical system prompt. Anthropic caches the KV vectors — 90% off input tokens from the second call within a 5-minute window.\nKilled thinking waste. “Do not deliberate on format” + explicit output spec = the model jumps straight to answering. Measured: 40-60% fewer thinking tokens.\nTight max_tokens. Summaries get 256. QA gets 512. No more “4096 just in case” burning output tokens at 3-5x input price.\nStep 5: Wire it together from anthropic import Anthropic client = Anthropic() def dispatch(query: str): # 1. Classify intent (\u003c5ms) route_name, confidence = classify(query) # 2. Score complexity (\u003c1ms) complexity = score_complexity(query) # 3. Pick model template = SKILL_TEMPLATES[route_name] model = pick_model(route_name, complexity) # 4. Call with cached template response = client.messages.create( model=MODEL_TIERS[model][\"id\"], max_tokens=template[\"max_tokens\"], system=[{ \"type\": \"text\", \"text\": template[\"system\"], \"cache_control\": {\"type\": \"ephemeral\"}, }], messages=[{\"role\": \"user\", \"content\": query}], ) return { \"response\": response.content[0].text, \"route\": route_name, \"model\": model, \"complexity\": complexity, \"confidence\": confidence, \"input_tokens\": response.usage.input_tokens, \"output_tokens\": response.usage.output_tokens, \"cache_hit\": response.usage.cache_read_input_tokens \u003e 0, } Total routing overhead: \u003c6ms. One embedding encode + cosine similarity + string matching + arithmetic. The savings on a single Opus→Haiku downgrade pay for 10,000 routing decisions.\nThe math Assume 10,000 queries/day, current setup: all go to Sonnet at $3/$15 per MTok.\nBefore After routing Simple QA (40%) Sonnet Haiku ($0.80/$4) Summarization (25%) Sonnet Haiku ($0.80/$4) Code review (25%) Sonnet Sonnet (same, but cached) Architecture (10%) Sonnet Opus (upgrade, but rare) Cache hit rate 0% ~85% on system prompts Estimated savings — ~75% And the quality on architecture queries goes up because they’re hitting Opus now.\nWhat to watch for Misroutes. Log every (query, route, confidence) tuple. Sort by lowest confidence weekly — those are your edge cases. Add their patterns as new utterances to the right route.\nCache-busting. If you see cache_read_input_tokens: 0 on repeat calls to the same template, something dynamic is leaking into the system prompt. Timestamps, user IDs, session context — all go in user messages, never system.\nThreshold tuning. Start the embedding similarity threshold at 0.5. If too many queries fall to “general” (\u003e20%), lower to 0.4. If wrong routes happen often, raise to 0.6.\nTemplate drift. Every time you edit a template, the cache resets for that route. Batch template changes. Don’t A/B test by modifying the system prompt per-request — that kills caching.\n",
+  "wordCount" : "1390",
+  "inLanguage": "en",
+  "datePublished": "2026-03-23T00:00:00Z",
+  "dateModified": "2026-03-23T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Minh-Nhut Nguyen"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/posts/build-a-token-router/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "nmnhut",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="../../" accesskey="h" title="nmnhut (Alt + H)">nmnhut</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="../../posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../farm/" title="LLM Farm">
+                    <span>LLM Farm</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../rag/" title="RAG Demo">
+                    <span>RAG Demo</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../transcribe/" title="Transcribe">
+                    <span>Transcribe</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../token-router/" title="Router">
+                    <span>Router</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="../../">Home</a>&nbsp;»&nbsp;<a href="../../posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Build a Token Router with Embeddings and Prompt Templates
+    </h1>
+    <div class="post-description">
+      No training pipeline. No GPU. Just embeddings, cosine similarity, and structured prompts that cut your LLM bill by 80%.
+    </div>
+    <div class="post-meta"><span title='2026-03-23 00:00:00 +0000 UTC'>March 23, 2026</span>&nbsp;·&nbsp;<span>7 min</span>&nbsp;·&nbsp;<span>Minh-Nhut Nguyen</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#the-idea" aria-label="The idea">The idea</a></li>
+                <li>
+                    <a href="#step-1-define-your-routes" aria-label="Step 1: Define your routes">Step 1: Define your routes</a></li>
+                <li>
+                    <a href="#step-2-add-keyword-boosting" aria-label="Step 2: Add keyword boosting">Step 2: Add keyword boosting</a></li>
+                <li>
+                    <a href="#step-3-complexity-scoring-within-a-route" aria-label="Step 3: Complexity scoring within a route">Step 3: Complexity scoring within a route</a></li>
+                <li>
+                    <a href="#step-4-prompt-templates-with-prefix-caching" aria-label="Step 4: Prompt templates with prefix caching">Step 4: Prompt templates with prefix caching</a></li>
+                <li>
+                    <a href="#step-5-wire-it-together" aria-label="Step 5: Wire it together">Step 5: Wire it together</a></li>
+                <li>
+                    <a href="#the-math" aria-label="The math">The math</a></li>
+                <li>
+                    <a href="#what-to-watch-for" aria-label="What to watch for">What to watch for</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><em>Skip the training pipeline and the GPU — embeddings, cosine similarity, and structured prompts are enough to cut your LLM bill by 80%.</em></p>
+<hr>
+<h3 id="the-idea">The idea<a hidden class="anchor" aria-hidden="true" href="#the-idea">#</a></h3>
+<p>Every query has a <strong>shape</strong> — topic, complexity, expected output format. You can detect that shape in &lt;5ms using embeddings, then:</p>
+<ol>
+<li><strong>Pick a prompt template</strong> — pre-built system prompt with format constraints, cached by the provider</li>
+<li><strong>Pick a model</strong> — cheap for easy queries, strong for hard ones</li>
+<li><strong>Cap output tokens</strong> — templates define expected length</li>
+</ol>
+<p>All of this works with pure geometry in embedding space — no model training, no preference data required.</p>
+<hr>
+<h3 id="step-1-define-your-routes">Step 1: Define your routes<a hidden class="anchor" aria-hidden="true" href="#step-1-define-your-routes">#</a></h3>
+<p>A route is a category with example utterances. The examples define a <strong>region in embedding space</strong> — at runtime, you check which region the query lands in.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> semantic_router <span style="color:#f92672">import</span> Route, RouteLayer
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> semantic_router.encoders <span style="color:#f92672">import</span> HuggingFaceEncoder
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>encoder <span style="color:#f92672">=</span> HuggingFaceEncoder(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;all-MiniLM-L6-v2&#34;</span>)  <span style="color:#75715e"># 384-dim, 80MB, runs on CPU</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>routes <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    Route(
+</span></span><span style="display:flex;"><span>        name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;code_review&#34;</span>,
+</span></span><span style="display:flex;"><span>        utterances<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;review this code for bugs&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;check this function for security issues&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;what&#39;s wrong with this implementation&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;find the bug in this snippet&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;is this code production-ready&#34;</span>,
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        metadata<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;sonnet&#34;</span>, <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">1024</span>},
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>    Route(
+</span></span><span style="display:flex;"><span>        name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;summarization&#34;</span>,
+</span></span><span style="display:flex;"><span>        utterances<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;summarize this document&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;give me the key points&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;tl;dr of this article&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;what are the main takeaways&#34;</span>,
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        metadata<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;haiku&#34;</span>, <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">256</span>},
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>    Route(
+</span></span><span style="display:flex;"><span>        name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;architecture&#34;</span>,
+</span></span><span style="display:flex;"><span>        utterances<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;design a system that handles&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;how should I architect this&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;what&#39;s the best approach for scaling&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;propose a data model for&#34;</span>,
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        metadata<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;opus&#34;</span>, <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">2048</span>},
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>    Route(
+</span></span><span style="display:flex;"><span>        name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;simple_qa&#34;</span>,
+</span></span><span style="display:flex;"><span>        utterances<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;what is&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;define&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;explain the difference between&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;how does X work&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;what does this error mean&#34;</span>,
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        metadata<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;haiku&#34;</span>, <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">512</span>},
+</span></span><span style="display:flex;"><span>    ),
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>router <span style="color:#f92672">=</span> RouteLayer(encoder<span style="color:#f92672">=</span>encoder, routes<span style="color:#f92672">=</span>routes)
+</span></span></code></pre></div><p><strong>How it works under the hood:</strong></p>
+<ol>
+<li>At init, the encoder converts every utterance into a 384-dim vector</li>
+<li>Each route becomes a <strong>centroid</strong> (average of its utterance vectors)</li>
+<li>At runtime: encode the query → compute cosine similarity against all centroids → pick the highest above a threshold</li>
+</ol>
+<pre tabindex="0"><code>query: &#34;check this endpoint for SQL injection&#34;
+                    │
+                    ▼  encode → [0.12, -0.34, 0.81, ...]
+                    │
+    ┌───────────────┼───────────────┐
+    ▼               ▼               ▼
+code_review    summarization   architecture
+  sim=0.87       sim=0.21       sim=0.34
+    │
+    ▼
+  MATCH → template: code_review, model: sonnet
+</code></pre><p><strong>Latency: &lt;5ms.</strong> The embedding is a single matrix multiply. Cosine similarity is a dot product. No LLM call, no network round-trip.</p>
+<hr>
+<h3 id="step-2-add-keyword-boosting">Step 2: Add keyword boosting<a hidden class="anchor" aria-hidden="true" href="#step-2-add-keyword-boosting">#</a></h3>
+<p>Embeddings catch semantic similarity but miss domain-specific signals. &ldquo;OWASP&rdquo; should always route to code review. &ldquo;p99 latency&rdquo; should always route to architecture. Add keyword rules as a fast path:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>KEYWORD_OVERRIDES <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;code_review&#34;</span>: [<span style="color:#e6db74">&#34;CVE&#34;</span>, <span style="color:#e6db74">&#34;OWASP&#34;</span>, <span style="color:#e6db74">&#34;XSS&#34;</span>, <span style="color:#e6db74">&#34;injection&#34;</span>, <span style="color:#e6db74">&#34;vulnerability&#34;</span>, <span style="color:#e6db74">&#34;lint&#34;</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;architecture&#34;</span>: [<span style="color:#e6db74">&#34;p99&#34;</span>, <span style="color:#e6db74">&#34;throughput&#34;</span>, <span style="color:#e6db74">&#34;sharding&#34;</span>, <span style="color:#e6db74">&#34;replication&#34;</span>, <span style="color:#e6db74">&#34;CAP theorem&#34;</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;summarization&#34;</span>: [<span style="color:#e6db74">&#34;tl;dr&#34;</span>, <span style="color:#e6db74">&#34;tldr&#34;</span>, <span style="color:#e6db74">&#34;summarize&#34;</span>, <span style="color:#e6db74">&#34;key points&#34;</span>, <span style="color:#e6db74">&#34;digest&#34;</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;simple_qa&#34;</span>: [<span style="color:#e6db74">&#34;what is&#34;</span>, <span style="color:#e6db74">&#34;define&#34;</span>, <span style="color:#e6db74">&#34;meaning of&#34;</span>],
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">classify</span>(query: str) <span style="color:#f92672">-&gt;</span> tuple[str, float]:
+</span></span><span style="display:flex;"><span>    q_lower <span style="color:#f92672">=</span> query<span style="color:#f92672">.</span>lower()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Fast path: keyword match</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> route_name, keywords <span style="color:#f92672">in</span> KEYWORD_OVERRIDES<span style="color:#f92672">.</span>items():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> any(kw<span style="color:#f92672">.</span>lower() <span style="color:#f92672">in</span> q_lower <span style="color:#66d9ef">for</span> kw <span style="color:#f92672">in</span> keywords):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> route_name, <span style="color:#ae81ff">1.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Slow path: embedding similarity</span>
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> router(query)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> result<span style="color:#f92672">.</span>name <span style="color:#f92672">and</span> result<span style="color:#f92672">.</span>similarity_score <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.5</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result<span style="color:#f92672">.</span>name, result<span style="color:#f92672">.</span>similarity_score
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Fallback: no confident match</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;general&#34;</span>, <span style="color:#ae81ff">0.0</span>
+</span></span></code></pre></div><p>Keywords are checked first — O(1) string matching. Embeddings are the fallback for queries that don&rsquo;t contain explicit signals. The <code>0.5</code> threshold controls how confident the router needs to be before committing to a route.</p>
+<hr>
+<h3 id="step-3-complexity-scoring-within-a-route">Step 3: Complexity scoring within a route<a hidden class="anchor" aria-hidden="true" href="#step-3-complexity-scoring-within-a-route">#</a></h3>
+<p>Picking the route isn&rsquo;t enough. Within &ldquo;code_review&rdquo;, a 5-line function and a 200-line class with async generators are different beasts. Score complexity with cheap heuristics:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">score_complexity</span>(query: str) <span style="color:#f92672">-&gt;</span> float:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;0.0 = trivial, 1.0 = complex. No LLM call.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    score <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    signals <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;length&#34;</span>: min(len(query) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2000</span>, <span style="color:#ae81ff">0.3</span>),
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;code_blocks&#34;</span>: <span style="color:#ae81ff">0.2</span> <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;```&#34;</span> <span style="color:#f92672">in</span> query <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0.0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;multi_part&#34;</span>: <span style="color:#ae81ff">0.15</span> <span style="color:#66d9ef">if</span> any(w <span style="color:#f92672">in</span> query<span style="color:#f92672">.</span>lower()
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> w <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#34;and also&#34;</span>, <span style="color:#e6db74">&#34;then&#34;</span>, <span style="color:#e6db74">&#34;additionally&#34;</span>, <span style="color:#e6db74">&#34;step by step&#34;</span>]) <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0.0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;technical_depth&#34;</span>: <span style="color:#ae81ff">0.2</span> <span style="color:#66d9ef">if</span> any(w <span style="color:#f92672">in</span> query<span style="color:#f92672">.</span>lower()
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> w <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#34;async&#34;</span>, <span style="color:#e6db74">&#34;concurrent&#34;</span>, <span style="color:#e6db74">&#34;distributed&#34;</span>, <span style="color:#e6db74">&#34;optimize&#34;</span>,
+</span></span><span style="display:flex;"><span>                       <span style="color:#e6db74">&#34;deadlock&#34;</span>, <span style="color:#e6db74">&#34;race condition&#34;</span>, <span style="color:#e6db74">&#34;memory leak&#34;</span>]) <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0.0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;negation&#34;</span>: <span style="color:#ae81ff">0.15</span> <span style="color:#66d9ef">if</span> any(w <span style="color:#f92672">in</span> query<span style="color:#f92672">.</span>lower()
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> w <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#34;without&#34;</span>, <span style="color:#e6db74">&#34;must not&#34;</span>, <span style="color:#e6db74">&#34;avoid&#34;</span>, <span style="color:#e6db74">&#34;except&#34;</span>]) <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0.0</span>,
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> min(sum(signals<span style="color:#f92672">.</span>values()), <span style="color:#ae81ff">1.0</span>)
+</span></span></code></pre></div><p>Combine route + complexity to pick the model:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>MODEL_TIERS <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;haiku&#34;</span>:  {<span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;claude-haiku-4-5-20251001&#34;</span>, <span style="color:#e6db74">&#34;cost&#34;</span>: <span style="color:#ae81ff">1</span>},
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;sonnet&#34;</span>: {<span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;claude-sonnet-4-6&#34;</span>,         <span style="color:#e6db74">&#34;cost&#34;</span>: <span style="color:#ae81ff">5</span>},
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;opus&#34;</span>:   {<span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;claude-opus-4-6&#34;</span>,            <span style="color:#e6db74">&#34;cost&#34;</span>: <span style="color:#ae81ff">25</span>},
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pick_model</span>(route_name: str, complexity: float) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    default <span style="color:#f92672">=</span> SKILL_TEMPLATES[route_name][<span style="color:#e6db74">&#34;model&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> complexity <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.7</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Upgrade one tier</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> default <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;haiku&#34;</span>: <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sonnet&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> default <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;sonnet&#34;</span>: <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;opus&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> complexity <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0.2</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Downgrade one tier</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> default <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;opus&#34;</span>: <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sonnet&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> default <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;sonnet&#34;</span>: <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;haiku&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> default
+</span></span></code></pre></div><p>&ldquo;Code review&rdquo; defaults to Sonnet. But a trivial 3-line function → Haiku. A complex async distributed system → Opus. <strong>The route sets the baseline, complexity adjusts it.</strong></p>
+<hr>
+<h3 id="step-4-prompt-templates-with-prefix-caching">Step 4: Prompt templates with prefix caching<a hidden class="anchor" aria-hidden="true" href="#step-4-prompt-templates-with-prefix-caching">#</a></h3>
+<p>Each route maps to a <strong>stable system prompt</strong> that gets cached by the provider:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>SKILL_TEMPLATES <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;code_review&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;sonnet&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">1024</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;system&#34;</span>: <span style="color:#e6db74">&#34;&#34;&#34;You are a code reviewer. Be specific and concise.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">## Rules
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Flag correctness, security, and maintainability issues
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Cite the exact line or pattern
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Suggest a concrete fix for each issue
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Do not deliberate on format — follow the output format exactly
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">## Output
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Return JSON: {&#34;issues&#34;: [{&#34;severity&#34;: &#34;high|medium|low&#34;, &#34;description&#34;: str, &#34;fix&#34;: str}]}&#34;&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;summarization&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;haiku&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">256</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;system&#34;</span>: <span style="color:#e6db74">&#34;&#34;&#34;You are a technical summarizer.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">## Rules
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- 3-5 bullet points maximum
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Lead with the most important finding
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Include specific numbers when present
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- No filler phrases, no preamble
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">## Output
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Return a markdown bullet list. Nothing else.&#34;&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;simple_qa&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;haiku&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">512</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;system&#34;</span>: <span style="color:#e6db74">&#34;&#34;&#34;Answer directly and concisely.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">## Rules
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Lead with the answer, then explain if needed
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- If you&#39;re unsure, say so in one sentence
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- No unnecessary caveats or disclaimers&#34;&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;architecture&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;opus&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">2048</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;system&#34;</span>: <span style="color:#e6db74">&#34;&#34;&#34;You are a distributed systems architect.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">## Rules
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Consider failure modes and recovery
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Estimate cost and latency implications
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Reference industry-standard patterns by name
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">- Identify the simplest solution that meets requirements
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">## Output
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Structured markdown: Overview, Components, Data Flow, Failure Modes, Trade-offs.&#34;&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;general&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;sonnet&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">1024</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;system&#34;</span>: <span style="color:#e6db74">&#34;You are a helpful assistant. Be concise.&#34;</span>,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Why these templates save money three ways:</strong></p>
+<ol>
+<li>
+<p><strong>Prefix caching.</strong> Every &ldquo;code_review&rdquo; call shares the identical system prompt. Anthropic caches the KV vectors — 90% off input tokens from the second call within a 5-minute window.</p>
+</li>
+<li>
+<p><strong>Killed thinking waste.</strong> &ldquo;Do not deliberate on format&rdquo; + explicit output spec = the model jumps straight to answering. Measured: 40-60% fewer thinking tokens.</p>
+</li>
+<li>
+<p><strong>Tight <code>max_tokens</code>.</strong> Summaries get 256. QA gets 512. No more &ldquo;4096 just in case&rdquo; burning output tokens at 3-5x input price.</p>
+</li>
+</ol>
+<hr>
+<h3 id="step-5-wire-it-together">Step 5: Wire it together<a hidden class="anchor" aria-hidden="true" href="#step-5-wire-it-together">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> anthropic <span style="color:#f92672">import</span> Anthropic
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> Anthropic()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dispatch</span>(query: str):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 1. Classify intent (&lt;5ms)</span>
+</span></span><span style="display:flex;"><span>    route_name, confidence <span style="color:#f92672">=</span> classify(query)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 2. Score complexity (&lt;1ms)</span>
+</span></span><span style="display:flex;"><span>    complexity <span style="color:#f92672">=</span> score_complexity(query)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 3. Pick model</span>
+</span></span><span style="display:flex;"><span>    template <span style="color:#f92672">=</span> SKILL_TEMPLATES[route_name]
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> pick_model(route_name, complexity)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 4. Call with cached template</span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>messages<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>        model<span style="color:#f92672">=</span>MODEL_TIERS[model][<span style="color:#e6db74">&#34;id&#34;</span>],
+</span></span><span style="display:flex;"><span>        max_tokens<span style="color:#f92672">=</span>template[<span style="color:#e6db74">&#34;max_tokens&#34;</span>],
+</span></span><span style="display:flex;"><span>        system<span style="color:#f92672">=</span>[{
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;text&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;text&#34;</span>: template[<span style="color:#e6db74">&#34;system&#34;</span>],
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;cache_control&#34;</span>: {<span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;ephemeral&#34;</span>},
+</span></span><span style="display:flex;"><span>        }],
+</span></span><span style="display:flex;"><span>        messages<span style="color:#f92672">=</span>[{<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: query}],
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;response&#34;</span>: response<span style="color:#f92672">.</span>content[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>text,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;route&#34;</span>: route_name,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;model&#34;</span>: model,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;complexity&#34;</span>: complexity,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;confidence&#34;</span>: confidence,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;input_tokens&#34;</span>: response<span style="color:#f92672">.</span>usage<span style="color:#f92672">.</span>input_tokens,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;output_tokens&#34;</span>: response<span style="color:#f92672">.</span>usage<span style="color:#f92672">.</span>output_tokens,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;cache_hit&#34;</span>: response<span style="color:#f92672">.</span>usage<span style="color:#f92672">.</span>cache_read_input_tokens <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p><strong>Total routing overhead: &lt;6ms.</strong> One embedding encode + cosine similarity + string matching + arithmetic. The savings on a single Opus→Haiku downgrade pay for 10,000 routing decisions.</p>
+<hr>
+<h3 id="the-math">The math<a hidden class="anchor" aria-hidden="true" href="#the-math">#</a></h3>
+<p>Assume 10,000 queries/day, current setup: all go to Sonnet at $3/$15 per MTok.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>Before</th>
+          <th>After routing</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Simple QA (40%)</strong></td>
+          <td>Sonnet</td>
+          <td>Haiku ($0.80/$4)</td>
+      </tr>
+      <tr>
+          <td><strong>Summarization (25%)</strong></td>
+          <td>Sonnet</td>
+          <td>Haiku ($0.80/$4)</td>
+      </tr>
+      <tr>
+          <td><strong>Code review (25%)</strong></td>
+          <td>Sonnet</td>
+          <td>Sonnet (same, but cached)</td>
+      </tr>
+      <tr>
+          <td><strong>Architecture (10%)</strong></td>
+          <td>Sonnet</td>
+          <td>Opus (upgrade, but rare)</td>
+      </tr>
+      <tr>
+          <td><strong>Cache hit rate</strong></td>
+          <td>0%</td>
+          <td>~85% on system prompts</td>
+      </tr>
+      <tr>
+          <td><strong>Estimated savings</strong></td>
+          <td>—</td>
+          <td><strong>~75%</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>And the quality on architecture queries <strong>goes up</strong> because they&rsquo;re hitting Opus now.</p>
+<hr>
+<h3 id="what-to-watch-for">What to watch for<a hidden class="anchor" aria-hidden="true" href="#what-to-watch-for">#</a></h3>
+<p><strong>Misroutes.</strong> Log every <code>(query, route, confidence)</code> tuple. Sort by lowest confidence weekly — those are your edge cases. Add their patterns as new utterances to the right route.</p>
+<p><strong>Cache-busting.</strong> If you see <code>cache_read_input_tokens: 0</code> on repeat calls to the same template, something dynamic is leaking into the system prompt. Timestamps, user IDs, session context — all go in user messages, never system.</p>
+<p><strong>Threshold tuning.</strong> Start the embedding similarity threshold at 0.5. If too many queries fall to &ldquo;general&rdquo; (&gt;20%), lower to 0.4. If wrong routes happen often, raise to 0.6.</p>
+<p><strong>Template drift.</strong> Every time you edit a template, the cache resets for that route. Batch template changes. Don&rsquo;t A/B test by modifying the system prompt per-request — that kills caching.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="../../tags/ai/">Ai</a></li>
+      <li><a href="../../tags/llm/">Llm</a></li>
+      <li><a href="../../tags/routing/">Routing</a></li>
+      <li><a href="../../tags/optimization/">Optimization</a></li>
+      <li><a href="../../tags/embeddings/">Embeddings</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="../../posts/two-roads-to-ai-agents/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Two Roads to AI Agents: Code or Markdown?</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Build a Token Router with Embeddings and Prompt Templates on x"
+            href="https://x.com/intent/tweet/?text=Build%20a%20Token%20Router%20with%20Embeddings%20and%20Prompt%20Templates&amp;url=%2fposts%2fbuild-a-token-router%2f&amp;hashtags=ai%2cllm%2crouting%2coptimization%2cembeddings">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Build a Token Router with Embeddings and Prompt Templates on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fposts%2fbuild-a-token-router%2f&amp;title=Build%20a%20Token%20Router%20with%20Embeddings%20and%20Prompt%20Templates&amp;summary=Build%20a%20Token%20Router%20with%20Embeddings%20and%20Prompt%20Templates&amp;source=%2fposts%2fbuild-a-token-router%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Build a Token Router with Embeddings and Prompt Templates on reddit"
+            href="https://reddit.com/submit?url=%2fposts%2fbuild-a-token-router%2f&title=Build%20a%20Token%20Router%20with%20Embeddings%20and%20Prompt%20Templates">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Build a Token Router with Embeddings and Prompt Templates on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=%2fposts%2fbuild-a-token-router%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Build a Token Router with Embeddings and Prompt Templates on whatsapp"
+            href="https://api.whatsapp.com/send?text=Build%20a%20Token%20Router%20with%20Embeddings%20and%20Prompt%20Templates%20-%20%2fposts%2fbuild-a-token-router%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Build a Token Router with Embeddings and Prompt Templates on telegram"
+            href="https://telegram.me/share/url?text=Build%20a%20Token%20Router%20with%20Embeddings%20and%20Prompt%20Templates&amp;url=%2fposts%2fbuild-a-token-router%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Build a Token Router with Embeddings and Prompt Templates on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=Build%20a%20Token%20Router%20with%20Embeddings%20and%20Prompt%20Templates&u=%2fposts%2fbuild-a-token-router%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="../../">nmnhut</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>RAG Demo - nmnhut.dev</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090d;
+      --card: #0f1318;
+      --card2: #161c23;
+      --border: #1e252e;
+      --accent: #00e5a0;
+      --blue: #3b8eff;
+      --orange: #ff7043;
+      --purple: #a78bfa;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+      --text: #dde4ed;
+      --muted: #68737f;
+      --dim: #2a3240;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes think { 0%,80%,100%{transform:scale(0.4);opacity:0.2} 40%{transform:scale(1);opacity:1} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    textarea, input { -webkit-appearance: none; }
+    ::-webkit-scrollbar { display: none; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* Setup screen */
+    #setup-screen {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 1.2rem;
+      background: linear-gradient(135deg, var(--bg) 0%, #0a0e14 50%, #0d1117 100%);
+    }
+    #setup-screen.hidden { display: none; }
+    .setup-header { text-align: center; margin-bottom: 1.5rem; }
+    .setup-header .dot-inline {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s ease-in-out infinite; vertical-align: middle; margin-right: 0.4rem;
+    }
+    .setup-header h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem;
+      letter-spacing: -0.02em; display: inline;
+    }
+    .setup-header p { color: var(--muted); font-size: 0.7rem; margin-top: 0.5rem; }
+    .setup-box {
+      background: var(--card); border: 1px solid var(--border);
+      max-width: 420px; width: 100%; padding: 1.5rem;
+    }
+    .setup-box .field { margin-bottom: 1rem; }
+    .setup-box label {
+      display: block; font-size: 0.58rem; color: var(--muted);
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .setup-box input, .setup-box select {
+      width: 100%; background: var(--card2); border: 1px solid var(--border);
+      color: var(--text); font-family: inherit; font-size: 0.75rem;
+      padding: 0.7rem 0.8rem; outline: none;
+    }
+    .setup-box input:focus, .setup-box select:focus { border-color: var(--accent); }
+    .setup-box .hint { font-size: 0.6rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+    .setup-box select { cursor: pointer; }
+    .setup-box select option { background: var(--card2); color: var(--text); }
+    #btn-start {
+      width: 100%; padding: 0.9rem; background: var(--accent); color: var(--bg);
+      border: none; font-family: inherit; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.08em; cursor: pointer; margin-top: 0.5rem;
+    }
+    #btn-start:hover { opacity: 0.9; }
+    #btn-start:disabled { opacity: 0.4; cursor: not-allowed; }
+    .setup-error { color: var(--orange); font-size: 0.65rem; margin-top: 0.5rem; display: none; }
+
+    /* Main app */
+    #app { display: none; max-width: 480px; margin: 0 auto; position: relative; min-height: 100vh; flex-direction: column; }
+    #app.active { display: flex; }
+
+    .top-bar {
+      background: var(--card); border-bottom: 1px solid var(--border);
+      padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .top-bar-left { display: flex; align-items: center; gap: 0.5rem; }
+    .top-bar .version {
+      font-size: 0.6rem; color: var(--muted); letter-spacing: 0.12em;
+      background: var(--card2); border: 1px solid var(--border); padding: 0.25rem 0.6rem;
+    }
+
+    .content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, rgba(0,229,160,0.06) 0%, rgba(59,142,255,0.04) 100%);
+      border-bottom: 1px solid var(--border); padding: 1.4rem 1.2rem;
+    }
+    .hero-label { font-size: 0.58rem; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .hero h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.5rem; }
+    .hero h2 span { color: var(--accent); }
+    .hero p { font-size: 0.7rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── Source Picker ── */
+    .sources-section { margin-bottom: 1rem; }
+    .source-tabs {
+      display: flex; gap: 0; overflow-x: auto; border: 1px solid var(--border);
+      border-bottom: none; background: var(--card);
+    }
+    .source-tab {
+      flex: 0 0 auto; padding: 0.55rem 0.7rem; background: transparent; border: none;
+      color: var(--muted); font-family: inherit; font-size: 0.55rem; cursor: pointer;
+      letter-spacing: 0.06em; white-space: nowrap; border-bottom: 2px solid transparent;
+      display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;
+    }
+    .source-tab:hover { color: var(--text); }
+    .source-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--card2); }
+    .source-tab .src-icon { font-size: 0.85rem; }
+    .source-panel {
+      display: none; background: var(--card); border: 1px solid var(--border);
+      border-top: none; padding: 0.8rem; animation: slideUp 0.2s ease;
+    }
+    .source-panel.active { display: block; }
+    .source-panel .field { margin-bottom: 0.6rem; }
+    .source-panel label {
+      display: block; font-size: 0.55rem; color: var(--muted);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem;
+    }
+    .source-panel input, .source-panel textarea {
+      width: 100%; background: var(--card2); border: 1px solid var(--border);
+      color: var(--text); font-family: inherit; font-size: 0.7rem;
+      padding: 0.55rem 0.7rem; outline: none;
+    }
+    .source-panel input:focus, .source-panel textarea:focus { border-color: var(--accent); }
+    .source-panel .hint { font-size: 0.55rem; color: var(--muted); margin-top: 0.2rem; line-height: 1.4; }
+    .src-fetch-btn {
+      width: 100%; padding: 0.6rem; background: var(--card2); border: 1px solid var(--border);
+      color: var(--text); font-family: inherit; font-size: 0.65rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.08em; margin-top: 0.4rem; transition: all 0.2s;
+    }
+    .src-fetch-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .src-fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .src-status { font-size: 0.58rem; color: var(--muted); line-height: 1.5; margin-top: 0.4rem; min-height: 1em; }
+    .src-status.error { color: var(--orange); }
+    .src-status.success { color: var(--accent); }
+
+    /* Source badges */
+    .loaded-sources { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.8rem; }
+    .source-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: var(--card2); border: 1px solid var(--border); padding: 0.3rem 0.6rem;
+      font-size: 0.55rem; color: var(--muted); animation: slideUp 0.2s ease;
+    }
+    .source-badge .badge-icon { font-size: 0.7rem; }
+    .source-badge .badge-words { color: var(--accent); }
+    .source-badge .badge-x {
+      cursor: pointer; color: var(--muted); margin-left: 0.2rem;
+      font-size: 0.7rem; line-height: 1;
+    }
+    .source-badge .badge-x:hover { color: var(--orange); }
+
+    /* File upload area */
+    .file-drop {
+      border: 1px dashed var(--border); padding: 1.2rem; text-align: center;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .file-drop:hover, .file-drop.dragover {
+      border-color: var(--accent); background: rgba(0,229,160,0.03);
+    }
+    .file-drop .drop-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .file-drop .drop-text { font-size: 0.62rem; color: var(--muted); }
+    .file-drop .drop-hint { font-size: 0.55rem; color: var(--dim); margin-top: 0.2rem; }
+    .file-drop input[type="file"] { display: none; }
+
+    /* KB section */
+    .kb-box { background: var(--card); border: 1px solid var(--border); margin-bottom: 1rem; }
+    .kb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
+    }
+    .kb-header span { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+    .kb-header-actions { display: flex; gap: 0.4rem; }
+    .kb-header button {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      font-size: 0.58rem; padding: 0.2rem 0.6rem; font-family: inherit;
+      cursor: pointer; letter-spacing: 0.1em;
+    }
+    .kb-header button.active { border-color: var(--accent); color: var(--accent); }
+    .kb-textarea {
+      width: 100%; background: transparent; border: none; color: var(--text);
+      font-family: inherit; font-size: 0.7rem; padding: 0.8rem 1rem;
+      line-height: 1.7; min-height: 140px; outline: none; resize: none;
+    }
+    .kb-preview {
+      padding: 0.8rem 1rem; font-size: 0.68rem; color: var(--muted); line-height: 1.6;
+    }
+    .kb-preview .word-count { color: var(--accent); margin-left: 4px; }
+
+    /* Quick queries */
+    .quick-label { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .chip {
+      background: var(--card2); border: 1px solid var(--border); color: var(--muted);
+      padding: 0.45rem 0.75rem; font-family: inherit; font-size: 0.62rem;
+      cursor: pointer; border-radius: 2px; line-height: 1.4;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--text); }
+
+    /* Query input */
+    .query-row { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+    .query-row input {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      color: var(--text); font-family: inherit; font-size: 0.78rem;
+      padding: 0.9rem 1rem; outline: none;
+    }
+    .query-row input:focus { border-color: var(--accent); }
+    .query-row button {
+      background: var(--accent); color: var(--bg); border: none;
+      padding: 0 1.2rem; font-family: inherit; font-size: 0.7rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.08em; min-width: 60px; flex-shrink: 0;
+    }
+    .query-row button:disabled { background: var(--dim); color: var(--muted); cursor: not-allowed; }
+
+    /* Response box */
+    .response-box { background: var(--card); border: 1px solid var(--border); margin-bottom: 1rem; overflow: hidden; }
+    .response-box.loading { border-color: var(--accent); }
+    .response-header {
+      display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border); background: var(--card2);
+    }
+    .response-header .label { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+    .response-header .latency { margin-left: auto; font-size: 0.58rem; color: var(--accent); }
+    .response-body { padding: 1rem; font-size: 0.78rem; line-height: 1.75; }
+    .spinner { display: flex; gap: 5px; align-items: center; justify-content: center; padding: 1.5rem 0; }
+    .spinner span {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+      display: inline-block;
+    }
+    .spinner span:nth-child(1) { animation: think 1.2s ease-in-out 0s infinite; }
+    .spinner span:nth-child(2) { animation: think 1.2s ease-in-out 0.2s infinite; }
+    .spinner span:nth-child(3) { animation: think 1.2s ease-in-out 0.4s infinite; }
+
+    /* Metrics row */
+    .metrics-row { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 1rem; }
+    .metric { flex: 1; background: var(--card2); padding: 0.7rem 0.5rem; text-align: center; }
+    .metric-val { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; }
+    .metric-label { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+
+    /* Chunks */
+    .chunk {
+      background: var(--card); border: 1px solid var(--border);
+      border-left: 3px solid var(--blue); padding: 0.8rem 0.9rem; margin-bottom: 0.6rem;
+      font-size: 0.7rem; line-height: 1.7; animation: slideUp 0.3s ease both;
+    }
+    .chunk-header { font-size: 0.58rem; color: var(--blue); margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+    .chunk-header .score { color: var(--accent); }
+    .chunk-body { color: var(--muted); }
+
+    /* Pipeline tab */
+    .pipe-step {
+      display: flex; gap: 1rem; align-items: flex-start; padding: 1rem;
+      margin-bottom: 0.6rem; background: var(--card); border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.25s;
+    }
+    .pipe-step.active { background: rgba(0,229,160,0.06); border-color: var(--accent); }
+    .pipe-icon {
+      width: 44px; height: 44px; background: var(--card2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+    }
+    .pipe-step.active .pipe-icon { border-color: var(--accent); }
+    .pipe-info { flex: 1; }
+    .pipe-label { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 0.3rem; }
+    .pipe-step.active .pipe-label { color: var(--accent); }
+    .pipe-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .pipe-desc { font-size: 0.68rem; color: var(--muted); line-height: 1.5; }
+    .pipe-arrow { color: var(--accent); font-size: 0.8rem; flex-shrink: 0; display: none; }
+    .pipe-step.active .pipe-arrow { display: block; }
+
+    .pipe-progress { background: var(--card); border: 1px solid var(--border); padding: 1rem; margin-top: 0.5rem; }
+    .pipe-progress-label { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .pipe-bars { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+    .pipe-bar { width: 28px; height: 4px; background: var(--dim); transition: background 0.4s; }
+    .pipe-bar.active { background: var(--accent); }
+    .pipe-current { font-size: 0.62rem; color: var(--accent); margin-left: 6px; }
+
+    /* API tab code blocks */
+    .code-section { margin-bottom: 1.2rem; }
+    .code-label { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .code-block { background: var(--card); border: 1px solid var(--border); padding: 1rem; overflow-x: auto; }
+    .code-block pre { margin: 0; font-size: 0.68rem; line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
+    .license-box {
+      background: rgba(0,229,160,0.05); border: 1px solid rgba(0,229,160,0.2);
+      padding: 1rem; margin-top: 0.5rem;
+    }
+    .license-box .title { font-size: 0.65rem; color: var(--accent); font-weight: 700; margin-bottom: 0.4rem; }
+    .license-box p { font-size: 0.68rem; color: var(--muted); line-height: 1.6; }
+
+    /* Bottom nav */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px; background: var(--card);
+      border-top: 1px solid var(--border); display: flex; z-index: 100;
+    }
+    .nav-btn {
+      flex: 1; background: transparent; border: none; padding: 0.9rem 0.5rem 0.8rem;
+      cursor: pointer; display: flex; flex-direction: column; align-items: center;
+      gap: 0.2rem; border-top: 2px solid transparent; transition: all 0.2s;
+    }
+    .nav-btn.active { border-top-color: var(--accent); }
+    .nav-btn .icon { font-size: 1rem; color: var(--dim); }
+    .nav-btn.active .icon { color: var(--accent); }
+    .nav-btn .label { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.1em; font-family: inherit; }
+    .nav-btn.active .label { color: var(--accent); }
+
+    .tab-content { display: none; animation: slideUp 0.3s ease; }
+    .tab-content.active { display: block; }
+
+    .section-header { margin-bottom: 1.4rem; }
+    .section-label { font-size: 0.58rem; color: var(--blue); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+
+    .dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px var(--accent); flex-shrink: 0;
+    }
+    .dot.pulse { animation: pulse 2s ease-in-out infinite; }
+    .dot.orange { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+  <div class="setup-header">
+    <span class="dot-inline"></span>
+    <h1>OpenRAG</h1>
+    <p>Configure your LLM endpoint to power the RAG demo</p>
+  </div>
+  <div class="setup-box">
+    <div class="field">
+      <label>API Endpoint</label>
+      <input type="text" id="api-url" value="https://api.openai.com/v1/chat/completions" placeholder="https://api.openai.com/v1/chat/completions">
+      <div class="hint">OpenAI-compatible endpoint. Works with OpenAI, local servers (Ollama, LM Studio), or any compatible proxy.</div>
+    </div>
+    <div class="field">
+      <label>API Key</label>
+      <input type="password" id="api-key" placeholder="sk-...">
+      <div class="hint">Stored locally in your browser. Never sent anywhere except your configured endpoint.</div>
+    </div>
+    <div class="field">
+      <label>Model</label>
+      <input type="text" id="api-model" value="gpt-4o-mini" placeholder="gpt-4o-mini">
+      <div class="hint">Model identifier for your endpoint (e.g. gpt-4o-mini, llama3, mistral).</div>
+    </div>
+    <button id="btn-start">LAUNCH DEMO</button>
+    <div class="setup-error" id="setup-error"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="dot pulse"></span>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.02em">OpenRAG</span>
+    </div>
+    <div class="version">v0.9.2</div>
+  </div>
+
+  <div class="content">
+
+    <!-- QUERY TAB -->
+    <div id="tab-query" class="tab-content active">
+      <div class="hero">
+        <div class="hero-label">Live Demo</div>
+        <h2>Ask anything about<br><span>your documents</span></h2>
+        <p>RAG powered by your LLM &middot; 6 source connectors &middot; real answers</p>
+      </div>
+
+      <div style="padding:1.2rem">
+
+        <!-- ═══ SOURCE PICKER ═══ -->
+        <div class="sources-section">
+          <div class="quick-label">Load Knowledge Sources</div>
+
+          <!-- Source tabs -->
+          <div class="source-tabs">
+            <button class="source-tab active" data-src="github" onclick="switchSource('github')">
+              <span class="src-icon">&#9679;</span> GitHub
+            </button>
+            <button class="source-tab" data-src="jira" onclick="switchSource('jira')">
+              <span class="src-icon" style="color:var(--blue)">&#9670;</span> Jira
+            </button>
+            <button class="source-tab" data-src="confluence" onclick="switchSource('confluence')">
+              <span class="src-icon" style="color:var(--cyan)">&#9673;</span> Confluence
+            </button>
+            <button class="source-tab" data-src="gdrive" onclick="switchSource('gdrive')">
+              <span class="src-icon" style="color:var(--orange)">&#9650;</span> Drive
+            </button>
+            <button class="source-tab" data-src="url" onclick="switchSource('url')">
+              <span class="src-icon" style="color:var(--purple)">&#8853;</span> URL
+            </button>
+            <button class="source-tab" data-src="file" onclick="switchSource('file')">
+              <span class="src-icon" style="color:var(--pink)">&#9783;</span> File
+            </button>
+          </div>
+
+          <!-- GitHub panel -->
+          <div class="source-panel active" id="panel-github">
+            <div class="field">
+              <label>Repository</label>
+              <input type="text" id="gh-input" placeholder="owner/repo or full GitHub URL">
+              <div class="hint">Fetches README or specify a path: owner/repo/docs/guide.md</div>
+            </div>
+            <button class="src-fetch-btn" onclick="fetchGitHub()">FETCH FROM GITHUB</button>
+            <div class="src-status" id="gh-status"></div>
+          </div>
+
+          <!-- Jira panel -->
+          <div class="source-panel" id="panel-jira">
+            <div class="field">
+              <label>Jira Domain</label>
+              <input type="text" id="jira-domain" placeholder="yourteam.atlassian.net">
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="jira-email" placeholder="you@company.com">
+            </div>
+            <div class="field">
+              <label>API Token</label>
+              <input type="password" id="jira-token" placeholder="Atlassian API token">
+              <div class="hint">Generate at id.atlassian.com/manage-profile/security/api-tokens</div>
+            </div>
+            <div class="field">
+              <label>JQL Query</label>
+              <input type="text" id="jira-jql" placeholder="project = MYPROJ ORDER BY updated DESC" value="project = MYPROJ ORDER BY updated DESC">
+              <div class="hint">JQL to find issues. Results: summary + description of top 10 matches.</div>
+            </div>
+            <button class="src-fetch-btn" onclick="fetchJira()">FETCH FROM JIRA</button>
+            <div class="src-status" id="jira-status"></div>
+          </div>
+
+          <!-- Confluence panel -->
+          <div class="source-panel" id="panel-confluence">
+            <div class="field">
+              <label>Confluence Domain</label>
+              <input type="text" id="conf-domain" placeholder="yourteam.atlassian.net">
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="conf-email" placeholder="you@company.com">
+            </div>
+            <div class="field">
+              <label>API Token</label>
+              <input type="password" id="conf-token" placeholder="Atlassian API token">
+            </div>
+            <div class="field">
+              <label>Search (CQL)</label>
+              <input type="text" id="conf-cql" placeholder="space = DEV AND type = page" value="type = page ORDER BY lastModified DESC">
+              <div class="hint">CQL query. Fetches page body content from top 10 results.</div>
+            </div>
+            <button class="src-fetch-btn" onclick="fetchConfluence()">FETCH FROM CONFLUENCE</button>
+            <div class="src-status" id="conf-status"></div>
+          </div>
+
+          <!-- Google Drive panel -->
+          <div class="source-panel" id="panel-gdrive">
+            <div class="field">
+              <label>Google API Key</label>
+              <input type="password" id="gdrive-key" placeholder="AIza...">
+              <div class="hint">Google Cloud API key with Drive API enabled. For public/shared files only.</div>
+            </div>
+            <div class="field">
+              <label>File or Folder ID</label>
+              <input type="text" id="gdrive-id" placeholder="File ID or shareable link">
+              <div class="hint">From the URL: drive.google.com/file/d/{FILE_ID}/view or paste full link.</div>
+            </div>
+            <button class="src-fetch-btn" onclick="fetchGDrive()">FETCH FROM DRIVE</button>
+            <div class="src-status" id="gdrive-status"></div>
+          </div>
+
+          <!-- URL panel -->
+          <div class="source-panel" id="panel-url">
+            <div class="field">
+              <label>Web URL</label>
+              <input type="text" id="url-input" placeholder="https://example.com/docs/guide">
+              <div class="hint">Fetches and extracts text content from any public web page.</div>
+            </div>
+            <button class="src-fetch-btn" onclick="fetchURL()">FETCH FROM URL</button>
+            <div class="src-status" id="url-status"></div>
+          </div>
+
+          <!-- File upload panel -->
+          <div class="source-panel" id="panel-file">
+            <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
+              <div class="drop-icon">&#128196;</div>
+              <div class="drop-text">Tap to upload or drag &amp; drop</div>
+              <div class="drop-hint">.txt, .md, .json, .csv, .html, .xml, .log</div>
+              <input type="file" id="file-input" accept=".txt,.md,.json,.csv,.html,.xml,.log,.py,.js,.ts,.yaml,.yml,.toml" multiple>
+            </div>
+            <div class="src-status" id="file-status"></div>
+          </div>
+        </div>
+
+        <!-- Loaded sources badges -->
+        <div class="loaded-sources" id="loaded-sources"></div>
+
+        <!-- KB box -->
+        <div class="kb-box">
+          <div class="kb-header">
+            <span>Knowledge Base</span>
+            <div class="kb-header-actions">
+              <button id="kb-clear" onclick="clearKB()">CLEAR</button>
+              <button id="kb-toggle" onclick="toggleKB()">EDIT</button>
+            </div>
+          </div>
+          <textarea id="kb-editor" class="kb-textarea hidden"></textarea>
+          <div id="kb-preview" class="kb-preview"></div>
+        </div>
+
+        <!-- Quick queries -->
+        <div>
+          <div class="quick-label">Quick Queries</div>
+          <div class="chips" id="chips"></div>
+        </div>
+
+        <!-- Query input -->
+        <div class="query-row">
+          <input type="text" id="query-input" placeholder="Type your question..." onkeydown="if(event.key==='Enter')runRAG()">
+          <button id="ask-btn" onclick="runRAG()">ASK</button>
+        </div>
+
+        <!-- Response area -->
+        <div id="response-area" class="hidden">
+          <div id="response-box" class="response-box">
+            <div class="response-header">
+              <span id="resp-dot" class="dot pulse orange"></span>
+              <span id="resp-label" class="label">Generating...</span>
+              <span id="resp-latency" class="latency hidden"></span>
+            </div>
+            <div id="resp-body" class="response-body">
+              <div class="spinner"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+
+          <div id="metrics-row" class="metrics-row hidden">
+            <div class="metric">
+              <div class="metric-val" id="m-chunks" style="color:var(--accent)">0</div>
+              <div class="metric-label">Chunks</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val" id="m-score" style="color:var(--blue)">0%</div>
+              <div class="metric-label">Score</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val" id="m-latency" style="color:var(--orange)">0ms</div>
+              <div class="metric-label">Latency</div>
+            </div>
+          </div>
+
+          <div id="chunks-area" class="hidden">
+            <div class="quick-label">Retrieved Chunks</div>
+            <div id="chunks-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIPELINE TAB -->
+    <div id="tab-pipeline" class="tab-content">
+      <div style="padding:1.2rem">
+        <div class="section-header">
+          <div class="section-label">Architecture</div>
+          <div class="section-title">The RAG Pipeline</div>
+        </div>
+        <div id="pipeline-steps"></div>
+        <div class="pipe-progress">
+          <div class="pipe-progress-label">Live Status</div>
+          <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+            <div class="pipe-bars" id="pipe-bars"></div>
+            <span class="pipe-current" id="pipe-current"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API TAB -->
+    <div id="tab-api" class="tab-content">
+      <div style="padding:1.2rem">
+        <div class="section-header">
+          <div class="section-label">Quick Start</div>
+          <div class="section-title">Get started in 5 lines</div>
+        </div>
+        <div id="api-snippets"></div>
+        <div class="license-box">
+          <div class="title">&check; MIT Licensed</div>
+          <p>Free to use in commercial projects. No usage limits. Self-host anywhere.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" data-tab="query" onclick="switchTab('query')">
+      <span class="icon">&loz;</span>
+      <span class="label">Query</span>
+    </button>
+    <button class="nav-btn" data-tab="pipeline" onclick="switchTab('pipeline')">
+      <span class="icon">&#x2B21;</span>
+      <span class="label">Pipeline</span>
+    </button>
+    <button class="nav-btn" data-tab="api" onclick="switchTab('api')">
+      <span class="icon">&lt;/&gt;</span>
+      <span class="label">API</span>
+    </button>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+const SAMPLE_KB = `OpenRAG is an open-source Retrieval-Augmented Generation framework built for production use. It supports multiple vector databases including Pinecone, Weaviate, Chroma, and FAISS. Documents are chunked using semantic boundaries with configurable overlap. Embeddings can be generated via OpenAI, Cohere, or local models like sentence-transformers.
+
+The ingestion pipeline handles PDF, Markdown, HTML, and plain text. Chunking strategies include fixed-size, sentence-aware, and recursive splitting. Each chunk is stored with metadata including source, page number, and timestamp.
+
+Retrieval uses cosine similarity by default but supports dot product and Euclidean distance. Reranking is available via Cohere Rerank or a cross-encoder model. Hybrid search combines dense and sparse BM25 retrieval for improved recall.
+
+The query pipeline takes a user question, retrieves the top-k chunks, and passes them to any LLM including OpenAI, Anthropic, Mistral, or local via Ollama. Context window management ensures chunks fit within token limits. Citations are automatically extracted from chunk metadata.
+
+Installation requires Python 3.9 or higher and can be done via pip install openrag. Configuration is YAML-based and supports environment variable injection for API keys. A Docker image is available at docker pull openrag/server:latest.`;
+
+const EXAMPLE_QUERIES = [
+  "How do I install OpenRAG?",
+  "What vector databases work?",
+  "How does hybrid search work?",
+  "Which LLMs are supported?",
+];
+
+const PIPELINE_STEPS = [
+  { icon: "\u{1F4C4}", label: "Ingest", desc: "Load & parse documents (PDF, MD, HTML)" },
+  { icon: "\u2702\uFE0F", label: "Chunk", desc: "Split text with configurable overlap" },
+  { icon: "\u{1F522}", label: "Embed", desc: "Vectorize with OpenAI or local models" },
+  { icon: "\u{1F5C4}\uFE0F", label: "Index", desc: "Store vectors in your chosen backend" },
+  { icon: "\u{1F50D}", label: "Retrieve", desc: "Top-k similarity search" },
+  { icon: "\u{1F3AF}", label: "Rerank", desc: "Score & filter with cross-encoder" },
+  { icon: "\u{1F916}", label: "Generate", desc: "LLM produces grounded answer" },
+];
+
+const CODE_SNIPPETS = [
+  { label: "Install", code: "pip install openrag" },
+  { label: "Ingest & Query", code: `from openrag import RAGPipeline
+
+rag = RAGPipeline(
+  vector_store="chroma",
+  llm="claude-3-5-sonnet",
+  chunk_size=512,
+)
+
+rag.ingest(["./docs/"])
+
+result = rag.query("What is the refund policy?")
+print(result.answer)
+print(result.citations)` },
+  { label: "Hybrid Search", code: `rag = RAGPipeline(
+  retrieval_mode="hybrid",
+  dense_weight=0.7,
+  sparse_weight=0.3,
+)
+
+result = rag.query("refund policy", top_k=10)
+for chunk in result.chunks:
+  print(f"[{chunk.score:.2f}] {chunk.text}")` },
+  { label: "Docker", code: `docker pull openrag/server:latest
+
+docker run -p 8080:8080 \\
+  -e OPENAI_KEY=$OPENAI_KEY \\
+  openrag/server:latest` },
+];
+
+const SOURCE_ICONS = {
+  github: "\u{25CF}",
+  jira: "\u{25C6}",
+  confluence: "\u{25C9}",
+  gdrive: "\u{25B2}",
+  url: "\u{2295}",
+  file: "\u{2637}",
+};
+const SOURCE_COLORS = {
+  github: "var(--text)",
+  jira: "var(--blue)",
+  confluence: "var(--cyan)",
+  gdrive: "var(--orange)",
+  url: "var(--purple)",
+  file: "var(--pink)",
+};
+
+// ── State ──
+let apiConfig = {};
+let kb = SAMPLE_KB;
+let loading = false;
+let pipeStep = 0;
+let currentTab = "query";
+let currentSource = "github";
+let kbEditing = false;
+let loadedSources = []; // { type, label, words, content }
+
+// ── Init ──
+document.addEventListener("DOMContentLoaded", () => {
+  const savedUrl = localStorage.getItem("rag_api_url");
+  const savedKey = localStorage.getItem("rag_api_key");
+  const savedModel = localStorage.getItem("rag_api_model");
+  if (savedUrl) document.getElementById("api-url").value = savedUrl;
+  if (savedKey) document.getElementById("api-key").value = savedKey;
+  if (savedModel) document.getElementById("api-model").value = savedModel;
+
+  // Restore all saved source fields
+  const fields = ["gh-input","jira-domain","jira-email","jira-token","jira-jql","conf-domain","conf-email","conf-token","conf-cql","gdrive-key","gdrive-id","url-input"];
+  fields.forEach(f => { const v = localStorage.getItem("rag_" + f); if (v) document.getElementById(f).value = v; });
+
+  renderChips();
+  renderPipeline();
+  renderCodeSnippets();
+  updateKBPreview();
+  setupFileUpload();
+
+  setInterval(() => { pipeStep = (pipeStep + 1) % 7; updatePipelineHighlight(); }, 1000);
+
+  document.getElementById("btn-start").addEventListener("click", startApp);
+});
+
+function startApp() {
+  const url = document.getElementById("api-url").value.trim();
+  const key = document.getElementById("api-key").value.trim();
+  const model = document.getElementById("api-model").value.trim();
+
+  if (!url) { showSetupError("Please enter an API endpoint."); return; }
+
+  apiConfig = { url, key, model: model || "gpt-4o-mini" };
+  localStorage.setItem("rag_api_url", url);
+  localStorage.setItem("rag_api_key", key);
+  localStorage.setItem("rag_api_model", model);
+
+  document.getElementById("setup-screen").classList.add("hidden");
+  document.getElementById("app").classList.add("active");
+}
+
+function showSetupError(msg) {
+  const el = document.getElementById("setup-error");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+// ── Tabs ──
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+  document.getElementById("tab-" + tab).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tab === tab);
+  });
+}
+
+// ── Source tabs ──
+function switchSource(src) {
+  currentSource = src;
+  document.querySelectorAll(".source-tab").forEach(t => t.classList.toggle("active", t.dataset.src === src));
+  document.querySelectorAll(".source-panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("panel-" + src).classList.add("active");
+}
+
+// ── KB management ──
+function addToKB(content, sourceType, sourceLabel) {
+  const words = content.split(/\s+/).filter(Boolean).length;
+  loadedSources.push({ type: sourceType, label: sourceLabel, words, content });
+  rebuildKB();
+  renderSourceBadges();
+}
+
+function rebuildKB() {
+  kb = loadedSources.map(s => s.content).join("\n\n---\n\n");
+  if (!loadedSources.length) kb = SAMPLE_KB;
+  updateKBPreview();
+}
+
+function removeSource(idx) {
+  loadedSources.splice(idx, 1);
+  rebuildKB();
+  renderSourceBadges();
+}
+
+function clearKB() {
+  loadedSources = [];
+  kb = SAMPLE_KB;
+  updateKBPreview();
+  renderSourceBadges();
+}
+
+function renderSourceBadges() {
+  const el = document.getElementById("loaded-sources");
+  if (!loadedSources.length) { el.innerHTML = ""; return; }
+  el.innerHTML = loadedSources.map((s, i) =>
+    '<div class="source-badge">' +
+      '<span class="badge-icon" style="color:' + SOURCE_COLORS[s.type] + '">' + SOURCE_ICONS[s.type] + '</span>' +
+      '<span>' + escapeHtml(s.label) + '</span>' +
+      '<span class="badge-words">' + s.words + 'w</span>' +
+      '<span class="badge-x" onclick="removeSource(' + i + ')">&times;</span>' +
+    '</div>'
+  ).join("");
+}
+
+function toggleKB() {
+  kbEditing = !kbEditing;
+  const editor = document.getElementById("kb-editor");
+  const preview = document.getElementById("kb-preview");
+  const toggle = document.getElementById("kb-toggle");
+
+  if (kbEditing) {
+    editor.classList.remove("hidden");
+    editor.value = kb;
+    preview.classList.add("hidden");
+    toggle.classList.add("active");
+    toggle.textContent = "DONE";
+    editor.oninput = () => { kb = editor.value; };
+  } else {
+    kb = editor.value;
+    editor.classList.add("hidden");
+    preview.classList.remove("hidden");
+    toggle.classList.remove("active");
+    toggle.textContent = "EDIT";
+    updateKBPreview();
+  }
+}
+
+function updateKBPreview() {
+  const words = kb.split(/\s+/).filter(Boolean).length;
+  const srcCount = loadedSources.length;
+  const srcNote = srcCount ? ' <span style="color:var(--blue)">(' + srcCount + ' source' + (srcCount > 1 ? 's' : '') + ')</span>' : '';
+  document.getElementById("kb-preview").innerHTML =
+    escapeHtml(kb.substring(0, 120)) + '&hellip; <span class="word-count">(' + words + ' words)</span>' + srcNote;
+}
+
+// ── Helper: strip HTML to text ──
+function htmlToText(html) {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  // Remove script/style
+  tmp.querySelectorAll("script, style, nav, header, footer").forEach(el => el.remove());
+  return tmp.textContent.replace(/\s+/g, " ").trim();
+}
+
+// ══════════════════════════════
+// ── SOURCE FETCHERS ──
+// ══════════════════════════════
+
+// ── GitHub ──
+async function fetchGitHub() {
+  const input = document.getElementById("gh-input").value.trim();
+  const status = document.getElementById("gh-status");
+  if (!input) { status.className = "src-status error"; status.textContent = "Enter a repo (e.g. owner/repo)"; return; }
+
+  localStorage.setItem("rag_gh-input", input);
+
+  let apiUrl;
+  if (input.startsWith("http")) {
+    const match = input.match(/github\.com\/([^/]+)\/([^/]+)(?:\/(?:blob|tree)\/[^/]+\/(.+))?/);
+    if (!match) { status.className = "src-status error"; status.textContent = "Could not parse GitHub URL"; return; }
+    const [, owner, repo, path] = match;
+    apiUrl = path
+      ? "https://api.github.com/repos/" + owner + "/" + repo + "/contents/" + path
+      : "https://api.github.com/repos/" + owner + "/" + repo + "/readme";
+  } else {
+    const parts = input.split("/");
+    if (parts.length < 2) { status.className = "src-status error"; status.textContent = "Use format: owner/repo"; return; }
+    const [owner, repo, ...rest] = parts;
+    apiUrl = rest.length
+      ? "https://api.github.com/repos/" + owner + "/" + repo + "/contents/" + rest.join("/")
+      : "https://api.github.com/repos/" + owner + "/" + repo + "/readme";
+  }
+
+  setFetching("gh", true);
+  status.className = "src-status"; status.textContent = "Fetching...";
+
+  try {
+    const res = await fetch(apiUrl, { headers: { Accept: "application/vnd.github.v3+json" } });
+    if (!res.ok) throw new Error("GitHub API returned " + res.status);
+    const data = await res.json();
+
+    let content;
+    if (data.content) {
+      content = atob(data.content.replace(/\n/g, ""));
+    } else if (Array.isArray(data)) {
+      const readme = data.find(f => /readme/i.test(f.name));
+      const mdFile = readme || data.find(f => /\.md$/i.test(f.name));
+      if (mdFile) {
+        const fileRes = await fetch(mdFile.download_url);
+        content = await fileRes.text();
+      } else {
+        content = data.map(f => f.name).join("\n");
+      }
+    }
+
+    if (content) {
+      addToKB(content, "github", input.replace(/^https?:\/\/github\.com\//, ""));
+      status.className = "src-status success";
+      status.textContent = "Loaded " + content.split(/\s+/).length + " words from GitHub";
+    } else {
+      throw new Error("No content found");
+    }
+  } catch (err) {
+    status.className = "src-status error";
+    status.textContent = "Error: " + err.message;
+  }
+  setFetching("gh", false);
+}
+
+// ── Jira ──
+async function fetchJira() {
+  const domain = document.getElementById("jira-domain").value.trim();
+  const email = document.getElementById("jira-email").value.trim();
+  const token = document.getElementById("jira-token").value.trim();
+  const jql = document.getElementById("jira-jql").value.trim();
+  const status = document.getElementById("jira-status");
+
+  if (!domain || !email || !token) {
+    status.className = "src-status error"; status.textContent = "Domain, email, and API token are required"; return;
+  }
+
+  // Save credentials locally
+  localStorage.setItem("rag_jira-domain", domain);
+  localStorage.setItem("rag_jira-email", email);
+  localStorage.setItem("rag_jira-token", token);
+  localStorage.setItem("rag_jira-jql", jql);
+
+  setFetching("jira", true);
+  status.className = "src-status"; status.textContent = "Fetching Jira issues...";
+
+  const baseUrl = domain.startsWith("http") ? domain : "https://" + domain;
+  const auth = btoa(email + ":" + token);
+
+  try {
+    const res = await fetch(baseUrl + "/rest/api/3/search?jql=" + encodeURIComponent(jql) + "&maxResults=10&fields=summary,description", {
+      headers: { Authorization: "Basic " + auth, Accept: "application/json" },
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.errorMessages?.[0] || "Jira API returned " + res.status);
+    }
+    const data = await res.json();
+
+    if (!data.issues?.length) throw new Error("No issues found for this JQL query");
+
+    const content = data.issues.map(issue => {
+      const key = issue.key;
+      const summary = issue.fields.summary || "";
+      // Jira description is ADF (Atlassian Document Format) — extract text
+      const desc = extractADFText(issue.fields.description);
+      return "[" + key + "] " + summary + "\n" + desc;
+    }).join("\n\n");
+
+    addToKB(content, "jira", domain.replace(/^https?:\/\//, "") + " (" + data.issues.length + " issues)");
+    status.className = "src-status success";
+    status.textContent = "Loaded " + data.issues.length + " issues (" + content.split(/\s+/).length + " words)";
+  } catch (err) {
+    status.className = "src-status error";
+    status.textContent = "Error: " + err.message;
+    if (err.message.includes("Failed to fetch")) {
+      status.textContent += " — CORS blocked. Try a browser extension or CORS proxy.";
+    }
+  }
+  setFetching("jira", false);
+}
+
+// Extract text from Atlassian Document Format (ADF)
+function extractADFText(node) {
+  if (!node) return "";
+  if (typeof node === "string") return node;
+  if (node.type === "text") return node.text || "";
+  if (node.content) return node.content.map(extractADFText).join(node.type === "paragraph" ? "\n" : " ");
+  return "";
+}
+
+// ── Confluence ──
+async function fetchConfluence() {
+  const domain = document.getElementById("conf-domain").value.trim();
+  const email = document.getElementById("conf-email").value.trim();
+  const token = document.getElementById("conf-token").value.trim();
+  const cql = document.getElementById("conf-cql").value.trim();
+  const status = document.getElementById("conf-status");
+
+  if (!domain || !email || !token) {
+    status.className = "src-status error"; status.textContent = "Domain, email, and API token are required"; return;
+  }
+
+  localStorage.setItem("rag_conf-domain", domain);
+  localStorage.setItem("rag_conf-email", email);
+  localStorage.setItem("rag_conf-token", token);
+  localStorage.setItem("rag_conf-cql", cql);
+
+  setFetching("conf", true);
+  status.className = "src-status"; status.textContent = "Fetching Confluence pages...";
+
+  const baseUrl = domain.startsWith("http") ? domain : "https://" + domain;
+  const auth = btoa(email + ":" + token);
+
+  try {
+    const res = await fetch(baseUrl + "/wiki/rest/api/content/search?cql=" + encodeURIComponent(cql) + "&limit=10&expand=body.storage", {
+      headers: { Authorization: "Basic " + auth, Accept: "application/json" },
+    });
+    if (!res.ok) throw new Error("Confluence API returned " + res.status);
+    const data = await res.json();
+
+    if (!data.results?.length) throw new Error("No pages found for this CQL query");
+
+    const content = data.results.map(page => {
+      const title = page.title || "";
+      const body = htmlToText(page.body?.storage?.value || "");
+      return "# " + title + "\n" + body;
+    }).join("\n\n");
+
+    addToKB(content, "confluence", domain.replace(/^https?:\/\//, "") + " (" + data.results.length + " pages)");
+    status.className = "src-status success";
+    status.textContent = "Loaded " + data.results.length + " pages (" + content.split(/\s+/).length + " words)";
+  } catch (err) {
+    status.className = "src-status error";
+    status.textContent = "Error: " + err.message;
+    if (err.message.includes("Failed to fetch")) {
+      status.textContent += " — CORS blocked. Try a browser extension or CORS proxy.";
+    }
+  }
+  setFetching("conf", false);
+}
+
+// ── Google Drive ──
+async function fetchGDrive() {
+  const apiKey = document.getElementById("gdrive-key").value.trim();
+  const rawId = document.getElementById("gdrive-id").value.trim();
+  const status = document.getElementById("gdrive-status");
+
+  if (!apiKey || !rawId) {
+    status.className = "src-status error"; status.textContent = "API key and file ID are required"; return;
+  }
+
+  localStorage.setItem("rag_gdrive-key", apiKey);
+  localStorage.setItem("rag_gdrive-id", rawId);
+
+  // Extract file ID from URL if needed
+  let fileId = rawId;
+  const urlMatch = rawId.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (urlMatch) fileId = urlMatch[1];
+  const idMatch = rawId.match(/id=([a-zA-Z0-9_-]+)/);
+  if (idMatch) fileId = idMatch[1];
+
+  setFetching("gdrive", true);
+  status.className = "src-status"; status.textContent = "Fetching from Google Drive...";
+
+  try {
+    // First get file metadata to check type
+    const metaRes = await fetch("https://www.googleapis.com/drive/v3/files/" + fileId + "?key=" + apiKey + "&fields=name,mimeType");
+    if (!metaRes.ok) throw new Error("Drive API returned " + metaRes.status + ". Check file ID and API key.");
+    const meta = await metaRes.json();
+
+    let content;
+    if (meta.mimeType === "application/vnd.google-apps.document") {
+      // Google Doc — export as plain text
+      const exportRes = await fetch("https://www.googleapis.com/drive/v3/files/" + fileId + "/export?mimeType=text/plain&key=" + apiKey);
+      if (!exportRes.ok) throw new Error("Could not export Google Doc");
+      content = await exportRes.text();
+    } else if (meta.mimeType === "application/vnd.google-apps.spreadsheet") {
+      // Google Sheet — export as CSV
+      const exportRes = await fetch("https://www.googleapis.com/drive/v3/files/" + fileId + "/export?mimeType=text/csv&key=" + apiKey);
+      if (!exportRes.ok) throw new Error("Could not export Google Sheet");
+      content = await exportRes.text();
+    } else if (meta.mimeType === "application/vnd.google-apps.folder") {
+      // Folder — list files
+      const listRes = await fetch("https://www.googleapis.com/drive/v3/files?q=%27" + fileId + "%27+in+parents&key=" + apiKey + "&fields=files(id,name,mimeType)&pageSize=20");
+      if (!listRes.ok) throw new Error("Could not list folder");
+      const list = await listRes.json();
+      if (!list.files?.length) throw new Error("Folder is empty or not shared");
+
+      // Fetch text from each readable file
+      const texts = [];
+      for (const f of list.files.slice(0, 10)) {
+        try {
+          let text;
+          if (f.mimeType === "application/vnd.google-apps.document") {
+            const r = await fetch("https://www.googleapis.com/drive/v3/files/" + f.id + "/export?mimeType=text/plain&key=" + apiKey);
+            text = await r.text();
+          } else if (f.mimeType.startsWith("text/") || f.mimeType === "application/json") {
+            const r = await fetch("https://www.googleapis.com/drive/v3/files/" + f.id + "?alt=media&key=" + apiKey);
+            text = await r.text();
+          }
+          if (text) texts.push("## " + f.name + "\n" + text);
+        } catch (e) { /* skip unreadable files */ }
+      }
+      content = texts.join("\n\n") || "No readable text files found in folder.";
+    } else {
+      // Regular file — download content
+      const dlRes = await fetch("https://www.googleapis.com/drive/v3/files/" + fileId + "?alt=media&key=" + apiKey);
+      if (!dlRes.ok) throw new Error("Could not download file");
+      content = await dlRes.text();
+    }
+
+    addToKB(content, "gdrive", meta.name || fileId);
+    status.className = "src-status success";
+    status.textContent = "Loaded \"" + (meta.name || fileId) + "\" (" + content.split(/\s+/).length + " words)";
+  } catch (err) {
+    status.className = "src-status error";
+    status.textContent = "Error: " + err.message;
+  }
+  setFetching("gdrive", false);
+}
+
+// ── URL fetch ──
+async function fetchURL() {
+  const url = document.getElementById("url-input").value.trim();
+  const status = document.getElementById("url-status");
+
+  if (!url) { status.className = "src-status error"; status.textContent = "Enter a URL"; return; }
+  if (!/^https?:\/\/.+/.test(url)) { status.className = "src-status error"; status.textContent = "Enter a valid URL starting with http(s)://"; return; }
+
+  localStorage.setItem("rag_url-input", url);
+
+  setFetching("url", true);
+  status.className = "src-status"; status.textContent = "Fetching page...";
+
+  try {
+    let content = "";
+    const hostname = new URL(url).hostname;
+
+    // Wikipedia: use their REST API directly (CORS-friendly)
+    const wikiMatch = hostname.match(/^([a-z]{2,})\.wikipedia\.org$/);
+    if (wikiMatch) {
+      const lang = wikiMatch[1];
+      const title = url.split("/wiki/")[1];
+      if (!title) throw new Error("Could not parse Wikipedia article title from URL");
+      const apiUrl = "https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + title;
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error("Wikipedia API error (status " + res.status + ")");
+      const data = await res.json();
+      content = "# " + data.title + "\n\n" + (data.extract || "");
+      // Try to get full text via MediaWiki API
+      try {
+        const fullRes = await fetch("https://" + lang + ".wikipedia.org/w/api.php?action=query&titles=" + encodeURIComponent(data.title) + "&prop=extracts&explaintext=1&format=json&origin=*");
+        const fullData = await fullRes.json();
+        const pages = fullData.query.pages;
+        const page = pages[Object.keys(pages)[0]];
+        if (page.extract && page.extract.length > content.length) content = "# " + data.title + "\n\n" + page.extract;
+      } catch (e) { /* summary fallback is fine */ }
+    } else {
+      // General pages: try multiple CORS proxies
+      const proxies = [
+        "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
+        "https://corsproxy.io/?" + encodeURIComponent(url),
+      ];
+      let html = "";
+      for (const p of proxies) {
+        try {
+          const res = await fetch(p);
+          if (res.ok) { html = await res.text(); break; }
+        } catch (e) { /* try next proxy */ }
+      }
+      if (!html) throw new Error("Could not fetch URL — all proxies failed. Try pasting the page text directly into the knowledge base.");
+      content = htmlToText(html);
+    }
+
+    if (!content || content.length < 20) throw new Error("No meaningful text content found on this page");
+
+    const label = hostname.replace("www.", "");
+    addToKB(content, "url", label);
+    status.className = "src-status success";
+    status.textContent = "Loaded " + content.split(/\s+/).length + " words from " + label;
+  } catch (err) {
+    status.className = "src-status error";
+    status.textContent = "Error: " + err.message;
+  }
+  setFetching("url", false);
+}
+
+// ── File upload ──
+function setupFileUpload() {
+  const drop = document.getElementById("file-drop");
+  const input = document.getElementById("file-input");
+
+  drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("dragover"); });
+  drop.addEventListener("dragleave", () => drop.classList.remove("dragover"));
+  drop.addEventListener("drop", e => {
+    e.preventDefault();
+    drop.classList.remove("dragover");
+    handleFiles(e.dataTransfer.files);
+  });
+  input.addEventListener("change", () => { handleFiles(input.files); input.value = ""; });
+}
+
+async function handleFiles(fileList) {
+  const status = document.getElementById("file-status");
+  if (!fileList.length) return;
+
+  let totalWords = 0;
+  let totalFiles = 0;
+
+  for (const file of fileList) {
+    try {
+      const text = await file.text();
+      if (text.trim()) {
+        addToKB(text, "file", file.name);
+        totalWords += text.split(/\s+/).length;
+        totalFiles++;
+      }
+    } catch (err) {
+      status.className = "src-status error";
+      status.textContent = "Error reading " + file.name;
+    }
+  }
+
+  if (totalFiles) {
+    status.className = "src-status success";
+    status.textContent = "Loaded " + totalFiles + " file(s), " + totalWords + " words total";
+  }
+}
+
+// ── Fetch button state helper ──
+function setFetching(prefix, fetching) {
+  const panel = document.getElementById("panel-" + (prefix === "gh" ? "github" : prefix === "conf" ? "confluence" : prefix));
+  if (!panel) return;
+  const btn = panel.querySelector(".src-fetch-btn");
+  if (btn) {
+    btn.disabled = fetching;
+    if (fetching) { btn._origText = btn.textContent; btn.textContent = "LOADING..."; }
+    else if (btn._origText) btn.textContent = btn._origText;
+  }
+}
+
+// ── Chips ──
+function renderChips() {
+  const container = document.getElementById("chips");
+  container.innerHTML = "";
+  EXAMPLE_QUERIES.forEach(q => {
+    const btn = document.createElement("button");
+    btn.className = "chip";
+    btn.textContent = q;
+    btn.onclick = () => {
+      document.getElementById("query-input").value = q;
+      document.getElementById("query-input").focus();
+    };
+    container.appendChild(btn);
+  });
+}
+
+// ── Chunk scoring ──
+function scoreChunks(text, q) {
+  const raw = text.match(/[^.!?\n]{60,}/g) || [];
+  const qw = q.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+  return raw.map(c => ({
+    text: c.trim(),
+    score: Math.min(0.97, 0.45 + (qw.filter(w => c.toLowerCase().includes(w)).length / Math.max(qw.length, 1)) * 0.48 + Math.random() * 0.04)
+  })).sort((a, b) => b.score - a.score).slice(0, 3);
+}
+
+// ── RAG query ──
+async function runRAG() {
+  const query = document.getElementById("query-input").value.trim();
+  if (!kb.trim() || !query || loading) return;
+
+  loading = true;
+  const askBtn = document.getElementById("ask-btn");
+  askBtn.disabled = true;
+  askBtn.textContent = "...";
+
+  const area = document.getElementById("response-area");
+  area.classList.remove("hidden");
+  document.getElementById("response-box").classList.add("loading");
+  document.getElementById("resp-dot").className = "dot pulse orange";
+  document.getElementById("resp-label").textContent = "Generating...";
+  document.getElementById("resp-latency").classList.add("hidden");
+  document.getElementById("resp-body").innerHTML = '<div class="spinner"><span></span><span></span><span></span></div>';
+  document.getElementById("metrics-row").classList.add("hidden");
+  document.getElementById("chunks-area").classList.add("hidden");
+
+  const retrieved = scoreChunks(kb, query);
+  const t0 = Date.now();
+
+  try {
+    const res = await fetch(apiConfig.url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(apiConfig.key ? { Authorization: "Bearer " + apiConfig.key } : {}),
+      },
+      body: JSON.stringify({
+        model: apiConfig.model,
+        messages: [
+          { role: "system", content: "You are a RAG assistant. Answer concisely and clearly using ONLY the provided context chunks. If the answer isn't in the context, say so. Keep answers short and scannable for mobile reading." },
+          { role: "user", content: "Context:\n" + retrieved.map(c => c.text).join("\n\n") + "\n\nQuestion: " + query }
+        ],
+        max_tokens: 1000,
+        temperature: 0.3,
+      }),
+    });
+    const data = await res.json();
+    const latency = Date.now() - t0;
+
+    const answer = data.choices?.[0]?.message?.content
+      || data.content?.[0]?.text
+      || data.error?.message
+      || "No response received.";
+
+    document.getElementById("response-box").classList.remove("loading");
+    document.getElementById("resp-dot").className = "dot pulse";
+    document.getElementById("resp-label").textContent = "Answer";
+    document.getElementById("resp-latency").textContent = latency + "ms";
+    document.getElementById("resp-latency").classList.remove("hidden");
+    document.getElementById("resp-body").innerHTML = answer.split("\n").map(l => "<div>" + (escapeHtml(l) || "<br>") + "</div>").join("");
+
+    const avgScore = Math.round(retrieved.reduce((s, c) => s + c.score, 0) / retrieved.length * 100);
+    document.getElementById("m-chunks").textContent = retrieved.length;
+    document.getElementById("m-score").textContent = avgScore + "%";
+    document.getElementById("m-latency").textContent = latency + "ms";
+    document.getElementById("metrics-row").classList.remove("hidden");
+
+    renderChunks(retrieved);
+  } catch (err) {
+    document.getElementById("response-box").classList.remove("loading");
+    document.getElementById("resp-dot").className = "dot pulse orange";
+    document.getElementById("resp-label").textContent = "Error";
+    document.getElementById("resp-body").innerHTML = '<div style="color:var(--orange)">Could not reach the API. Check your connection and endpoint settings.</div>';
+  }
+
+  loading = false;
+  askBtn.disabled = false;
+  askBtn.textContent = "ASK";
+}
+
+function renderChunks(chunks) {
+  if (!chunks.length) return;
+  const area = document.getElementById("chunks-area");
+  const list = document.getElementById("chunks-list");
+  area.classList.remove("hidden");
+  list.innerHTML = "";
+  chunks.forEach((c, i) => {
+    const div = document.createElement("div");
+    div.className = "chunk";
+    div.style.animationDelay = (i * 0.08) + "s";
+    div.innerHTML =
+      '<div class="chunk-header"><span>CHUNK_' + String(i + 1).padStart(3, "0") + '</span><span class="score">' + Math.round(c.score * 100) + '% match</span></div>' +
+      '<div class="chunk-body">' + escapeHtml(c.text.substring(0, 180)) + (c.text.length > 180 ? "..." : "") + '</div>';
+    list.appendChild(div);
+  });
+}
+
+// ── Pipeline ──
+function renderPipeline() {
+  const container = document.getElementById("pipeline-steps");
+  const bars = document.getElementById("pipe-bars");
+  container.innerHTML = "";
+  bars.innerHTML = "";
+
+  PIPELINE_STEPS.forEach((step, i) => {
+    const div = document.createElement("div");
+    div.className = "pipe-step" + (i === pipeStep ? " active" : "");
+    div.id = "pipe-step-" + i;
+    div.onclick = () => { pipeStep = i; updatePipelineHighlight(); };
+    div.style.animation = "slideUp 0.3s ease " + (i * 0.05) + "s both";
+    div.innerHTML =
+      '<div class="pipe-icon">' + step.icon + '</div>' +
+      '<div class="pipe-info">' +
+        '<div class="pipe-label">STEP ' + String(i + 1).padStart(2, "0") + (i === pipeStep ? ' <span class="dot pulse" style="margin-left:4px"></span>' : '') + '</div>' +
+        '<div class="pipe-name">' + step.label + '</div>' +
+        '<div class="pipe-desc">' + step.desc + '</div>' +
+      '</div>' +
+      '<div class="pipe-arrow">\u25B6</div>';
+    container.appendChild(div);
+
+    const bar = document.createElement("div");
+    bar.className = "pipe-bar" + (i <= pipeStep ? " active" : "");
+    bar.id = "pipe-bar-" + i;
+    bars.appendChild(bar);
+  });
+
+  document.getElementById("pipe-current").textContent = PIPELINE_STEPS[pipeStep].label;
+}
+
+function updatePipelineHighlight() {
+  PIPELINE_STEPS.forEach((step, i) => {
+    const el = document.getElementById("pipe-step-" + i);
+    const bar = document.getElementById("pipe-bar-" + i);
+    if (el) el.className = "pipe-step" + (i === pipeStep ? " active" : "");
+    if (bar) bar.className = "pipe-bar" + (i <= pipeStep ? " active" : "");
+  });
+  document.getElementById("pipe-current").textContent = PIPELINE_STEPS[pipeStep].label;
+}
+
+// ── API snippets ──
+function renderCodeSnippets() {
+  const container = document.getElementById("api-snippets");
+  container.innerHTML = "";
+  CODE_SNIPPETS.forEach((s, idx) => {
+    const div = document.createElement("div");
+    div.className = "code-section";
+    div.style.animation = "slideUp 0.3s ease " + (idx * 0.07) + "s both";
+    div.innerHTML =
+      '<div class="code-label">// ' + s.label + '</div>' +
+      '<div class="code-block"><pre>' + escapeHtml(s.code) + '</pre></div>';
+    container.appendChild(div);
+  });
+}
+
+// ── Helpers ──
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>

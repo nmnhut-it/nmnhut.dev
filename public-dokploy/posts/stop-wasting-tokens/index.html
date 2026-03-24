@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Stop Wasting Tokens | nmnhut</title>
+<meta name="keywords" content="ai, llm, agents, optimization">
+<meta name="description" content="Most LLM cost is waste — context that did not need to be there, models too big for the task, reasoning that ran longer than it should.">
+<meta name="author" content="Minh-Nhut Nguyen">
+<link rel="canonical" href="../../posts/stop-wasting-tokens/">
+<link crossorigin="anonymous" href="../../assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="../../favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="mask-icon" href="../../safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="../../posts/stop-wasting-tokens/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="/posts/stop-wasting-tokens/">
+  <meta property="og:site_name" content="nmnhut">
+  <meta property="og:title" content="Stop Wasting Tokens">
+  <meta property="og:description" content="Most LLM cost is waste — context that did not need to be there, models too big for the task, reasoning that ran longer than it should.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-22T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-22T00:00:00+00:00">
+    <meta property="article:tag" content="Ai">
+    <meta property="article:tag" content="Llm">
+    <meta property="article:tag" content="Agents">
+    <meta property="article:tag" content="Optimization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Stop Wasting Tokens">
+<meta name="twitter:description" content="Most LLM cost is waste — context that did not need to be there, models too big for the task, reasoning that ran longer than it should.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "/posts/"
+    }
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Stop Wasting Tokens",
+      "item": "/posts/stop-wasting-tokens/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Stop Wasting Tokens",
+  "name": "Stop Wasting Tokens",
+  "description": "Most LLM cost is waste — context that did not need to be there, models too big for the task, reasoning that ran longer than it should.",
+  "keywords": [
+    "ai", "llm", "agents", "optimization"
+  ],
+  "articleBody": " Most LLM cost is waste — context that didn’t need to be there, models too big for the task, reasoning that ran longer than it should. Here’s how to fix it, grounded in 2025 research, with a concrete open-source stack at the end.\nThe problem Token cost and context bloat are the same problem: no mechanism deciding what information is worth keeping. It shows up three ways:\nUncontrolled output. Thinking tokens are invisible but billed at 3–5x the input price. No budget cap = silent overbilling. Context bloat. Every API call sends the full conversation from scratch. History accumulates, quality degrades well before the limit. No routing. Simple classification tasks go to frontier models at frontier prices. Fix these in order — output, then input structure, then context management, then routing. The savings compound.\nContext degrades faster than you think Models advertise 128K–1M token windows. Effective context — where accuracy stays near baseline — is 50–65% of that.\nBenchmark Finding Venue NoLiMa 11/13 models below 50% accuracy at 32K ICML 2025 RULER (NVIDIA) Effective = 50–65% of advertised COLM 2024 Context Rot (Chroma) 18/18 models degrade; shuffled text beats coherent 2025 Lost in the Middle \u003e30% drop mid-context TACL 2024 Don’t stuff documents in and hope. Treat context as a finite resource with non-linear quality decay.\nControl what the model writes Output tokens cost 3–5x more than input (sequential generation vs. parallel input processing). This is the highest-leverage place to start.\nCap max_tokens by task type. Classification: 16–32. JSON extraction: 128–256. Summarization: 256–512. Analysis: 512–1,024.\nControl thinking budgets. DeepSeek-R1 averages ~12K thinking tokens per math question. Without a cap, reasoning pipelines cost 10–30x what you’d expect from visible output alone.\nUse structured output. JSON schema reduces output ~15% and eliminates parsing retries.\nResearch: thinking budget techniques TALE (ACL 2025) auto-estimates per-task budget: 67% fewer output tokens, 59% cost reduction, 80% accuracy preserved.\nChain of Draft (arXiv 2025) — add one sentence to your prompt: “Think step by step, but only keep a minimum draft for each thinking step.” Uses 7.6% of standard CoT tokens at comparable accuracy. Zero infrastructure change.\nSGLang’s xgrammar constrained decoding guarantees valid JSON with zero retry overhead.\nStructure prompts for prefix caching The model has no memory between calls. Every request sends the entire conversation as one flat token sequence — system prompt, all previous turns, new message. Every token gets KV-computed before the model can output anything.\nPrefix caching reuses KV vectors when the first N tokens match a previous request. Anthropic gives 90% off cached tokens. OpenAI 50%. Google 75%. You just need to structure prompts so the static prefix is as large as possible.\nThe rule: static content first (system prompt, schema, few-shot examples), dynamic content last (conversation history, new message). Everything above the cache boundary must be byte-for-byte identical across requests.\nCode example: cache-hostile vs cache-friendly # ❌ Cache-hostile — dynamic content at the top messages = [ { \"role\": \"system\", \"content\": f\"\"\" Current time: {datetime.now()} # ← breaks cache every call User ID: {user_id} # ← breaks cache per user You are a helpful assistant... [800 tokens of static instructions] \"\"\" }, *conversation_history, {\"role\": \"user\", \"content\": user_message} ] # ✓ Cache-friendly — static prefix locked, dynamic at bottom messages = [ { \"role\": \"system\", \"content\": \"\"\" You are a helpful assistant. [Instructions, rules, schema — never changes] [Few-shot examples — never changes] \"\"\", \"cache_control\": {\"type\": \"ephemeral\"} # Anthropic API }, *conversation_history, {\"role\": \"user\", \"content\": user_message} ] What breaks the cache: timestamps or user IDs above the boundary, rotating few-shot examples, dynamic personalization in the system prompt. If you need personalization, put it in a user-turn message below the boundary.\nSkill templates take this further. For recurring tasks (reports, deployments, code reviews), the model spends thinking tokens rewriting the user’s request into a form it can reason about — every time. A pre-built template eliminates this translation cost. Combined with prefix caching, skill templates hit cache from the second call: 10% input cost, near-zero thinking overhead.\nManage context over time Even with perfect prompt structure, context grows. Active management keeps quality high and costs linear.\nCompaction. Summarize history into a compact block and reset. Proactive compaction beats automatic — the model’s recall is still intact and can be guided toward what matters. Write state to a JSON file, spawn a fresh context that reads it.\nSubgoal-based chunking. HiAgent (ACL 2025) compresses completed subgoal history into short summaries. Result: 2x success rate on long-horizon tasks, 35% context reduction.\nHierarchical memory. Three layers: working memory (current window) → session memory (today’s summary) → long-term memory (persistent facts). The Letta/MemGPT framework validates this — the LLM self-manages context through function calls to page data in and out.\nKG-RAG for history. Instead of keeping all history in context, use HippoRAG (NeurIPS 2024) to build a knowledge graph across sessions and retrieve by semantic query. 10–30x cheaper than iterative RAG.\nWhen to reset a conversation Utilization Action \u003c50% Keep going — near-baseline accuracy 50–70% Monitor; compact at a natural break 70–85% Compact now — measurable quality loss \u003e85% Reset — severe degradation Signals that mean reset now: model asks for information already provided, generated code contradicts earlier decisions, suggests previously rejected solutions, enters a fix-break-fix loop.\nRoute intelligently Routing isn’t just about sending easy queries to cheap models. It directly improves cache efficiency across the entire system.\nWhy routing multiplies savings When a router dispatches to specialized sub-agents, each sub-agent gets a stable, task-specific prompt template and a fresh context window. Because every request to “Agent A” shares the exact same system prompt prefix, the KV cache is computed once and reused — cache hit rates approach 100% for the system prompt portion. The router effectively pre-warms cached templates for all downstream agents.\nTwo independent savings: cheaper models for simple tasks and better cache utilization for all tasks.\nTencent ADP: proof at scale Tencent’s Agent Development Platform ships an Intent Classifier node (意图识别节点) as a first-class building block. User message enters → intent classifier (LLM with constrained prompt) produces a label → conditional branching routes to a specialized sub-graph with its own system prompt, tools, and knowledge base. Deployed across WeChat Pay and QQ Music customer service. The same pattern appears in ByteDance’s Coze, Baidu’s AppBuilder, and Dify — intent-based routing is now a standard production primitive.\nThe cache benefit is structural: each branch has a stable prompt template, so prefix caching kicks in automatically from the second request per intent category.\nBuilding a router: four options Approach How Latency / Cost Embedding similarity Semantic Router — define intents with example utterances, route via cosine similarity. No LLM call. \u003c5ms / free Small local LLM Run Qwen2.5-1.5B or Phi-3-mini via Ollama. System prompt lists intents, model returns a label. This is Tencent ADP’s approach. 50–150ms / free Learned router RouteLLM (ICLR 2025) — trained on Chatbot Arena preference data. 95% of GPT-4 quality, 85% cost reduction. ~50ms / free Cascading AutoMix (ICML 2024) — try cheapest model first, self-verify confidence, escalate if uncertain. Up to 98% cost reduction. Varies Start with: embedding similarity for high-confidence matches + local LLM for ambiguous cases + frontier API only when both are uncertain.\nOpen-source stack User request │ ▼ Qdrant semantic cache ─── hit? → return cached response │ miss ▼ Ollama (Qwen2.5-1.5B) ─── intent classification → skill_id │ ▼ LiteLLM proxy ├── budget check (per-key caps) ├── inject skill template ← prefix cached after first call ├── attach memory context ← HippoRAG / Letta retrieval │ ├── simple task → SGLang (self-hosted 7B) ├── medium task → RouteLLM decides └── complex task → frontier API (Anthropic / OpenAI) │ ▼ Letta memory manager ├── update session memory ├── extract to long-term store └── trigger compaction at 70% utilization Start with LiteLLM + Ollama + Qdrant. That handles routing, semantic caching, and budget control. Add Letta and HippoRAG once you have multi-turn agents that need persistent memory.\nFull tool list with links Routing: LiteLLM (MIT) — unified proxy, caching, budget caps. RouteLLM (Apache 2.0) — learned router. Semantic Router (MIT) — embedding-based.\nInference: SGLang (Apache 2.0) — RadixAttention, 6.4x throughput. Ollama (MIT) — local models. vLLM (Apache 2.0) — PagedAttention.\nCompression: LLMLingua (MIT) — 20x compression, \u003c1.5% accuracy loss.\nMemory: Letta (Apache 2.0) — hierarchical memory. HippoRAG (Apache 2.0) — KG-RAG. Qdrant (Apache 2.0) — vector DB. Chroma (Apache 2.0) — simpler vector store.\nWhat to do, in order # Action Effort Savings 1 Prompt structure — static first, dynamic last Low 60–90% input cost 2 Cap max_tokens + Chain of Draft Low 59–92% output cost 3 Thinking budget on reasoning models Low 10–30x on reasoning calls 4 Intent routing via Ollama + LiteLLM Medium 3–10x model cost 5 Subgoal chunking + proactive compaction Medium 35%+ context reduction 6 KG-RAG for conversation history Medium \u003e90% vs full-context 7 Hierarchical memory via Letta High Long-horizon task quality All combined: 90–95% savings vs. a naive single-model pipeline.\nThe most important thing: output tokens cost 3–5x more than input. Controlling what the model writes saves more than all input-side optimizations combined.\nReferences TALE — Han et al., ACL 2025, arXiv:2412.18547 Chain of Draft — Xu et al., arXiv:2502.18600, 2025 Unified Routing \u0026 Cascading — Dekoninck et al., ICLR + ICML 2025, arXiv:2410.10347 RouteLLM — Ong et al., ICLR 2025, arXiv:2406.18665 HiAgent — Hu et al., ACL 2025 NoLiMa — Adobe Research, ICML 2025, arXiv:2502.05167 LongBench v2 — Tsinghua, ACL 2025, arXiv:2412.15204 HippoRAG — Gutiérrez et al., NeurIPS 2024, arXiv:2405.14831 Context Rot — Chroma Research, 2025 Lost in the Middle — Liu et al., TACL 2024, arXiv:2307.03172 MemGPT / Letta — Packer et al., arXiv:2310.08560 SGLang — Zheng et al., NeurIPS 2024, arXiv:2312.07104 Effective Context Engineering for AI Agents — Anthropic Engineering Blog, 2025 AutoMix — Madaan et al., ICML 2024 ",
+  "wordCount" : "1627",
+  "inLanguage": "en",
+  "datePublished": "2026-03-22T00:00:00Z",
+  "dateModified": "2026-03-22T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Minh-Nhut Nguyen"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/posts/stop-wasting-tokens/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "nmnhut",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="../../" accesskey="h" title="nmnhut (Alt + H)">nmnhut</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="../../posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="../../tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="../../">Home</a>&nbsp;»&nbsp;<a href="../../posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Stop Wasting Tokens
+    </h1>
+    <div class="post-description">
+      Most LLM cost is waste — context that did not need to be there, models too big for the task, reasoning that ran longer than it should.
+    </div>
+    <div class="post-meta"><span title='2026-03-22 00:00:00 +0000 UTC'>March 22, 2026</span>&nbsp;·&nbsp;<span>8 min</span>&nbsp;·&nbsp;<span>Minh-Nhut Nguyen</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#the-problem" aria-label="The problem">The problem</a></li>
+                <li>
+                    <a href="#context-degrades-faster-than-you-think" aria-label="Context degrades faster than you think">Context degrades faster than you think</a></li>
+                <li>
+                    <a href="#control-what-the-model-writes" aria-label="Control what the model writes">Control what the model writes</a></li>
+                <li>
+                    <a href="#structure-prompts-for-prefix-caching" aria-label="Structure prompts for prefix caching">Structure prompts for prefix caching</a></li>
+                <li>
+                    <a href="#manage-context-over-time" aria-label="Manage context over time">Manage context over time</a></li>
+                <li>
+                    <a href="#route-intelligently" aria-label="Route intelligently">Route intelligently</a><ul>
+                        
+                <li>
+                    <a href="#why-routing-multiplies-savings" aria-label="Why routing multiplies savings">Why routing multiplies savings</a></li>
+                <li>
+                    <a href="#tencent-adp-proof-at-scale" aria-label="Tencent ADP: proof at scale">Tencent ADP: proof at scale</a></li>
+                <li>
+                    <a href="#building-a-router-four-options" aria-label="Building a router: four options">Building a router: four options</a></li></ul>
+                </li>
+                <li>
+                    <a href="#open-source-stack" aria-label="Open-source stack">Open-source stack</a></li>
+                <li>
+                    <a href="#what-to-do-in-order" aria-label="What to do, in order">What to do, in order</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><audio controls style="width:100%; margin-bottom: 1.5rem;">
+  <source src="../../audio/stop-wasting-tokens.mp3" type="audio/mpeg">
+</audio>
+<p>Most LLM cost is waste — context that didn&rsquo;t need to be there, models too big for the task, reasoning that ran longer than it should. Here&rsquo;s how to fix it, grounded in 2025 research, with a concrete open-source stack at the end.</p>
+<hr>
+<h2 id="the-problem">The problem<a hidden class="anchor" aria-hidden="true" href="#the-problem">#</a></h2>
+<p>Token cost and context bloat are the same problem: <strong>no mechanism deciding what information is worth keeping.</strong> It shows up three ways:</p>
+<ul>
+<li><strong>Uncontrolled output.</strong> Thinking tokens are invisible but billed at 3–5x the input price. No budget cap = silent overbilling.</li>
+<li><strong>Context bloat.</strong> Every API call sends the full conversation from scratch. History accumulates, quality degrades well before the limit.</li>
+<li><strong>No routing.</strong> Simple classification tasks go to frontier models at frontier prices.</li>
+</ul>
+<p>Fix these in order — output, then input structure, then context management, then routing. The savings compound.</p>
+<hr>
+<h2 id="context-degrades-faster-than-you-think">Context degrades faster than you think<a hidden class="anchor" aria-hidden="true" href="#context-degrades-faster-than-you-think">#</a></h2>
+<p>Models advertise 128K–1M token windows. Effective context — where accuracy stays near baseline — is <strong>50–65% of that.</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Benchmark</th>
+          <th>Finding</th>
+          <th>Venue</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>NoLiMa</td>
+          <td>11/13 models below 50% accuracy at 32K</td>
+          <td>ICML 2025</td>
+      </tr>
+      <tr>
+          <td>RULER (NVIDIA)</td>
+          <td>Effective = 50–65% of advertised</td>
+          <td>COLM 2024</td>
+      </tr>
+      <tr>
+          <td>Context Rot (Chroma)</td>
+          <td>18/18 models degrade; shuffled text beats coherent</td>
+          <td>2025</td>
+      </tr>
+      <tr>
+          <td>Lost in the Middle</td>
+          <td>&gt;30% drop mid-context</td>
+          <td>TACL 2024</td>
+      </tr>
+  </tbody>
+</table>
+<p>Don&rsquo;t stuff documents in and hope. Treat context as a finite resource with non-linear quality decay.</p>
+<hr>
+<h2 id="control-what-the-model-writes">Control what the model writes<a hidden class="anchor" aria-hidden="true" href="#control-what-the-model-writes">#</a></h2>
+<p>Output tokens cost 3–5x more than input (sequential generation vs. parallel input processing). This is the highest-leverage place to start.</p>
+<p><strong>Cap <code>max_tokens</code> by task type.</strong> Classification: 16–32. JSON extraction: 128–256. Summarization: 256–512. Analysis: 512–1,024.</p>
+<p><strong>Control thinking budgets.</strong> DeepSeek-R1 averages ~12K thinking tokens per math question. Without a cap, reasoning pipelines cost 10–30x what you&rsquo;d expect from visible output alone.</p>
+<p><strong>Use structured output.</strong> JSON schema reduces output ~15% and eliminates parsing retries.</p>
+<details>
+<summary><strong>Research: thinking budget techniques</strong></summary>
+<p><strong>TALE (ACL 2025)</strong> auto-estimates per-task budget: 67% fewer output tokens, 59% cost reduction, 80% accuracy preserved.</p>
+<p><strong>Chain of Draft (arXiv 2025)</strong> — add one sentence to your prompt: <em>&ldquo;Think step by step, but only keep a minimum draft for each thinking step.&rdquo;</em> Uses 7.6% of standard CoT tokens at comparable accuracy. Zero infrastructure change.</p>
+<p>SGLang&rsquo;s xgrammar constrained decoding guarantees valid JSON with zero retry overhead.</p>
+</details>
+<hr>
+<h2 id="structure-prompts-for-prefix-caching">Structure prompts for prefix caching<a hidden class="anchor" aria-hidden="true" href="#structure-prompts-for-prefix-caching">#</a></h2>
+<p>The model has no memory between calls. Every request sends the <strong>entire conversation as one flat token sequence</strong> — system prompt, all previous turns, new message. Every token gets KV-computed before the model can output anything.</p>
+<p><strong>Prefix caching</strong> reuses KV vectors when the first N tokens match a previous request. Anthropic gives <strong>90% off</strong> cached tokens. OpenAI 50%. Google 75%. You just need to structure prompts so the static prefix is as large as possible.</p>
+<p><strong>The rule:</strong> static content first (system prompt, schema, few-shot examples), dynamic content last (conversation history, new message). Everything above the cache boundary must be byte-for-byte identical across requests.</p>
+<details>
+<summary><strong>Code example: cache-hostile vs cache-friendly</strong></summary>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># ❌ Cache-hostile — dynamic content at the top</span>
+</span></span><span style="display:flex;"><span>messages <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;system&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;content&#34;</span>: <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            Current time: </span><span style="color:#e6db74">{</span>datetime<span style="color:#f92672">.</span>now()<span style="color:#e6db74">}</span><span style="color:#e6db74">     # ← breaks cache every call
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            User ID: </span><span style="color:#e6db74">{</span>user_id<span style="color:#e6db74">}</span><span style="color:#e6db74">                 # ← breaks cache per user
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            You are a helpful assistant...
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            [800 tokens of static instructions]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>conversation_history,
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: user_message}
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># ✓ Cache-friendly — static prefix locked, dynamic at bottom</span>
+</span></span><span style="display:flex;"><span>messages <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;system&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            You are a helpful assistant.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            [Instructions, rules, schema — never changes]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            [Few-shot examples — never changes]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#34;&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;cache_control&#34;</span>: {<span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;ephemeral&#34;</span>}  <span style="color:#75715e"># Anthropic API</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>conversation_history,
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: user_message}
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><p><strong>What breaks the cache:</strong> timestamps or user IDs above the boundary, rotating few-shot examples, dynamic personalization in the system prompt. If you need personalization, put it in a user-turn message below the boundary.</p>
+</details>
+<p><strong>Skill templates</strong> take this further. For recurring tasks (reports, deployments, code reviews), the model spends thinking tokens rewriting the user&rsquo;s request into a form it can reason about — every time. A pre-built template eliminates this translation cost. Combined with prefix caching, skill templates hit cache from the second call: <strong>10% input cost, near-zero thinking overhead.</strong></p>
+<hr>
+<h2 id="manage-context-over-time">Manage context over time<a hidden class="anchor" aria-hidden="true" href="#manage-context-over-time">#</a></h2>
+<p>Even with perfect prompt structure, context grows. Active management keeps quality high and costs linear.</p>
+<p><strong>Compaction.</strong> Summarize history into a compact block and reset. Proactive compaction beats automatic — the model&rsquo;s recall is still intact and can be guided toward what matters. Write state to a JSON file, spawn a fresh context that reads it.</p>
+<p><strong>Subgoal-based chunking.</strong> <strong>HiAgent (ACL 2025)</strong> compresses completed subgoal history into short summaries. Result: 2x success rate on long-horizon tasks, 35% context reduction.</p>
+<p><strong>Hierarchical memory.</strong> Three layers: working memory (current window) → session memory (today&rsquo;s summary) → long-term memory (persistent facts). The <a href="https://github.com/letta-ai/letta">Letta/MemGPT</a> framework validates this — the LLM self-manages context through function calls to page data in and out.</p>
+<p><strong>KG-RAG for history.</strong> Instead of keeping all history in context, use <a href="https://github.com/OSU-NLP-Group/HippoRAG">HippoRAG</a> (NeurIPS 2024) to build a knowledge graph across sessions and retrieve by semantic query. 10–30x cheaper than iterative RAG.</p>
+<details>
+<summary><strong>When to reset a conversation</strong></summary>
+<table>
+  <thead>
+      <tr>
+          <th>Utilization</th>
+          <th>Action</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>&lt;50%</td>
+          <td>Keep going — near-baseline accuracy</td>
+      </tr>
+      <tr>
+          <td>50–70%</td>
+          <td>Monitor; compact at a natural break</td>
+      </tr>
+      <tr>
+          <td>70–85%</td>
+          <td>Compact now — measurable quality loss</td>
+      </tr>
+      <tr>
+          <td>&gt;85%</td>
+          <td>Reset — severe degradation</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Signals that mean reset now:</strong> model asks for information already provided, generated code contradicts earlier decisions, suggests previously rejected solutions, enters a fix-break-fix loop.</p>
+</details>
+<hr>
+<h2 id="route-intelligently">Route intelligently<a hidden class="anchor" aria-hidden="true" href="#route-intelligently">#</a></h2>
+<p>Routing isn&rsquo;t just about sending easy queries to cheap models. It <strong>directly improves cache efficiency</strong> across the entire system.</p>
+<h3 id="why-routing-multiplies-savings">Why routing multiplies savings<a hidden class="anchor" aria-hidden="true" href="#why-routing-multiplies-savings">#</a></h3>
+<p>When a router dispatches to specialized sub-agents, each sub-agent gets a <strong>stable, task-specific prompt template</strong> and a <strong>fresh context window</strong>. Because every request to &ldquo;Agent A&rdquo; shares the exact same system prompt prefix, the KV cache is computed once and reused — <strong>cache hit rates approach 100%</strong> for the system prompt portion. The router effectively pre-warms cached templates for all downstream agents.</p>
+<p>Two independent savings: cheaper models for simple tasks <em>and</em> better cache utilization for all tasks.</p>
+<h3 id="tencent-adp-proof-at-scale">Tencent ADP: proof at scale<a hidden class="anchor" aria-hidden="true" href="#tencent-adp-proof-at-scale">#</a></h3>
+<p>Tencent&rsquo;s Agent Development Platform ships an <strong>Intent Classifier node</strong> (意图识别节点) as a first-class building block. User message enters → intent classifier (LLM with constrained prompt) produces a label → conditional branching routes to a specialized sub-graph with its own system prompt, tools, and knowledge base. Deployed across WeChat Pay and QQ Music customer service. The same pattern appears in ByteDance&rsquo;s Coze, Baidu&rsquo;s AppBuilder, and Dify — intent-based routing is now a standard production primitive.</p>
+<p>The cache benefit is structural: each branch has a stable prompt template, so prefix caching kicks in automatically from the second request per intent category.</p>
+<h3 id="building-a-router-four-options">Building a router: four options<a hidden class="anchor" aria-hidden="true" href="#building-a-router-four-options">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Approach</th>
+          <th>How</th>
+          <th>Latency / Cost</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Embedding similarity</strong></td>
+          <td><a href="https://github.com/aurelio-labs/semantic-router">Semantic Router</a> — define intents with example utterances, route via cosine similarity. No LLM call.</td>
+          <td>&lt;5ms / free</td>
+      </tr>
+      <tr>
+          <td><strong>Small local LLM</strong></td>
+          <td>Run Qwen2.5-1.5B or Phi-3-mini via <a href="https://github.com/ollama/ollama">Ollama</a>. System prompt lists intents, model returns a label. This is Tencent ADP&rsquo;s approach.</td>
+          <td>50–150ms / free</td>
+      </tr>
+      <tr>
+          <td><strong>Learned router</strong></td>
+          <td><a href="https://github.com/lm-sys/RouteLLM">RouteLLM</a> (ICLR 2025) — trained on Chatbot Arena preference data. 95% of GPT-4 quality, 85% cost reduction.</td>
+          <td>~50ms / free</td>
+      </tr>
+      <tr>
+          <td><strong>Cascading</strong></td>
+          <td>AutoMix (ICML 2024) — try cheapest model first, self-verify confidence, escalate if uncertain. Up to 98% cost reduction.</td>
+          <td>Varies</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Start with:</strong> embedding similarity for high-confidence matches + local LLM for ambiguous cases + frontier API only when both are uncertain.</p>
+<hr>
+<h2 id="open-source-stack">Open-source stack<a hidden class="anchor" aria-hidden="true" href="#open-source-stack">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>User request
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    ▼
+</span></span><span style="display:flex;"><span>Qdrant semantic cache  ─── hit? → return cached response
+</span></span><span style="display:flex;"><span>    │ miss
+</span></span><span style="display:flex;"><span>    ▼
+</span></span><span style="display:flex;"><span>Ollama (Qwen2.5-1.5B)  ─── intent classification → skill_id
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    ▼
+</span></span><span style="display:flex;"><span>LiteLLM proxy
+</span></span><span style="display:flex;"><span>    ├── budget check (per-key caps)
+</span></span><span style="display:flex;"><span>    ├── inject skill template        ← prefix cached after first call
+</span></span><span style="display:flex;"><span>    ├── attach memory context        ← HippoRAG / Letta retrieval
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    ├── simple task  → SGLang (self-hosted 7B)
+</span></span><span style="display:flex;"><span>    ├── medium task  → RouteLLM decides
+</span></span><span style="display:flex;"><span>    └── complex task → frontier API (Anthropic / OpenAI)
+</span></span><span style="display:flex;"><span>              │
+</span></span><span style="display:flex;"><span>              ▼
+</span></span><span style="display:flex;"><span>        Letta memory manager
+</span></span><span style="display:flex;"><span>              ├── update session memory
+</span></span><span style="display:flex;"><span>              ├── extract to long-term store
+</span></span><span style="display:flex;"><span>              └── trigger compaction at 70% utilization
+</span></span></code></pre></div><blockquote>
+<p><strong>Start with</strong> LiteLLM + Ollama + Qdrant. That handles routing, semantic caching, and budget control. Add Letta and HippoRAG once you have multi-turn agents that need persistent memory.</p>
+</blockquote>
+<details>
+<summary><strong>Full tool list with links</strong></summary>
+<p><strong>Routing:</strong> <a href="https://github.com/BerriAI/litellm">LiteLLM</a> (MIT) — unified proxy, caching, budget caps. <a href="https://github.com/lm-sys/RouteLLM">RouteLLM</a> (Apache 2.0) — learned router. <a href="https://github.com/aurelio-labs/semantic-router">Semantic Router</a> (MIT) — embedding-based.</p>
+<p><strong>Inference:</strong> <a href="https://github.com/sgl-project/sglang">SGLang</a> (Apache 2.0) — RadixAttention, 6.4x throughput. <a href="https://github.com/ollama/ollama">Ollama</a> (MIT) — local models. <a href="https://github.com/vllm-project/vllm">vLLM</a> (Apache 2.0) — PagedAttention.</p>
+<p><strong>Compression:</strong> <a href="https://github.com/microsoft/LLMLingua">LLMLingua</a> (MIT) — 20x compression, &lt;1.5% accuracy loss.</p>
+<p><strong>Memory:</strong> <a href="https://github.com/letta-ai/letta">Letta</a> (Apache 2.0) — hierarchical memory. <a href="https://github.com/OSU-NLP-Group/HippoRAG">HippoRAG</a> (Apache 2.0) — KG-RAG. <a href="https://github.com/qdrant/qdrant">Qdrant</a> (Apache 2.0) — vector DB. <a href="https://github.com/chroma-core/chroma">Chroma</a> (Apache 2.0) — simpler vector store.</p>
+</details>
+<hr>
+<h2 id="what-to-do-in-order">What to do, in order<a hidden class="anchor" aria-hidden="true" href="#what-to-do-in-order">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th>#</th>
+          <th>Action</th>
+          <th>Effort</th>
+          <th>Savings</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>Prompt structure — static first, dynamic last</td>
+          <td>Low</td>
+          <td>60–90% input cost</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>Cap <code>max_tokens</code> + Chain of Draft</td>
+          <td>Low</td>
+          <td>59–92% output cost</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Thinking budget on reasoning models</td>
+          <td>Low</td>
+          <td>10–30x on reasoning calls</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>Intent routing via Ollama + LiteLLM</td>
+          <td>Medium</td>
+          <td>3–10x model cost</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>Subgoal chunking + proactive compaction</td>
+          <td>Medium</td>
+          <td>35%+ context reduction</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>KG-RAG for conversation history</td>
+          <td>Medium</td>
+          <td>&gt;90% vs full-context</td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td>Hierarchical memory via Letta</td>
+          <td>High</td>
+          <td>Long-horizon task quality</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>All combined: 90–95% savings vs. a naive single-model pipeline.</strong></p>
+<p>The most important thing: output tokens cost 3–5x more than input. Controlling what the model <em>writes</em> saves more than all input-side optimizations combined.</p>
+<hr>
+<h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
+<ol>
+<li>TALE — Han et al., ACL 2025, arXiv:2412.18547</li>
+<li>Chain of Draft — Xu et al., arXiv:2502.18600, 2025</li>
+<li>Unified Routing &amp; Cascading — Dekoninck et al., ICLR + ICML 2025, arXiv:2410.10347</li>
+<li>RouteLLM — Ong et al., ICLR 2025, arXiv:2406.18665</li>
+<li>HiAgent — Hu et al., ACL 2025</li>
+<li>NoLiMa — Adobe Research, ICML 2025, arXiv:2502.05167</li>
+<li>LongBench v2 — Tsinghua, ACL 2025, arXiv:2412.15204</li>
+<li>HippoRAG — Gutiérrez et al., NeurIPS 2024, arXiv:2405.14831</li>
+<li>Context Rot — Chroma Research, 2025</li>
+<li>Lost in the Middle — Liu et al., TACL 2024, arXiv:2307.03172</li>
+<li>MemGPT / Letta — Packer et al., arXiv:2310.08560</li>
+<li>SGLang — Zheng et al., NeurIPS 2024, arXiv:2312.07104</li>
+<li>Effective Context Engineering for AI Agents — Anthropic Engineering Blog, 2025</li>
+<li>AutoMix — Madaan et al., ICML 2024</li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="../../tags/ai/">Ai</a></li>
+      <li><a href="../../tags/llm/">Llm</a></li>
+      <li><a href="../../tags/agents/">Agents</a></li>
+      <li><a href="../../tags/optimization/">Optimization</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="../../posts/your-llm-bill-is-80-percent-waste/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Your LLM Bill Is 80% Waste. Here Are 4 Fixes.</span>
+  </a>
+  <a class="next" href="../../posts/educational-video-pipeline/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Building an AI Video Pipeline: From Text to Narrated MP4 with Remotion and ElevenLabs</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Stop Wasting Tokens on x"
+            href="https://x.com/intent/tweet/?text=Stop%20Wasting%20Tokens&amp;url=%2fposts%2fstop-wasting-tokens%2f&amp;hashtags=ai%2cllm%2cagents%2coptimization">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Stop Wasting Tokens on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fposts%2fstop-wasting-tokens%2f&amp;title=Stop%20Wasting%20Tokens&amp;summary=Stop%20Wasting%20Tokens&amp;source=%2fposts%2fstop-wasting-tokens%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Stop Wasting Tokens on reddit"
+            href="https://reddit.com/submit?url=%2fposts%2fstop-wasting-tokens%2f&title=Stop%20Wasting%20Tokens">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Stop Wasting Tokens on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=%2fposts%2fstop-wasting-tokens%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Stop Wasting Tokens on whatsapp"
+            href="https://api.whatsapp.com/send?text=Stop%20Wasting%20Tokens%20-%20%2fposts%2fstop-wasting-tokens%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Stop Wasting Tokens on telegram"
+            href="https://telegram.me/share/url?text=Stop%20Wasting%20Tokens&amp;url=%2fposts%2fstop-wasting-tokens%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Stop Wasting Tokens on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=Stop%20Wasting%20Tokens&u=%2fposts%2fstop-wasting-tokens%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="../../">nmnhut</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
