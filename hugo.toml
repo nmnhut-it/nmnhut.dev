@@ -64,6 +64,11 @@ theme = "PaperMod"
     url = "/token-router/"
     weight = 27
   [[menu.main]]
+    identifier = "math-for-ai"
+    name = "Math for AI"
+    url = "/math-for-ai/"
+    weight = 28
+  [[menu.main]]
     identifier = "about"
     name = "About"
     url = "/about/"
